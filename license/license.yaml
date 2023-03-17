@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    cloud.streamnative.io/type: "license"
+  name: sn-license
+  namespace: sn-system
+type: Opaque
+stringData:
+  license: "Your license token"
