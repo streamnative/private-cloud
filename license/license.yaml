@@ -7,4 +7,4 @@ metadata:
   namespace: sn-system
 type: Opaque
 stringData:
-  license: "Your license token"
+  license: "<Your License Token>"

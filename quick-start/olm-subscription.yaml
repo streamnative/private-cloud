@@ -1,42 +1,42 @@
 ---
-apiVersion: operators.coreos.com/v1alpha1
+apiVersion: sn-system.coreos.com/v1alpha1
 kind: Subscription
 metadata:
   name: zookeeper-operator
-  namespace: operators
+  namespace: sn-system
 spec:
   channel: stable
   name: zookeeper-operator
   source: operatorhubio-catalog
   sourceNamespace: olm
 ---
-apiVersion: operators.coreos.com/v1alpha1
+apiVersion: sn-system.coreos.com/v1alpha1
 kind: Subscription
 metadata:
   name: bookkeeper-operator
-  namespace: operators
+  namespace: sn-system
 spec:
   channel: stable
   name: bookkeeper-operator
   source: operatorhubio-catalog
   sourceNamespace: olm
 ---
-apiVersion: operators.coreos.com/v1alpha1
+apiVersion: sn-system.coreos.com/v1alpha1
 kind: Subscription
 metadata:
   name: pulsar-operator
-  namespace: operators
+  namespace: sn-system
 spec:
   channel: stable
   name: pulsar-operator
   source: operatorhubio-catalog
   sourceNamespace: olm
 ---
-apiVersion: operators.coreos.com/v1alpha1
+apiVersion: sn-system.coreos.com/v1alpha1
 kind: Subscription
 metadata:
   name: sn-operator
-  namespace: operators
+  namespace: sn-system
 spec:
   channel: stable
   name: sn-operator
