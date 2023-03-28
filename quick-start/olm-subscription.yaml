@@ -1,5 +1,5 @@
 ---
-apiVersion: sn-system.coreos.com/v1alpha1
+apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
   name: zookeeper-operator
@@ -10,7 +10,7 @@ spec:
   source: operatorhubio-catalog
   sourceNamespace: olm
 ---
-apiVersion: sn-system.coreos.com/v1alpha1
+apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
   name: bookkeeper-operator
@@ -21,7 +21,7 @@ spec:
   source: operatorhubio-catalog
   sourceNamespace: olm
 ---
-apiVersion: sn-system.coreos.com/v1alpha1
+apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
   name: pulsar-operator
@@ -32,7 +32,7 @@ spec:
   source: operatorhubio-catalog
   sourceNamespace: olm
 ---
-apiVersion: sn-system.coreos.com/v1alpha1
+apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
   name: sn-operator
