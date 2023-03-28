@@ -4,7 +4,7 @@ metadata:
   labels:
     cloud.streamnative.io/type: "license"
   name: sn-license
-  namespace: sn-system
+  namespace: operators
 type: Opaque
 stringData:
   license: "<Your License Token>"
