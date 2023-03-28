@@ -3,7 +3,7 @@ apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
   name: zookeeper-operator
-  namespace: sn-system
+  namespace: operators
 spec:
   channel: stable
   name: zookeeper-operator
@@ -14,7 +14,7 @@ apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
   name: bookkeeper-operator
-  namespace: sn-system
+  namespace: operators
 spec:
   channel: stable
   name: bookkeeper-operator
@@ -25,7 +25,7 @@ apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
   name: pulsar-operator
-  namespace: sn-system
+  namespace: operators
 spec:
   channel: stable
   name: pulsar-operator
@@ -36,7 +36,7 @@ apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
   name: sn-operator
-  namespace: sn-system
+  namespace: operators
 spec:
   channel: stable
   name: sn-operator
