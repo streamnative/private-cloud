@@ -5,5 +5,4 @@ metadata:
   namespace: pulsar
 spec:
   image: streamnative/sn-platform-console:v1.14.3
-  imagePullPolicy: IfNotPresent
-  webServiceUrl: "http://"
+  webServiceUrl: "http://brokers-broker.pulsar.svc.cluster.local:8080"
