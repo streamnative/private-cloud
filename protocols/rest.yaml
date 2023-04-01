@@ -1,0 +1,20 @@
+apiVersion: pulsar.streamnative.io/v1alpha1
+kind: PulsarBroker
+metadata:
+  name: brokers
+  namespace: pulsar
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+spec:
+  image: streamnative/sn-platform-slim:2.10.3.4
+  zkServers: zookeepers-zk:2181
+  replicas: 3
+  pod:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    securityContext:
+      runAsNonRoot: true
+  config:
+    pulsarRestMessagingServiceEnabled: true
