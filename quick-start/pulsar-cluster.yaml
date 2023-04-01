@@ -22,20 +22,6 @@ spec:
         memory: 256Mi
     securityContext:
       runAsNonRoot: true
-  persistence:
-    data:
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: 8Gi
-    dataLog:
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: 2Gi
-    reclaimPolicy: Delete
   replicas: 3
 ---
 apiVersion: bookkeeper.streamnative.io/v1alpha1
@@ -88,10 +74,6 @@ spec:
   image: streamnative/sn-platform-slim:2.10.3.4
   replicas: 3
   pod:
-    resources:
-      requests:
-        cpu: 200m
-        memory: 512Mi
     securityContext:
       runAsNonRoot: true
   zkServers: zookeepers-zk:2181

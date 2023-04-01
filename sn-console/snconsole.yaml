@@ -4,5 +4,5 @@ metadata:
   name: sn-private-console
   namespace: pulsar
 spec:
-  image: streamnative/sn-platform-console:v1.14.3
+  image: streamnative/sn-platform-console:v2.0.0-alpha15
   webServiceUrl: "http://brokers-broker.pulsar.svc.cluster.local:8080"
