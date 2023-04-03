@@ -4,7 +4,7 @@ metadata:
   name: private-cloud
   namespace: pulsar
 spec:
-  image: streamnative/sn-platform-slim:2.10.3.4
+  image: streamnative/private-cloud:2.11.0.4
   auditLog:
     categories:
       - Management

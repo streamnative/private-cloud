@@ -6,5 +6,5 @@ metadata:
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/sn-platform-console:v2.0.0-alpha15
-  webServiceUrl: "http://brokers-broker.pulsar.svc.cluster.local:8080"
+  image: streamnative/sn-platform-console:v2.0.0-alpha16
+  webServiceUrl: http://brokers-broker:8080

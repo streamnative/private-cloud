@@ -15,6 +15,7 @@ metadata:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
   image: streamnative/private-cloud:2.11.0.4
+  replicas: 3
   pod:
     resources:
       requests:
@@ -22,7 +23,6 @@ spec:
         memory: 256Mi
     securityContext:
       runAsNonRoot: true
-  replicas: 3
 ---
 apiVersion: bookkeeper.streamnative.io/v1alpha1
 kind: BookKeeperCluster
@@ -34,6 +34,7 @@ metadata:
 spec:
   image: streamnative/private-cloud:2.11.0.4
   replicas: 3
+  zkServers: zookeepers-zk:2181
   pod:
     resources:
       requests:
@@ -61,7 +62,6 @@ spec:
           requests:
             storage: 16Gi
     reclaimPolicy: Delete
-  zkServers: zookeepers-zk:2181
 ---
 apiVersion: pulsar.streamnative.io/v1alpha1
 kind: PulsarBroker
@@ -73,10 +73,10 @@ metadata:
 spec:
   image: streamnative/private-cloud:2.11.0.4
   replicas: 3
+  zkServers: zookeepers-zk:2181
   pod:
     securityContext:
       runAsNonRoot: true
-  zkServers: zookeepers-zk:2181
 ---
 apiVersion: k8s.streamnative.io/v1alpha1
 kind: SNConsole
@@ -86,5 +86,5 @@ metadata:
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/sn-platform-console:v2.0.0-alpha15
-  webServiceUrl: "http://brokers-broker.pulsar.svc.cluster.local:8080"
+  image: streamnative/sn-platform-console:v2.0.0-alpha16
+  webServiceUrl: http://brokers-broker:8080
