@@ -78,6 +78,23 @@ spec:
     securityContext:
       runAsNonRoot: true
 ---
+apiVersion: pulsar.streamnative.io/v1alpha1
+kind: PulsarProxy
+metadata:
+  name: proxys
+  namespace: pulsar
+spec:
+  image: streamnative/private-cloud:2.11.0.4
+  replicas: 2
+  brokerAddress: brokers-broker
+  pod:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    securityContext:
+      runAsNonRoot: true
+---
 apiVersion: k8s.streamnative.io/v1alpha1
 kind: SNConsole
 metadata:
@@ -86,5 +103,5 @@ metadata:
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/sn-platform-console:v2.0.0-alpha16
+  image: streamnative/sn-platform-console:v2.0.0-alpha17
   webServiceUrl: http://brokers-broker:8080
