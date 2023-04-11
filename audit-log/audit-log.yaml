@@ -1,0 +1,11 @@
+apiVersion: k8s.streamnative.io/v1alpha1
+kind: PulsarCoordinator
+metadata:
+  name: private-cloud
+  namespace: pulsar
+spec:
+  image: streamnative/private-cloud:2.11.0.4
+  auditLog:
+    categories:
+      - Management
+      - Describe
