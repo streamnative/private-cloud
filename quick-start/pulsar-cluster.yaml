@@ -103,5 +103,5 @@ metadata:
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/sn-platform-console:v2.0.0-alpha17
+  image: private-cloud-console:v2.0.0
   webServiceUrl: http://brokers-broker:8080
