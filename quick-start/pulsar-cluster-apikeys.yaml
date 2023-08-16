@@ -1,12 +1,16 @@
-# 1. install olm, refer https://docs.streamnative.io/operator/pulsar-operator-install-olm
+# 1. install olm, refer https://docs.streamnative.io/operator/pulsar-operator-install-olm, `curl -sL https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.23.1/install.sh | bash -s v0.23.1`
 # 2. k apply -f quick-start/olm-subscription.yaml
-# 3. k apply -f quick-start/pulsar-cluster-apikeys.yaml
+# 3. k create ns pulsar
+# 4. k apply -f quick-start/pulsar-cluster-apikeys.yaml
 # 4. downscale sn-operator, edit the deployment replicas to 0 of sn-operator in namespace operators
 # 5. make install
 # 6. export OPERATOR_NAMESPACE=operators WEBHOOK_SERVER_CERT=sn-operator-controller-manager-service-cert
 # 7. make copy-running-certs
-# 8. WEBHOOK_SERVICE_ADDRESS=https://host.internal:9443 make webhook-proxy
-# 9. SN_OPERATOR_FLINK_ENABLE=false;SN_OPERATOR_PFSQL_ENABLE=false make run
+# 8. WEBHOOK_SERVICE_ADDRESS=https://host.docker.internal:9443 make webhook-proxy
+# 9. OPERATOR_NAMESPACE=operators;SN_OPERATOR_FLINK_ENABLE=false;SN_OPERATOR_PFSQL_ENABLE=false make run
+# 10. k port-forward svc/private-cloud-apikeys -n pulsar 8081:8081
+# 11. k port-forward svc/private-cloud-broker -n pulsar 8082:8080
+# 12. k port-forward svc/private-cloud-streamnative-console -n pulsar 9527:9527
 apiVersion: k8s.streamnative.io/v1alpha1
 kind: PulsarCoordinator
 metadata:
@@ -46,11 +50,6 @@ spec:
   image: streamnative/private-cloud:2.11.1.4
   replicas: 1
   zkServers: private-cloud-zk:2181
-  config: 
-    custom:
-      managedLedgerDefaultEnsembleSize: "1"
-      managedLedgerDefaultWriteQuorum: "1"
-      managedLedgerDefaultAckQuorum: "1"
   pod:
     resources:
       requests:
@@ -90,43 +89,48 @@ spec:
   image: streamnative/private-cloud:2.11.1.4
   replicas: 1
   zkServers: private-cloud-zk:2181
+  config: 
+    custom:
+      PULSAR_PREFIX_managedLedgerDefaultEnsembleSize: "1"
+      PULSAR_PREFIX_managedLedgerDefaultWriteQuorum: "1"
+      PULSAR_PREFIX_managedLedgerDefaultAckQuorum: "1"
   pod:
     securityContext:
       runAsNonRoot: true
     resources:
       requests:
         cpu: 200m
-        memory: 256Mi
----
-apiVersion: pulsar.streamnative.io/v1alpha1
-kind: PulsarProxy
-metadata:
-  name: private-cloud
-  namespace: pulsar
-  labels:
-    k8s.streamnative.io/coordinator-name: private-cloud
-spec:
-  image: streamnative/private-cloud:2.11.1.4
-  replicas: 1
-  brokerAddress: private-cloud-broker
-  pod:
-    resources:
-      requests:
-        cpu: 200m
-        memory: 256Mi
-    securityContext:
-      runAsNonRoot: true
+        memory: 512Mi
 # ---
-# apiVersion: k8s.streamnative.io/v1alpha1
-# kind: SNConsole
+# apiVersion: pulsar.streamnative.io/v1alpha1
+# kind: PulsarProxy
 # metadata:
 #   name: private-cloud
 #   namespace: pulsar
 #   labels:
 #     k8s.streamnative.io/coordinator-name: private-cloud
 # spec:
-#   image: streamnative/private-cloud-console:v2.2.1
-#   webServiceUrl: http://private-cloud-broker:8080
+#   image: streamnative/private-cloud:2.11.1.4
+#   replicas: 1
+#   brokerAddress: private-cloud-broker
+#   pod:
+#     resources:
+#       requests:
+#         cpu: 200m
+#         memory: 512Mi
+#     securityContext:
+#       runAsNonRoot: true
+---
+apiVersion: k8s.streamnative.io/v1alpha1
+kind: SNConsole
+metadata:
+  name: private-cloud
+  namespace: pulsar
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+spec:
+  image: streamnative/private-cloud-console:v2.2.1
+  webServiceUrl: http://private-cloud-broker:8080
 ---
 apiVersion: k8s.streamnative.io/v1alpha1
 kind: ApiKeys

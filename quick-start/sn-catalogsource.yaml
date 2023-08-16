@@ -1,0 +1,15 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: sn-catalog
+  namespace: olm
+spec:
+  displayName: StreamNative Operators
+  grpcPodConfig:
+    securityContextConfig: restricted
+  image: docker.cloudsmith.io/streamnative/operators/sn-catalog:latest
+  publisher: StreamNative.io
+  sourceType: grpc
+  updateStrategy:
+    registryPoll:
+      interval: 10m0s
