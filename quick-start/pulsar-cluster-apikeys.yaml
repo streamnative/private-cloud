@@ -55,7 +55,7 @@ spec:
     resources:
       requests:
         cpu: 200m
-        memory: 512Mi
+        memory: 256Mi
     securityContext:
       runAsNonRoot: true
   storage:
@@ -93,6 +93,10 @@ spec:
   pod:
     securityContext:
       runAsNonRoot: true
+    resources:
+      requests:
+        cpu: 200m
+        memory: 256Mi
 ---
 apiVersion: pulsar.streamnative.io/v1alpha1
 kind: PulsarProxy
@@ -109,7 +113,7 @@ spec:
     resources:
       requests:
         cpu: 200m
-        memory: 512Mi
+        memory: 256Mi
     securityContext:
       runAsNonRoot: true
 # ---
