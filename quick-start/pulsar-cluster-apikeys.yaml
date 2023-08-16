@@ -1,16 +1,17 @@
-# 1. install olm, refer https://docs.streamnative.io/operator/pulsar-operator-install-olm, `curl -sL https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.23.1/install.sh | bash -s v0.23.1`
-# 2. k apply -f quick-start/olm-subscription.yaml
-# 3. k create ns pulsar
-# 4. k apply -f quick-start/pulsar-cluster-apikeys.yaml
-# 4. downscale sn-operator, edit the deployment replicas to 0 of sn-operator in namespace operators
-# 5. make install
-# 6. export OPERATOR_NAMESPACE=operators WEBHOOK_SERVER_CERT=sn-operator-controller-manager-service-cert
-# 7. make copy-running-certs
-# 8. WEBHOOK_SERVICE_ADDRESS=https://host.docker.internal:9443 make webhook-proxy
-# 9. OPERATOR_NAMESPACE=operators;SN_OPERATOR_FLINK_ENABLE=false;SN_OPERATOR_PFSQL_ENABLE=false make run
-# 10. k port-forward svc/private-cloud-apikeys -n pulsar 8081:8081
-# 11. k port-forward svc/private-cloud-broker -n pulsar 8082:8080
-# 12. k port-forward svc/private-cloud-streamnative-console -n pulsar 9527:9527
+# install olm, refer https://docs.streamnative.io/operator/pulsar-operator-install-olm, `curl -sL https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.23.1/install.sh | bash -s v0.23.1`
+# k apply -f quick-start/sn-catalogsource.yaml
+# k apply -f quick-start/sn-olm-subscriptions.yaml
+# k create ns pulsar
+# k apply -f quick-start/pulsar-cluster-apikeys.yaml
+# downscale sn-operator, edit the deployment replicas to 0 of sn-operator in namespace operators
+# make install
+# export OPERATOR_NAMESPACE=operators WEBHOOK_SERVER_CERT=sn-operator-controller-manager-service-cert
+# make copy-running-certs
+# WEBHOOK_SERVICE_ADDRESS=https://host.docker.internal:9443 make webhook-proxy
+# OPERATOR_NAMESPACE=operators;SN_OPERATOR_FLINK_ENABLE=false;SN_OPERATOR_PFSQL_ENABLE=false make run
+# k port-forward svc/private-cloud-apikeys -n pulsar 8081:8081
+# k port-forward svc/private-cloud-broker -n pulsar 8082:8080
+# k port-forward svc/private-cloud-streamnative-console -n pulsar 9527:9527
 
 #  List of problems:
 # 1. The version of pulsar-operator is wrong, it needs to be upgraded to 0.17.5, the solution is to create the catalogsource of sn, refer to sn-catalogsource.yaml
