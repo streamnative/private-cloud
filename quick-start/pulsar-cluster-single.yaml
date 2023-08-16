@@ -1,0 +1,116 @@
+apiVersion: k8s.streamnative.io/v1alpha1
+kind: PulsarCoordinator
+metadata:
+  name: private-cloud
+  namespace: pulsar
+spec:
+  image: streamnative/private-cloud:2.11.1.4
+  authentication:
+    apiKey: true
+---
+apiVersion: zookeeper.streamnative.io/v1alpha1
+kind: ZooKeeperCluster
+metadata:
+  name: private-cloud
+  namespace: pulsar
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+spec:
+  image: streamnative/private-cloud:2.11.1.4
+  replicas: 1
+  pod:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 256Mi
+    securityContext:
+      runAsNonRoot: true
+---
+apiVersion: bookkeeper.streamnative.io/v1alpha1
+kind: BookKeeperCluster
+metadata:
+  name: private-cloud
+  namespace: pulsar
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+spec:
+  image: streamnative/private-cloud:2.11.1.4
+  replicas: 1
+  zkServers: private-cloud-zk:2181
+  config: 
+    custom:
+      managedLedgerDefaultEnsembleSize: "1"
+      managedLedgerDefaultWriteQuorum: "1"
+      managedLedgerDefaultAckQuorum: "1"
+  pod:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    securityContext:
+      runAsNonRoot: true
+  storage:
+    journal:
+      numDirsPerVolume: 1
+      numVolumes: 1
+      volumeClaimTemplate:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+    ledger:
+      numDirsPerVolume: 1
+      numVolumes: 1
+      volumeClaimTemplate:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+    reclaimPolicy: Delete
+---
+apiVersion: pulsar.streamnative.io/v1alpha1
+kind: PulsarBroker
+metadata:
+  name: private-cloud
+  namespace: pulsar
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+spec:
+  image: streamnative/private-cloud:2.11.1.4
+  replicas: 1
+  zkServers: private-cloud-zk:2181
+  pod:
+    securityContext:
+      runAsNonRoot: true
+---
+apiVersion: pulsar.streamnative.io/v1alpha1
+kind: PulsarProxy
+metadata:
+  name: private-cloud
+  namespace: pulsar
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+spec:
+  image: streamnative/private-cloud:2.11.1.4
+  replicas: 1
+  brokerAddress: private-cloud-broker
+  pod:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    securityContext:
+      runAsNonRoot: true
+# ---
+# apiVersion: k8s.streamnative.io/v1alpha1
+# kind: SNConsole
+# metadata:
+#   name: private-cloud
+#   namespace: pulsar
+#   labels:
+#     k8s.streamnative.io/coordinator-name: private-cloud
+# spec:
+#   image: streamnative/private-cloud-console:v2.2.1
+#   webServiceUrl: http://private-cloud-broker:8080
