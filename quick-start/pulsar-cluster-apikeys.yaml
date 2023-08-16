@@ -11,6 +11,14 @@
 # 10. k port-forward svc/private-cloud-apikeys -n pulsar 8081:8081
 # 11. k port-forward svc/private-cloud-broker -n pulsar 8082:8080
 # 12. k port-forward svc/private-cloud-streamnative-console -n pulsar 9527:9527
+
+#  List of problems:
+# 1. The version of pulsar-operator is wrong, it needs to be upgraded to 0.17.5, the solution is to create the catalogsource of sn, refer to sn-catalogsource.yaml
+# 2. The apikeys log reports that Pulsar is not available, and the broker log reports that the number of bookies is insufficient. The reason: because the replicas configuration is 1, which is inconsistent with the write configuration. The solution is to add the configuration PULSAR_PREFIX_managedLedgerDefaultEnsembleSize: "1";PULSAR_PREFIX_managedLedgerDefaultWriteQuorum: "1"; PULSAR_PREFIX_managedLedgerDefaultAckQuorum: "1"
+# 3. Console startup error imageCapabilities null pointer, the reason is that imageCapabilities failed to load because of wrong namespace (default sn_system), the solution is to add startup environment variable OPERATOR_NAMESPACE=operators
+# 4. To avoid the conflict between the installed sn-operator and the debug sn-operator, modify the deployment replicas of the installed sn-operator to 0
+# 5. Because of the webhook penetration problem, it is recommended to use kind to deploy the test locally
+
 apiVersion: k8s.streamnative.io/v1alpha1
 kind: PulsarCoordinator
 metadata:
