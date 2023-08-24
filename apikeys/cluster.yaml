@@ -107,9 +107,9 @@ spec:
 #         memory: 512Mi
 #     securityContext:
 #       runAsNonRoot: true
-# ---
+---
 # apiVersion: k8s.streamnative.io/v1alpha1
-# kind: SNConsole
+# kind: Console
 # metadata:
 #   name: private-cloud
 #   namespace: pulsar

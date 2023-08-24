@@ -16,6 +16,10 @@
 - k port-forward svc/private-cloud-apikeys -n pulsar 8081:8081
 - k port-forward svc/private-cloud-broker -n pulsar 8080:8080
 - k port-forward svc/private-cloud-streamnative-console -n pulsar 9527:9527
+## debug console
+- mvn clean package
+- java --add-opens java.base/java.time=ALL-UNNAMED -cp "./target/classes:./target/build/libs/*" io.streamnative.gateway.Application
+- launch console application with debug model
 
 List of problems:
 - The version of pulsar-operator is wrong, it needs to be upgraded to 0.17.5, the solution is to create the catalogsource of sn, refer to sn-catalogsource.yaml
