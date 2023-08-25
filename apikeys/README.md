@@ -19,6 +19,7 @@
 - k port-forward svc/private-cloud-broker -n pulsar 8080:8080
 - k port-forward svc/private-cloud-streamnative-console -n pulsar 9527:9527
 ## debug console
+- kgsec private-cloud-apikeys-key -n pulsar -o json | jq -r '.data.token' | base64 -d > super-token
 - mvn clean package
 - java --add-opens java.base/java.time=ALL-UNNAMED -cp "./target/classes:./target/build/libs/*" io.streamnative.gateway.Application
 - launch console application with debug model
