@@ -108,16 +108,16 @@ spec:
 #     securityContext:
 #       runAsNonRoot: true
 ---
-# apiVersion: k8s.streamnative.io/v1alpha1
-# kind: Console
-# metadata:
-#   name: private-cloud
-#   namespace: pulsar
-#   labels:
-#     k8s.streamnative.io/coordinator-name: private-cloud
-# spec:
-#   image: streamnative/private-cloud-console:v2.2.1
-#   webServiceUrl: http://private-cloud-broker:8080
+apiVersion: k8s.streamnative.io/v1alpha1
+kind: Console
+metadata:
+  name: private-cloud
+  namespace: pulsar
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+spec:
+  image: streamnative/private-cloud-console:v2.2.1
+  webServiceUrl: http://private-cloud-broker:8080
 ---
 apiVersion: k8s.streamnative.io/v1alpha1
 kind: ApiKeys
@@ -133,7 +133,7 @@ metadata:
 spec:
   replicas: 1
   image: docker.cloudsmith.io/streamnative/sn-api-keys-svc/sn-api-keys-svc:v0.9.5
-  hostname: http://private-cloud-apikeys.pulsar.svc.cluster.local:8081
+  hostname: http://private-cloud-apikeys.pulsar.svc.cluster.local:8081/
   issuerPathPrefix: /
   brokerServiceUrl: "pulsar://private-cloud-broker.pulsar.svc.cluster.local:6650"
   config:

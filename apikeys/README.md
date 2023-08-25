@@ -1,3 +1,5 @@
+## test with kind
+- kind create cluster
 - install olm, refer https://docs.streamnative.io/operator/pulsar-operator-install-olm, `curl -sL https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.23.1/install.sh | bash -s v0.23.1`
 - k apply -f catalogsource.yaml
 - k apply -f subscriptions.yaml
