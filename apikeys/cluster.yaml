@@ -6,7 +6,8 @@ metadata:
 spec:
   image: streamnative/private-cloud:2.11.1.4
   authentication:
-    apiKey: true
+    apiKey: 
+      enabled: true
 ---
 apiVersion: zookeeper.streamnative.io/v1alpha1
 kind: ZooKeeperCluster
