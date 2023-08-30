@@ -89,25 +89,25 @@ spec:
       requests:
         cpu: 200m
         memory: 512Mi
----
-apiVersion: pulsar.streamnative.io/v1alpha1
-kind: PulsarProxy
-metadata:
-  name: private-cloud
-  namespace: pulsar
-  labels:
-    k8s.streamnative.io/coordinator-name: private-cloud
-spec:
-  image: streamnative/private-cloud:2.11.1.4
-  replicas: 1
-  brokerAddress: private-cloud-broker
-  pod:
-    resources:
-      requests:
-        cpu: 200m
-        memory: 512Mi
-    securityContext:
-      runAsNonRoot: true
+# ---
+# apiVersion: pulsar.streamnative.io/v1alpha1
+# kind: PulsarProxy
+# metadata:
+#   name: private-cloud
+#   namespace: pulsar
+#   labels:
+#     k8s.streamnative.io/coordinator-name: private-cloud
+# spec:
+#   image: streamnative/private-cloud:2.11.1.4
+#   replicas: 1
+#   brokerAddress: private-cloud-broker
+#   pod:
+#     resources:
+#       requests:
+#         cpu: 200m
+#         memory: 512Mi
+#     securityContext:
+#       runAsNonRoot: true
 ---
 apiVersion: k8s.streamnative.io/v1alpha1
 kind: Console
@@ -117,7 +117,7 @@ metadata:
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud-console:v2.2.1
+  image: streamnative/private-cloud-console:v3.0.0-beta1
   webServiceUrl: http://private-cloud-broker:8080
 ---
 apiVersion: k8s.streamnative.io/v1alpha1
