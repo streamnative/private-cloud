@@ -5,13 +5,13 @@
 - k apply -f subscriptions.yaml
 - k create ns pulsar
 - comment the apikey configurations code in this yaml file 
-- k apply -f cluster.yaml
 - downscale sn-operator, edit the deployment replicas to 0 of sn-operator in namespace operators
 - make install
 - export OPERATOR_NAMESPACE=operators WEBHOOK_SERVER_CERT=sn-operator-controller-manager-service-cert
 - make copy-running-certs
 - WEBHOOK_SERVICE_ADDRESS=https://host.docker.internal:9443 make webhook-proxy
-- OPERATOR_NAMESPACE=operators;SN_OPERATOR_FLINK_ENABLE=false;SN_OPERATOR_PFSQL_ENABLE=false make run
+- k apply -f cluster.yaml
+- OPERATOR_NAMESPACE=operators;RUN_PULSAR_CONTROLLERS=false;SN_OPERATOR_FLINK_ENABLE=false;SN_OPERATOR_PFSQL_ENABLE=false make run
 - uncomment the apikey configurations code in this yaml file  
 - k apply -f cluster.yaml
 - kgsec private-cloud-apikeys-key -n pulsar -o json | jq -r .data.token | base64 -d
@@ -30,3 +30,6 @@ List of problems:
 - Console startup error imageCapabilities null pointer, the reason is that imageCapabilities failed to load because of wrong namespace (default sn_system), the solution is to add startup environment variable OPERATOR_NAMESPACE=operators
 - To avoid the conflict between the installed sn-operator and the debug sn-operator, modify the deployment replicas of the installed sn-operator to 0
 - Because of the webhook penetration problem, it is recommended to use kind to deploy the test locally
+
+## build console image
+`docker buildx build -f docker/Dockerfile --platform linux/amd64,linux/arm64/v8 -t streamnative/private-cloud-console:v3.0.0-beta2 .  --push`
