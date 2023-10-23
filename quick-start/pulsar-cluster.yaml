@@ -98,7 +98,7 @@ spec:
 apiVersion: k8s.streamnative.io/v1alpha1
 kind: Console
 metadata:
-  name: sn-private-console
+  name: console
   namespace: pulsar
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud

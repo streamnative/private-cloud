@@ -1,4 +1,3 @@
----
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
@@ -8,26 +7,4 @@ spec:
   channel: alpha
   name: sn-operator
   source: operatorhubio-catalog
-  sourceNamespace: olm
----
-apiVersion: operators.coreos.com/v1alpha1
-kind: Subscription
-metadata:
-  name: function-mesh-operator
-  namespace: operators
-spec:
-  channel: alpha
-  name: function-mesh
-  source: operatorhubio-catalog
-  sourceNamespace: olm
----
-apiVersion: operators.coreos.com/v1alpha1 
-kind: Subscription 
-metadata: 
-  name: pulsar-resources-operator 
-  namespace: operators 
-spec: 
-  channel: alpha 
-  name: pulsar-resources-operator 
-  source: operatorhubio-catalog 
   sourceNamespace: olm
