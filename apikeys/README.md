@@ -1,8 +1,8 @@
 ## test with kind
 - kind create cluster
 - install olm, refer https://docs.streamnative.io/operator/pulsar-operator-install-olm, `curl -sL https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.23.1/install.sh | bash -s v0.23.1`
-- k apply -f catalogsource.yaml
-- k apply -f subscriptions.yaml
+- k apply -f ../olm/catalogsource.yaml
+- k apply -f ../olm/subscriptions.yaml
 - k create ns pulsar
 - comment the apikey configurations code in this yaml file 
 - downscale sn-operator, edit the deployment replicas to 0 of sn-operator in namespace operators
@@ -10,7 +10,6 @@
 - export OPERATOR_NAMESPACE=operators WEBHOOK_SERVER_CERT=sn-operator-controller-manager-service-cert
 - make copy-running-certs
 - WEBHOOK_SERVICE_ADDRESS=https://host.docker.internal:9443 make webhook-proxy
-- k apply -f cluster.yaml
 - OPERATOR_NAMESPACE=operators;RUN_PULSAR_CONTROLLERS=false;SN_OPERATOR_FLINK_ENABLE=false;SN_OPERATOR_PFSQL_ENABLE=false make run
 - uncomment the apikey configurations code in this yaml file  
 - k apply -f cluster.yaml
@@ -18,6 +17,7 @@
 - k port-forward svc/private-cloud-apikeys -n pulsar 8081:8081
 - k port-forward svc/private-cloud-broker -n pulsar 8080:8080
 - k port-forward svc/private-cloud-streamnative-console -n pulsar 9527:9527
+
 ## debug console
 - kgsec private-cloud-apikeys-key -n pulsar -o json | jq -r '.data.token' | base64 -d > super-token
 - mvn clean package
