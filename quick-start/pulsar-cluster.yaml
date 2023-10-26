@@ -75,6 +75,10 @@ spec:
   replicas: 3
   zkServers: zookeepers-zk:2181
   pod:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
     securityContext:
       runAsNonRoot: true
 ---
