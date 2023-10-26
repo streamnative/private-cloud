@@ -87,6 +87,8 @@ kind: PulsarProxy
 metadata:
   name: proxys
   namespace: pulsar
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
 spec:
   image: streamnative/private-cloud:3.0.1.4
   replicas: 2
