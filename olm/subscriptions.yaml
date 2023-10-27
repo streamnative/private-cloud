@@ -1,0 +1,44 @@
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: zookeeper-operator
+  namespace: operators
+spec:
+  channel: alpha
+  name: zookeeper-operator
+  source: sn-catalog
+  sourceNamespace: olm
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: bookkeeper-operator
+  namespace: operators
+spec:
+  channel: alpha
+  name: bookkeeper-operator
+  source: sn-catalog
+  sourceNamespace: olm
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: pulsar-operator
+  namespace: operators
+spec:
+  channel: alpha
+  name: pulsar-operator
+  source: sn-catalog
+  sourceNamespace: olm
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: sn-operator
+  namespace: operators
+spec:
+  channel: alpha
+  name: sn-operator
+  source: sn-catalog
+  sourceNamespace: olm
