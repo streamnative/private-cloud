@@ -1,0 +1,155 @@
+apiVersion: k8s.streamnative.io/v1alpha1
+kind: PulsarCoordinator
+metadata:
+  name: private-cloud
+  namespace: pulsar
+spec:
+  image: streamnative/private-cloud:2.11.1.4
+  authentication:
+    apiKey: 
+      enabled: true
+---
+apiVersion: zookeeper.streamnative.io/v1alpha1
+kind: ZooKeeperCluster
+metadata:
+  name: private-cloud
+  namespace: pulsar
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+spec:
+  image: streamnative/private-cloud:2.11.1.4
+  replicas: 1
+  pod:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 256Mi
+    securityContext:
+      runAsNonRoot: true
+---
+apiVersion: bookkeeper.streamnative.io/v1alpha1
+kind: BookKeeperCluster
+metadata:
+  name: private-cloud
+  namespace: pulsar
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+spec:
+  image: streamnative/private-cloud:2.11.1.4
+  replicas: 1
+  zkServers: private-cloud-zk:2181
+  pod:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 256Mi
+    securityContext:
+      runAsNonRoot: true
+  storage:
+    journal:
+      numDirsPerVolume: 1
+      numVolumes: 1
+      volumeClaimTemplate:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+    ledger:
+      numDirsPerVolume: 1
+      numVolumes: 1
+      volumeClaimTemplate:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+    reclaimPolicy: Delete
+---
+apiVersion: pulsar.streamnative.io/v1alpha1
+kind: PulsarBroker
+metadata:
+  name: private-cloud
+  namespace: pulsar
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+spec:
+  image: streamnative/private-cloud:2.11.1.4
+  replicas: 1
+  zkServers: private-cloud-zk:2181
+  config: 
+    custom:
+      PULSAR_PREFIX_managedLedgerDefaultEnsembleSize: "1"
+      PULSAR_PREFIX_managedLedgerDefaultWriteQuorum: "1"
+      PULSAR_PREFIX_managedLedgerDefaultAckQuorum: "1"
+  pod:
+    securityContext:
+      runAsNonRoot: true
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+# ---
+# apiVersion: pulsar.streamnative.io/v1alpha1
+# kind: PulsarProxy
+# metadata:
+#   name: private-cloud
+#   namespace: pulsar
+#   labels:
+#     k8s.streamnative.io/coordinator-name: private-cloud
+# spec:
+#   image: streamnative/private-cloud:2.11.1.4
+#   replicas: 1
+#   brokerAddress: private-cloud-broker
+#   pod:
+#     resources:
+#       requests:
+#         cpu: 200m
+#         memory: 512Mi
+#     securityContext:
+#       runAsNonRoot: true
+---
+apiVersion: k8s.streamnative.io/v1alpha1
+kind: Console
+metadata:
+  name: private-cloud
+  namespace: pulsar
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+spec:
+  image: streamnative/private-cloud-console:v3.0.0-beta2
+  webServiceUrl: http://private-cloud-broker:8080
+---
+apiVersion: k8s.streamnative.io/v1alpha1
+kind: ApiKeys
+metadata:
+  name: private-cloud
+  namespace: pulsar
+  labels:
+    cloud.streamnative.io/app: apikeys
+    cloud.streamnative.io/cluster: private-cloud
+    cloud.streamnative.io/component: apikeys
+    cluster: private-cloud
+    component: apikeys
+spec:
+  replicas: 1
+  image: docker.cloudsmith.io/streamnative/sn-api-keys-svc/sn-api-keys-svc:v0.9.5
+  hostname: http://private-cloud-apikeys.pulsar.svc.cluster.local:8081
+  issuerPathPrefix: /
+  brokerServiceUrl: "pulsar://private-cloud-broker.pulsar.svc.cluster.local:6650"
+  config:
+    server:
+      audience: "urn:sn:pulsar:pulsar:private-cloud"
+      claimsToCopy: # These claims from the request token would be copied to the issued tokens.
+        - sub
+        - permissions
+        - aud
+        - scope
+      currentKid: 7007ddf9-beac-4e74-8e32-f03453fea3e0
+    backend:
+      pulsarTopic: "api_keys_api.example"
+    authenticator:
+      enabled: true
+      issuers:
+        - http://private-cloud-apikeys.pulsar.svc.cluster.local:8081/
+      acceptedAudience: "urn:sn:pulsar:pulsar:private-cloud"
