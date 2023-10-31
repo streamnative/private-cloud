@@ -23,6 +23,8 @@ spec:
         memory: 256Mi
     securityContext:
       runAsNonRoot: true
+  persistence:
+    reclaimPolicy: Delete
 ---
 apiVersion: bookkeeper.streamnative.io/v1alpha1
 kind: BookKeeperCluster
@@ -43,24 +45,6 @@ spec:
     securityContext:
       runAsNonRoot: true
   storage:
-    journal:
-      numDirsPerVolume: 1
-      numVolumes: 1
-      volumeClaimTemplate:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 8Gi
-    ledger:
-      numDirsPerVolume: 1
-      numVolumes: 1
-      volumeClaimTemplate:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 16Gi
     reclaimPolicy: Delete
 ---
 apiVersion: pulsar.streamnative.io/v1alpha1
