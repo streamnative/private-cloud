@@ -20,3 +20,5 @@ spec:
     protocolHandlers:
       kop:
         enabled: true
+    custom:
+      PULSAR_PREFIX_kafkaTransactionCoordinatorEnabled: 'true'

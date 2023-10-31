@@ -75,6 +75,10 @@ spec:
   replicas: 3
   zkServers: zookeepers-zk:2181
   pod:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
     securityContext:
       runAsNonRoot: true
 ---
@@ -83,6 +87,8 @@ kind: PulsarProxy
 metadata:
   name: proxys
   namespace: pulsar
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
 spec:
   image: streamnative/private-cloud:3.0.1.4
   replicas: 2
