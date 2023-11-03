@@ -1,18 +1,10 @@
-apiVersion: k8s.streamnative.io/v1alpha1
-kind: PulsarCoordinator
-metadata:
-  name: private-cloud
-  namespace: pulsar
-spec:
-  image: streamnative/private-cloud:3.0.1.4
----
 apiVersion: zookeeper.streamnative.io/v1alpha1
 kind: ZooKeeperCluster
 metadata:
   name: private-cloud
   namespace: pulsar
 spec:
-  image: streamnative/private-cloud:3.0.1.4
+  image: streamnative/private-cloud:2.11.1.4
   replicas: 1
   pod:
     resources:
@@ -25,37 +17,51 @@ spec:
 apiVersion: bookkeeper.streamnative.io/v1alpha1
 kind: BookKeeperCluster
 metadata:
-  name: bookies
+  name: private-cloud
   namespace: pulsar
-  labels:
-    k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud:3.0.1.4
-  replicas: 3
-  zkServers: zookeepers-zk:2181
+  image: streamnative/private-cloud:2.11.1.4
+  replicas: 1
+  zkServers: private-cloud-zk:2181
   pod:
     resources:
       requests:
         cpu: 200m
-        memory: 512Mi
+        memory: 256Mi
     securityContext:
       runAsNonRoot: true
   storage:
+    journal:
+      numDirsPerVolume: 1
+      numVolumes: 1
+      volumeClaimTemplate:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+    ledger:
+      numDirsPerVolume: 1
+      numVolumes: 1
+      volumeClaimTemplate:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
     reclaimPolicy: Delete
 ---
 apiVersion: pulsar.streamnative.io/v1alpha1
 kind: PulsarBroker
 metadata:
-  name: brokers
+  name: private-cloud
   namespace: pulsar
-  labels:
-    k8s.streamnative.io/coordinator-name: private-cloud
   annotations:
     cloud.streamnative.io/enable-pulsarctl-config: "true"
 spec:
-  image: streamnative/private-cloud:3.0.1.4
-  replicas: 3
-  zkServers: zookeepers-zk:2181
+  image: streamnative/private-cloud:2.11.1.4
+  replicas: 1
+  zkServers: private-cloud-zk:2181
   config: 
     custom:
       PULSAR_PREFIX_managedLedgerDefaultEnsembleSize: "1"
@@ -84,16 +90,14 @@ spec:
 apiVersion: pulsar.streamnative.io/v1alpha1
 kind: PulsarProxy
 metadata:
-  name: proxys
+  name: private-cloud
   namespace: pulsar
-  labels:
-    k8s.streamnative.io/coordinator-name: private-cloud
   annotations:
     cloud.streamnative.io/enable-pulsarctl-config: "true"
 spec:
-  image: streamnative/private-cloud:3.0.1.4
-  replicas: 2
-  brokerAddress: brokers-broker
+  image: streamnative/private-cloud:2.11.1.4
+  replicas: 1
+  brokerAddress: private-cloud-broker
   config: 
     custom:
       PULSAR_PREFIX_oauthAudience: urn:sn:pulsar:sndev:kop-3-1
@@ -123,4 +127,4 @@ metadata:
   namespace: pulsar
 type: Opaque
 data:
-  broker_client_credential.json: <your_encoded_credential>
+  broker_client_credential.json: $CREDENTIAL
