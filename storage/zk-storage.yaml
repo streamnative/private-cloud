@@ -1,7 +1,7 @@
 apiVersion: zookeeper.streamnative.io/v1alpha1
 kind: ZooKeeperCluster
 metadata:
-  name: zookeepers
+  name: private-cloud
   namespace: pulsar
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud

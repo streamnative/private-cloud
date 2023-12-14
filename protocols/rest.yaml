@@ -1,7 +1,7 @@
 apiVersion: pulsar.streamnative.io/v1alpha1
 kind: PulsarBroker
 metadata:
-  name: brokers
+  name: private-cloud
   namespace: pulsar
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud

@@ -1,10 +1,10 @@
 apiVersion: k8s.streamnative.io/v1alpha1
 kind: Console
 metadata:
-  name: sn-private-console
+  name: private-cloud
   namespace: pulsar
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud-console:v2.3.3
-  webServiceUrl: http://brokers-broker:8080
+  image: streamnative/private-cloud-console:v2.3.4
+  webServiceUrl: http://private-cloud-broker:8080
