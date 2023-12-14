@@ -4,23 +4,23 @@ metadata:
   name: private-cloud
   namespace: pulsar
 spec:
-  image: streamnative/private-cloud:3.0.1.4
+  image: streamnative/private-cloud:3.1.1.1
 ---
 apiVersion: zookeeper.streamnative.io/v1alpha1
 kind: ZooKeeperCluster
 metadata:
-  name: zookeepers
+  name: private-cloud
   namespace: pulsar
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud:3.0.1.4
+  image: streamnative/private-cloud:3.1.1.1
   replicas: 3
   pod:
     resources:
       requests:
-        cpu: 50m
-        memory: 256Mi
+        cpu: 200m
+        memory: 512Mi
     securityContext:
       runAsNonRoot: true
   persistence:
@@ -29,14 +29,14 @@ spec:
 apiVersion: bookkeeper.streamnative.io/v1alpha1
 kind: BookKeeperCluster
 metadata:
-  name: bookies
+  name: private-cloud
   namespace: pulsar
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud:3.0.1.4
+  image: streamnative/private-cloud:3.1.1.1
   replicas: 3
-  zkServers: zookeepers-zk:2181
+  zkServers: private-cloud-zk:2181
   pod:
     resources:
       requests:
@@ -50,14 +50,14 @@ spec:
 apiVersion: pulsar.streamnative.io/v1alpha1
 kind: PulsarBroker
 metadata:
-  name: brokers
+  name: private-cloud
   namespace: pulsar
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud:3.0.1.4
-  replicas: 3
-  zkServers: zookeepers-zk:2181
+  image: streamnative/private-cloud:3.1.1.1
+  replicas: 2
+  zkServers: private-cloud-zk:2181
   pod:
     resources:
       requests:
@@ -69,14 +69,14 @@ spec:
 apiVersion: pulsar.streamnative.io/v1alpha1
 kind: PulsarProxy
 metadata:
-  name: proxys
+  name: private-cloud
   namespace: pulsar
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud:3.0.1.4
+  image: streamnative/private-cloud:3.1.1.1
   replicas: 2
-  brokerAddress: brokers-broker
+  brokerAddress: private-cloud-broker
   pod:
     resources:
       requests:
@@ -88,10 +88,10 @@ spec:
 apiVersion: k8s.streamnative.io/v1alpha1
 kind: Console
 metadata:
-  name: console
+  name: private-cloud
   namespace: pulsar
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud-console:v2.3.3
-  webServiceUrl: http://brokers-broker:8080
+  image: streamnative/private-cloud-console:v2.3.4
+  webServiceUrl: http://private-cloud-broker:8080
