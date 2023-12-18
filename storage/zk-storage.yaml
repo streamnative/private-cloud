@@ -6,11 +6,7 @@ metadata:
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-<<<<<<< HEAD
   image: streamnative/private-cloud:3.1.1.1
-=======
-  image: streamnative/private-cloud:3.1.0.5
->>>>>>> origin/main
   replicas: 3
   pod:
     resources:
