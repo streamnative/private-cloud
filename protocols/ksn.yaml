@@ -1,12 +1,24 @@
 apiVersion: pulsar.streamnative.io/v1alpha1
 kind: PulsarBroker
 metadata:
+<<<<<<< HEAD
   name: private-cloud
+=======
+  name: brokers
+>>>>>>> origin/main
   namespace: pulsar
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
+<<<<<<< HEAD
+<<<<<<<< HEAD:protocols/ksn.yaml
   image: streamnative/private-cloud:3.1.1.1
+========
+  image: streamnative/private-cloud:3.1.0.5
+>>>>>>>> origin/main:protocols/aop.yaml
+=======
+  image: streamnative/private-cloud:3.1.0.5
+>>>>>>> origin/main
   zkServers: zookeepers-zk:2181
   replicas: 3
   pod:
@@ -20,4 +32,8 @@ spec:
     protocolHandlers:
       kop:
         enabled: true
+<<<<<<< HEAD
     transactionEnabled: true
+=======
+    transactionEnabled: true
+>>>>>>> origin/main

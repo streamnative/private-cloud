@@ -1,12 +1,12 @@
 apiVersion: pulsar.streamnative.io/v1alpha1
 kind: PulsarBroker
 metadata:
-  name: private-cloud
+  name: brokers
   namespace: pulsar
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud:3.1.1.1
+  image: streamnative/private-cloud:3.1.0.5
   zkServers: zookeepers-zk:2181
   replicas: 3
   pod:
@@ -25,14 +25,14 @@ spec:
 apiVersion: pulsar.streamnative.io/v1alpha1
 kind: PulsarProxy
 metadata:
-  name: private-cloud
+  name: proxys
   namespace: pulsar
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud:3.1.1.1
+  image: streamnative/private-cloud:3.1.0.5
   replicas: 2
-  brokerAddress: private-cloud-broker
+  brokerAddress: brokers-broker
   pod:
     resources:
       requests:
@@ -43,4 +43,4 @@ spec:
   config:
     kopProxy:
       enabled: true
-      kafkaAdvertisedListener: 'a93bbde015ab54756ab4ce46154d7e8f-a6056a28f6b1b492.elb.us-west-2.amazonaws.com'
+      kafkaAdvertisedListener: "a93bbde015ab54756ab4ce46154d7e8f-a6056a28f6b1b492.elb.us-west-2.amazonaws.com:9092"

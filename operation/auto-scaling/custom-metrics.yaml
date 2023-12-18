@@ -6,7 +6,11 @@ metadata:
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
+<<<<<<< HEAD:autoscaling/scalingBehavior.yaml
   image: streamnative/private-cloud:3.1.1.1
+=======
+  image: streamnative/private-cloud:3.1.0.5
+>>>>>>> origin/main:operation/auto-scaling/custom-metrics.yaml
   replicas: 5
   zkServers: zookeepers-zk:2181
   pod:
