@@ -5,6 +5,10 @@ metadata:
   namespace: pulsar
 spec:
   image: streamnative/private-cloud:3.1.1.1
+  detector:
+    serviceEndpoint:
+      pulsarServiceURL: 'pulsar://private-cloud-broker-headless:6650'
+      webServiceURL: 'http://private-cloud-broker-headless:8080'
 ---
 apiVersion: zookeeper.streamnative.io/v1alpha1
 kind: ZooKeeperCluster
@@ -46,6 +50,16 @@ spec:
       runAsNonRoot: true
   storage:
     reclaimPolicy: Delete
+  autoRecovery:
+    pod:
+      annotations:
+        prometheus.io/port: "8000"
+        prometheus.io/scrape: "true"
+      resources:
+        requests:
+          cpu: 200m
+          memory: 512Mi
+    replicas: 3
 ---
 apiVersion: pulsar.streamnative.io/v1alpha1
 kind: PulsarBroker
@@ -57,7 +71,7 @@ metadata:
 spec:
   image: streamnative/private-cloud:3.1.1.1
   replicas: 3
-  zkServers: zookeepers-zk:2181
+  zkServers: private-cloud-zk:2181
   config:
     clusterName: private-cloud
   pod:
@@ -79,6 +93,8 @@ spec:
   image: streamnative/private-cloud:3.1.1.1
   replicas: 2
   brokerAddress: private-cloud-broker
+  config:
+    clusterName: private-cloud
   pod:
     resources:
       requests:
@@ -86,6 +102,9 @@ spec:
         memory: 512Mi
     securityContext:
       runAsNonRoot: true
+    annotations:
+      prometheus.io/port: "8080"
+      prometheus.io/scrape: "true"
 ---
 apiVersion: k8s.streamnative.io/v1alpha1
 kind: Console
@@ -95,5 +114,5 @@ metadata:
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud-console:v2.3.4
+  image: streamnative/private-cloud-console:v2.3.3
   webServiceUrl: http://private-cloud-broker:8080

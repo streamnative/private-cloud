@@ -1,12 +1,12 @@
 apiVersion: bookkeeper.streamnative.io/v1alpha1
 kind: BookKeeperCluster
 metadata:
-  name: bookies
+  name: private-cloud
   namespace: pulsar
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud:3.1.0.5
+  image: streamnative/private-cloud:3.1.1.1
   zkServers: zookeepers-zk:2181
   replicas: 3
   pod:
