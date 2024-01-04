@@ -7,7 +7,7 @@ metadata:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
   image: streamnative/private-cloud:3.1.1.1
-  zkServers: zookeepers-zk:2181
+  zkServers: private-cloud-zk:2181
   replicas: 3
   pod:
     resources:

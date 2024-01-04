@@ -47,4 +47,4 @@ spec:
     securityContext:
       runAsNonRoot: true
   replicas: 2
-  zkServers: zookeepers-zk:2181
+  zkServers: private-cloud-zk:2181

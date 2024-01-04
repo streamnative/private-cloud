@@ -57,7 +57,7 @@ metadata:
 spec:
   image: streamnative/private-cloud:3.1.1.1
   replicas: 3
-  zkServers: zookeepers-zk:2181
+  zkServers: private-cloud-zk:2181
   config:
     clusterName: private-cloud
   pod:
