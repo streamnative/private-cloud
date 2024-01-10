@@ -20,8 +20,6 @@ spec:
   image: streamnative/private-cloud:3.1.1.1
   replicas: 3
   pod:
-    labels:
-      sidecar.istio.io/inject: "true"
     resources:
       requests:
         cpu: 200m
@@ -43,8 +41,6 @@ spec:
   replicas: 3
   zkServers: private-cloud-zk:2181
   pod:
-    labels:
-      sidecar.istio.io/inject: "true"
     resources:
       requests:
         cpu: 200m
@@ -56,8 +52,6 @@ spec:
   autoRecovery:
     replicas: 1
     pod:
-      labels:
-        sidecar.istio.io/inject: "true"
       securityContext:
         runAsNonRoot: true
       resources:
@@ -83,8 +77,6 @@ spec:
     advertisedDomain: httpbin.example.com
     serviceURLGenerationPolicy: FQDN
   pod:
-    labels:
-      sidecar.istio.io/inject: "true"
     resources:
       requests:
         cpu: 200m
