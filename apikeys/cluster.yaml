@@ -4,7 +4,7 @@ metadata:
   name: private-cloud
   namespace: pulsar
 spec:
-  image: streamnative/private-cloud:2.11.1.4
+  image: streamnative/private-cloud:3.0.1.6
   authentication:
     apiKey: 
       enabled: true
@@ -17,13 +17,13 @@ metadata:
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud:2.11.1.4
+  image: streamnative/private-cloud:3.0.1.6
   replicas: 1
   pod:
     resources:
       requests:
-        cpu: 50m
-        memory: 256Mi
+        cpu: 500m
+        memory: 1Gi
     securityContext:
       runAsNonRoot: true
 ---
@@ -35,14 +35,14 @@ metadata:
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud:2.11.1.4
+  image: streamnative/private-cloud:3.0.1.6
   replicas: 1
   zkServers: private-cloud-zk:2181
   pod:
     resources:
       requests:
-        cpu: 200m
-        memory: 256Mi
+        cpu: 500m
+        memory: 1Gi
     securityContext:
       runAsNonRoot: true
   storage:
@@ -74,7 +74,7 @@ metadata:
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud:2.11.1.4
+  image: streamnative/private-cloud:3.0.1.6
   replicas: 1
   zkServers: private-cloud-zk:2181
   config: 
@@ -87,8 +87,8 @@ spec:
       runAsNonRoot: true
     resources:
       requests:
-        cpu: 200m
-        memory: 512Mi
+        cpu: 500m
+        memory: 1Gi
 # ---
 # apiVersion: pulsar.streamnative.io/v1alpha1
 # kind: PulsarProxy
@@ -98,7 +98,7 @@ spec:
 #   labels:
 #     k8s.streamnative.io/coordinator-name: private-cloud
 # spec:
-#   image: streamnative/private-cloud:2.11.1.4
+#   image: streamnative/private-cloud:3.0.1.6
 #   replicas: 1
 #   brokerAddress: private-cloud-broker
 #   pod:
@@ -117,7 +117,7 @@ metadata:
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud-console:v3.0.0-beta2
+  image: streamnative/private-cloud-console:v3.0.0-beta3
   webServiceUrl: http://private-cloud-broker:8080
 ---
 apiVersion: k8s.streamnative.io/v1alpha1
@@ -133,7 +133,8 @@ metadata:
     component: apikeys
 spec:
   replicas: 1
-  image: docker.cloudsmith.io/streamnative/sn-api-keys-svc/sn-api-keys-svc:v0.9.5
+  # image: docker.cloudsmith.io/streamnative/sn-api-keys-svc/sn-api-keys-svc:v0.9.5
+  image: docker.cloudsmith.io/streamnative/sn-api-keys-svc/sn-api-keys-svc:sha-0bde403
   hostname: http://private-cloud-apikeys.pulsar.svc.cluster.local:8081
   issuerPathPrefix: /
   brokerServiceUrl: "pulsar://private-cloud-broker.pulsar.svc.cluster.local:6650"
