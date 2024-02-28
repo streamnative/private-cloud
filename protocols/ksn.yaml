@@ -1,13 +1,13 @@
 apiVersion: pulsar.streamnative.io/v1alpha1
 kind: PulsarBroker
 metadata:
-  name: brokers
+  name: private-cloud
   namespace: pulsar
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud:3.0.1.4
-  zkServers: zookeepers-zk:2181
+  image: streamnative/private-cloud:3.1.1.1
+  zkServers: private-cloud-zk:2181
   replicas: 3
   pod:
     resources:
@@ -18,6 +18,6 @@ spec:
       runAsNonRoot: true
   config:
     protocolHandlers:
-      aop:
+      kop:
         enabled: true
-        proxyEnabled: true
+    transactionEnabled: true

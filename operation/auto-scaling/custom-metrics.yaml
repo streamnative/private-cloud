@@ -1,0 +1,60 @@
+apiVersion: pulsar.streamnative.io/v1alpha1
+kind: PulsarBroker
+metadata:
+  name: brokers
+  namespace: pulsar
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+spec:
+  image: streamnative/private-cloud:3.1.1.1
+  replicas: 5
+  zkServers: private-cloud-zk:2181
+  pod:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    securityContext:
+      runAsNonRoot: true
+  autoScalingPolicy:
+    minReplicas: 1
+    maxReplicas: 4
+    metrics:
+    - pods:
+        metric:
+          name: cpu_usage
+        target:
+          averageValue: "60"
+          type: AverageValue
+      type: Pods
+    - pods:
+        metric:
+          name: network_in_rate_kb
+        target:
+          averageValue: "204800"
+          type: AverageValue
+      type: Pods
+    - pods:
+        metric:
+          name: network_out_rate_kb
+        target:
+          averageValue: "204800"
+          type: AverageValue
+      type: Pods
+    behavior:
+      scaleDown:
+        stabilizationWindowSeconds: 300
+        policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 15
+      scaleUp:
+        stabilizationWindowSeconds: 0
+        policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 15
+        - type: Pods
+          value: 4
+          periodSeconds: 15
+        selectPolicy: Max

@@ -4,10 +4,32 @@ metadata:
   name: private-cloud
   namespace: pulsar
 spec:
-  image: streamnative/private-cloud:3.0.1.4
+  image: streamnative/private-cloud:3.1.1.1
   auditLog:
     categories:
       - Management
       - Describe
       - Produce
       - Consume
+---
+apiVersion: pulsar.streamnative.io/v1alpha1
+kind: PulsarBroker
+metadata:
+  name: private-cloud
+  namespace: pulsar
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+spec:
+  image: streamnative/private-cloud:3.1.1.1
+  replicas: 3
+  zkServers: private-cloud-zk:2181
+  pod:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    securityContext:
+      runAsNonRoot: true
+  config:
+    custom:
+      PULSAR_PREFIX_disableBrokerInterceptors: "false"

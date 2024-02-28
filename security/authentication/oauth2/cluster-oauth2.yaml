@@ -92,8 +92,6 @@ kind: PulsarProxy
 metadata:
   name: private-cloud
   namespace: pulsar
-  labels:
-    k8s.streamnative.io/coordinator-name: private-cloud
   annotations:
     cloud.streamnative.io/enable-pulsarctl-config: "true"
 spec:
@@ -129,4 +127,4 @@ metadata:
   namespace: pulsar
 type: Opaque
 data:
-  broker_client_credential.json: <your_encoded_credential>
+  broker_client_credential.json: $CREDENTIAL
