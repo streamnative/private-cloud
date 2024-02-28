@@ -14,14 +14,48 @@
 - uncomment the apikey configurations code in this yaml file  
 - k apply -f cluster.yaml
 - kgsec private-cloud-apikeys-key -n pulsar -o json | jq -r .data.token | base64 -d
-- k port-forward svc/private-cloud-apikeys -n pulsar 8081:8081
-- k port-forward svc/private-cloud-broker -n pulsar 8080:8080
 - k port-forward svc/private-cloud-streamnative-console -n pulsar 9527:9527
 
-## debug console
+## debug console ui and server
 - kgsec private-cloud-apikeys-key -n pulsar -o json | jq -r '.data.token' | base64 -d > super-token
-- mvn clean package
-- java --add-opens java.base/java.time=ALL-UNNAMED -cp "./target/classes:./target/build/libs/*" io.streamnative.gateway.Application
+- `kubectl exec -it private-cloud-console-0 -c private-cloud-console -n pulsar -- cat /pulsar-manager/pulsar-manager/application.properties > src/main/resources/application.properties`
+
+- update application.properties file
+```
+#spring.datasource.driver-class-name=org.postgresql.Driver
+#spring.datasource.url=jdbc:postgresql://127.0.0.1:5688/pulsar_manager
+#spring.datasource.username=pulsar
+#spring.datasource.password=pulsar
+
+spring.datasource.driver-class-name=org.sqlite.JDBC
+spring.datasource.url=jdbc:sqlite:pulsar_manager.db
+spring.sql.init.mode=always
+spring.sql.init.schema-locations=classpath:/META-INF/sql/sqlite-schema.sql
+spring.datasource.username=
+spring.datasource.password=
+
+jwt.broker.super-token=file:///Users/lili/space/sn/sn-pulsar-manager/super-token
+```
+
+- vim hosts file
+```
+127.0.0.1 private-cloud-broker.pulsar.svc.cluster.local
+127.0.0.1 private-cloud-broker
+127.0.0.1 private-cloud-apikeys.pulsar.svc.cluster.local
+```
+
+- forward service
+
+```shell
+k port-forward svc/private-cloud-apikeys -n pulsar 8081:8081
+k port-forward svc/private-cloud-broker -n pulsar 8080:8080
+```
+
+- launch gateway
+```
+mvn clean package
+java --add-opens java.base/java.time=ALL-UNNAMED -cp "./target/classes:./target/build/libs/*" io.streamnative.gateway.Application
+```
 - launch console application with debug model
 
 List of problems:
