@@ -229,6 +229,32 @@ rules:
 - apiGroups:
   - k8s.streamnative.io
   resources:
+  - consoles
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - k8s.streamnative.io
+  resources:
+  - consoles/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - k8s.streamnative.io
+  resources:
+  - consoles/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - k8s.streamnative.io
+  resources:
   - oxiaclusters
   verbs:
   - create
@@ -300,32 +326,6 @@ rules:
   - k8s.streamnative.io
   resources:
   - pulsarcoordinators/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - k8s.streamnative.io
-  resources:
-  - snconsoles
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - k8s.streamnative.io
-  resources:
-  - snconsoles/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - k8s.streamnative.io
-  resources:
-  - snconsoles/status
   verbs:
   - get
   - patch
@@ -438,3 +438,15 @@ rules:
   - patch
   - update
   - watch
+- apiGroups:
+  - authentication.k8s.io
+  resources:
+  - tokenreviews
+  verbs:
+  - create
+- apiGroups:
+  - authorization.k8s.io
+  resources:
+  - subjectaccessreviews
+  verbs:
+  - create
