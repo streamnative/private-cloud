@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: '{{ include "sn-operator.fullname" . }}-leader-election-rolebinding'
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "sn-operator.roleLeaderElectionName" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ include "sn-operator.serviceAccountName" . }}
+  namespace: {{ include "sn-operator.namespace" .}}
