@@ -1,0 +1,274 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: "ca-privatekey-issuer"
+  namespace: pulsar
+spec:
+  selfSigned: {}
+---
+apiVersion: v1
+data:
+  # Base64 encoded password-key: password
+  password-key: cGFzc3dvcmQ=
+kind: Secret
+metadata:
+  name: jks-password-secret
+  namespace: pulsar
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "ca-tls"
+  namespace: pulsar
+spec:
+  secretName: "ca-tls"
+  commonName: "ca"
+  usages:
+    - digital signature
+    - crl sign
+    - cert sign
+  isCA: true
+  privateKey:
+    size: 4096
+    algorithm: RSA
+  issuerRef:
+    name: "ca-privatekey-issuer"
+    kind: Issuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: "ca-tls"
+  namespace: pulsar
+spec:
+  ca:
+    secretName: "ca-tls"
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "generic-tls"
+  namespace: pulsar
+spec:
+  secretName: "generic-tls"
+  usages:
+    - server auth
+    - client auth
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS8
+    size: 4096
+  dnsNames:
+    - "*.pulsar.svc.cluster.local"
+    - "*.ksn.aws.sn2.dev"
+  isCA: false
+  issuerRef:
+    name: "ca-tls"
+    kind: Issuer
+    group: cert-manager.io
+  keystores:
+    jks:
+      create: true
+      passwordSecretRef:
+        key: password-key
+        name: jks-password-secret
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "admin-client-tls"
+  namespace: pulsar
+spec:
+  secretName: "admin-client-tls"
+  commonName: "admin"
+  usages:
+    - client auth
+  isCA: false
+  privateKey:
+    size: 4096
+    algorithm: RSA
+    encoding: PKCS8
+  issuerRef:
+    name: "ca-tls"
+    kind: Issuer
+    group: cert-manager.io
+  keystores:
+    jks:
+      create: true
+      passwordSecretRef:
+        key: password-key
+        name: jks-password-secret
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "another-client-tls"
+  namespace: pulsar
+spec:
+  secretName: "another-client-tls"
+  commonName: "another-user"
+  usages:
+    - client auth
+  isCA: false
+  privateKey:
+    size: 4096
+    algorithm: RSA
+    encoding: PKCS8
+  issuerRef:
+    name: "ca-tls"
+    kind: Issuer
+    group: cert-manager.io
+  keystores:
+    jks:
+      create: true
+      passwordSecretRef:
+        key: password-key
+        name: jks-password-secret
+---
+apiVersion: k8s.streamnative.io/v1alpha1
+kind: PulsarCoordinator
+metadata:
+  name: private-cloud
+  namespace: pulsar
+spec:
+  image: streamnative/private-cloud:3.2.1.3
+  istio:
+    revision: ""
+    trustDomain: cluster.local
+---
+apiVersion: zookeeper.streamnative.io/v1alpha1
+kind: ZooKeeperCluster
+metadata:
+  name: private-cloud
+  namespace: pulsar
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+spec:
+  image: streamnative/private-cloud:3.2.1.3
+  replicas: 1
+  pod:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    securityContext:
+      runAsNonRoot: true
+  persistence:
+    reclaimPolicy: Delete
+---
+apiVersion: bookkeeper.streamnative.io/v1alpha1
+kind: BookKeeperCluster
+metadata:
+  name: private-cloud
+  namespace: pulsar
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+spec:
+  image: streamnative/private-cloud:3.2.1.3
+  replicas: 1
+  zkServers: private-cloud-zk:2181
+  pod:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    securityContext:
+      runAsNonRoot: true
+  storage:
+    reclaimPolicy: Delete
+  autoRecovery:
+    replicas: 1
+    pod:
+      securityContext:
+        runAsNonRoot: true
+      resources:
+        requests:
+          cpu: 200m
+          memory: 512Mi
+    conf:
+      zkServers: private-cloud-zk:2181
+---
+apiVersion: pulsar.streamnative.io/v1alpha1
+kind: PulsarBroker
+metadata:
+  name: private-cloud
+  namespace: pulsar
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+spec:
+  image: streamnative/private-cloud:3.2.1.3
+  replicas: 3
+  zkServers: private-cloud-zk:2181
+  config:
+    clusterName: private-cloud
+    advertisedDomain: broker.ksn.aws.sn2.dev
+    serviceURLGenerationPolicy: OrdinalPrefix
+    protocolHandlers:
+      kop:
+        enabled: true
+        tls:
+          enabled: true
+          trustCertsEnabled: true
+          certSecretName: "generic-tls"
+          passwordSecretRef:
+            name: jks-password-secret
+            key: password-key
+    custom:
+      managedLedgerDefaultEnsembleSize: "1"
+      managedLedgerDefaultWriteQuorum: "1"
+      managedLedgerDefaultAckQuorum: "1"
+      PULSAR_PREFIX_authenticationEnabled: "true"
+      PULSAR_PREFIX_authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderTls"
+      PULSAR_PREFIX_authorizationEnabled: "true"
+      PULSAR_PREFIX_authorizationProvider: "org.apache.pulsar.broker.authorization.PulsarAuthorizationProvider"
+      PULSAR_PREFIX_superUserRoles: "admin"
+      PULSAR_PREFIX_tlsCertificateFilePath: "/etc/tls/pulsar-kop/tls.crt"
+      PULSAR_PREFIX_tlsKeyFilePath: "/etc/tls/pulsar-kop/tls.key"
+      PULSAR_PREFIX_tlsTrustCertsFilePath: "/etc/tls/pulsar-kop/ca.crt"
+      PULSAR_PREFIX_tlsRequireTrustedClientCertOnConnect: "true"
+      PULSAR_PREFIX_brokerClientTlsEnabled: "true"
+      PULSAR_PREFIX_brokerClientTrustCertsFilePath: "/etc/tls/pulsar-kop-client/ca.crt"
+      PULSAR_PREFIX_brokerClientKeyFilePath: "/etc/tls/pulsar-kop-client/tls.key"
+      PULSAR_PREFIX_brokerClientCertificateFilePath: "/etc/tls/pulsar-kop-client/tls.crt"
+      PULSAR_PREFIX_brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationTls"
+      PULSAR_PREFIX_brokerClientAuthenticationParameters: tlsCertFile:/etc/tls/pulsar-kop-client/tls.crt,tlsKeyFile:/etc/tls/pulsar-kop-client/tls.key
+      PULSAR_PREFIX_kopSslClientAuth: "required"
+  pod:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    securityContext:
+      runAsNonRoot: true
+    secretRefs:
+      # mount the admin client secret to the broker pod
+      - secretName: admin-client-tls
+        mountPath: /etc/tls/pulsar-kop-client
+  istio:
+    enabled: true
+    gateway:
+      selector:
+        app: istio-ingressgateway
+      tls:
+        mode: "passthrough"
+        certSecretName: generic-tls
+        trustCertsEnabled: true
+  customization:
+    - manifest: |
+        spec:
+          rules:
+          - to:
+            - operation:
+                ports:
+                - "8443"
+                - "6650"
+                - "6653"
+                - "9092"
+                - "9095"
+      match:
+        groupVersionKinds:
+          - kind: AuthorizationPolicy
+            group: security.istio.io
+            version: v1beta1
+        name: .*-broker$
