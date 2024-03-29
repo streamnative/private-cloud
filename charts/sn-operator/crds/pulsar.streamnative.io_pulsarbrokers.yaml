@@ -1548,6 +1548,9 @@ spec:
                           If the broker sees a request with role as proxyRoles - it
                           will demand to see a valid original principal.
                         type: string
+                      rbac:
+                        nullable: true
+                        type: object
                       superUserRoles:
                         description: SuperUserRoles Role names that are treated as
                           "super-user", meaning they will be able to do all admin
@@ -1633,6 +1636,15 @@ spec:
                       functionRunnerImages:
                         description: Function runner images
                         properties:
+                          genericBase:
+                            description: Image of GenericBase function runner.
+                            type: string
+                          genericNode:
+                            description: Image of GenericNode function runner.
+                            type: string
+                          genericPython:
+                            description: Image of GenericPython function runner.
+                            type: string
                           go:
                             description: Image of Go function runner.
                             type: string
@@ -1879,6 +1891,11 @@ spec:
                   use Config instead'
                 nullable: true
                 type: object
+              configurationMetadataStoreUrl:
+                description: ConfigurationMetadataStoreUrl defines the configuration
+                  metadata store url
+                nullable: true
+                type: string
               configurationStoreServers:
                 description: ConfigurationStoreServers defines the address of the
                   configuration store
@@ -3609,6 +3626,13 @@ spec:
                     description: Labels specifies the labels to attach to pod the
                       operator creates for the cluster.
                     type: object
+                  minReadySeconds:
+                    description: MinReadySeconds is the minimum time the pod must
+                      be ready without any of its container crashing, for it to be
+                      considered available. Only available when feature gate StatefulSetMinReadySeconds
+                      is enabled(enabled by default from v1.25.0).
+                    format: int32
+                    type: integer
                   nodeSelector:
                     additionalProperties:
                       type: string
@@ -4559,6 +4583,27 @@ spec:
                       - whenUnsatisfiable
                       type: object
                     type: array
+                  updateStrategy:
+                    description: UpdateStrategy defines the update strategy of the
+                      pod
+                    nullable: true
+                    properties:
+                      partition:
+                        description: Partition indicates the ordinal at which the
+                          StatefulSet should be partitioned. Default value is 0.
+                        format: int32
+                        type: integer
+                      podUIDsToDelete:
+                        description: PodUIDsToDelete is a list of pod UIDs to delete.
+                        items:
+                          type: string
+                        nullable: true
+                        type: array
+                      type:
+                        description: Type indicates the type of the StatefulSetUpdateStrategy.
+                          Default is RollingUpdate.
+                        type: string
+                    type: object
                   vars:
                     description: Vars specifies the environment variables of a Pod
                     items:
@@ -4878,7 +4923,7 @@ spec:
                 description: Istio defines the configurations for istio
                 properties:
                   authRules:
-                    description: AuthRules define the AuthorzationPolicies
+                    description: AuthRules define the AuthorizationPolicies
                     items:
                       properties:
                         fromSource:
@@ -4896,10 +4941,14 @@ spec:
                     description: Enabled defines whether to enable Istio
                     type: boolean
                   gateway:
-                    description: Gateway defines the gateway configuration The operator
-                      could either create a gateway automatically or use an existing
-                      one
+                    description: Gateway defines the gateway configuration, Gateway
+                      will be ignored if Gateways is not empty The operator could
+                      either create a gateway automatically or use an existing one
                     properties:
+                      advertisedDomain:
+                        description: AdvertisedDomain defines the domain name for
+                          the gateway, used solely when serving a list of gateways
+                        type: string
                       create:
                         description: Create defines whether to create a gateway
                         type: boolean
@@ -4909,6 +4958,11 @@ spec:
                           type: string
                         nullable: true
                         type: array
+                      key:
+                        default: istio-generatedid
+                        description: Key is used to identify the gateway and related
+                          resources, used solely when serving a list of gateways
+                        type: string
                       selector:
                         additionalProperties:
                           type: string
@@ -4940,6 +4994,65 @@ spec:
                             type: boolean
                         type: object
                     type: object
+                  gateways:
+                    description: Gateways define a list of gateway configurations,
+                      Gateway will be used if Gateways is empty
+                    items:
+                      properties:
+                        advertisedDomain:
+                          description: AdvertisedDomain defines the domain name for
+                            the gateway, used solely when serving a list of gateways
+                          type: string
+                        create:
+                          description: Create defines whether to create a gateway
+                          type: boolean
+                        gateways:
+                          description: Gateways defines a list of existing gateways
+                          items:
+                            type: string
+                          nullable: true
+                          type: array
+                        key:
+                          default: istio-generatedid
+                          description: Key is used to identify the gateway and related
+                            resources, used solely when serving a list of gateways
+                          type: string
+                        selector:
+                          additionalProperties:
+                            type: string
+                          description: Selector defines the selector for the gateway
+                            to create
+                          nullable: true
+                          type: object
+                        tls:
+                          properties:
+                            certSecretName:
+                              description: 'SIMPLE mode: CertSecretName defines the
+                                name of the secret that contains the certificate to
+                                use in Istio Ingress Gateway. The value should be
+                                name of the secret in the gateway workload namespace.
+                                PASSTHROUGH mode: CertSecretName defines the name
+                                of the secret that contains the certificate to use
+                                in Broker. The value should be name of the secret
+                                name of the secret in the Broker workload namespace.
+                                Required in both SIMPLE and PASSTHROUGH mode.'
+                              type: string
+                            mode:
+                              description: 'Optional: Indicates whether connections
+                                to this port should be secured using TLS. The value
+                                of this field determines how TLS is enforced.'
+                              type: string
+                            trustCertsEnabled:
+                              description: TrustCertsEnabled defines whether to enable
+                                trust store
+                              type: boolean
+                          type: object
+                      type: object
+                    maxItems: 10
+                    type: array
+                    x-kubernetes-list-map-keys:
+                    - key
+                    x-kubernetes-list-type: map
                   mtls:
                     description: Mtls defines the mTLS configuration
                     properties:
@@ -4992,6 +5105,10 @@ spec:
                       golang template syntax
                     type: string
                 type: object
+              metadataStoreUrl:
+                description: MetadataStoreUrl defines the metadata store url
+                nullable: true
+                type: string
               pod:
                 description: Pod defines the policy for creating a broker pod
                 properties:
@@ -6656,6 +6773,13 @@ spec:
                     description: Labels specifies the labels to attach to pod the
                       operator creates for the cluster.
                     type: object
+                  minReadySeconds:
+                    description: MinReadySeconds is the minimum time the pod must
+                      be ready without any of its container crashing, for it to be
+                      considered available. Only available when feature gate StatefulSetMinReadySeconds
+                      is enabled(enabled by default from v1.25.0).
+                    format: int32
+                    type: integer
                   nodeSelector:
                     additionalProperties:
                       type: string
@@ -7606,6 +7730,27 @@ spec:
                       - whenUnsatisfiable
                       type: object
                     type: array
+                  updateStrategy:
+                    description: UpdateStrategy defines the update strategy of the
+                      pod
+                    nullable: true
+                    properties:
+                      partition:
+                        description: Partition indicates the ordinal at which the
+                          StatefulSet should be partitioned. Default value is 0.
+                        format: int32
+                        type: integer
+                      podUIDsToDelete:
+                        description: PodUIDsToDelete is a list of pod UIDs to delete.
+                        items:
+                          type: string
+                        nullable: true
+                        type: array
+                      type:
+                        description: Type indicates the type of the StatefulSetUpdateStrategy.
+                          Default is RollingUpdate.
+                        type: string
+                    type: object
                   vars:
                     description: Vars specifies the environment variables of a Pod
                     items:
@@ -7899,9 +8044,8 @@ spec:
                 type: object
               zkServers:
                 description: Zookeeper server list
+                nullable: true
                 type: string
-            required:
-            - zkServers
             type: object
           status:
             description: PulsarBrokerStatus defines the observed state of PulsarBroker
