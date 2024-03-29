@@ -78,9 +78,21 @@ spec:
                     description: ApiKey defines the configuration flag of api key
                       authentication
                     properties:
+                      authzAdminRole:
+                        description: AuthzAdminRole Authz Role to operate as a Pulsar
+                          superuser.
+                        type: string
+                      authzRoleClaim:
+                        description: AuthzRoleClaim JWT claim to use for Authz roles.
+                        type: string
                       enabled:
                         description: Enabled defines whether ApiKey is enabled
                         type: boolean
+                      subjectClaim:
+                        default: sub
+                        description: SubjectClaim JWT claim to use as the user name,
+                          by default sub.
+                        type: string
                     type: object
                 type: object
               autoScalingPolicy:
