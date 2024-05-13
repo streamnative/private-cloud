@@ -1,0 +1,140 @@
+apiVersion: k8s.streamnative.io/v1alpha1
+kind: PulsarCoordinator
+metadata:
+  name: private-cloud
+  namespace: pulsar
+spec:
+  image: streamnative/private-cloud:3.1.1.1
+---
+apiVersion: zookeeper.streamnative.io/v1alpha1
+kind: ZooKeeperCluster
+metadata:
+  name: private-cloud
+  namespace: pulsar
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+spec:
+  image: streamnative/private-cloud:3.1.1.1
+  replicas: 3
+  pod:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    securityContext:
+      runAsNonRoot: true
+  persistence:
+    reclaimPolicy: Delete
+---
+apiVersion: bookkeeper.streamnative.io/v1alpha1
+kind: BookKeeperCluster
+metadata:
+  name: private-cloud
+  namespace: pulsar
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+spec:
+  image: streamnative/private-cloud:3.1.1.1
+  replicas: 3
+  zkServers: private-cloud-zk:2181
+  pod:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    securityContext:
+      runAsNonRoot: true
+  storage:
+    reclaimPolicy: Delete
+  autoRecovery:
+    replicas: 1
+    pod:
+      annotations:
+        prometheus.io/port: "8000"
+        prometheus.io/scrape: "true"
+      resources:
+        requests:
+          cpu: 200m
+          memory: 512Mi
+---
+apiVersion: pulsar.streamnative.io/v1alpha1
+kind: PulsarBroker
+metadata:
+  name: private-cloud
+  namespace: pulsar
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+spec:
+  image: streamnative/private-cloud:3.1.1.1
+  replicas: 1
+  zkServers: private-cloud-zk:2181
+  config:
+    clusterName: private-cloud
+    custom:
+      authenticationEnabled: "true"
+      authenticateOriginalAuthData: "true"
+      authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
+      brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
+      superUserRoles: "broker-admin, proxy-admin"
+      proxyRoles: "proxy-admin"
+      authorizationEnabled: "true"
+      authorizationProvider: "org.apache.pulsar.broker.authorization.PulsarAuthorizationProvider"
+  pod:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    securityContext:
+      runAsNonRoot: true
+    secretRefs:
+      - mountPath: /mnt/secrets
+        secretName: secret-key
+    vars:
+      - name: brokerClientAuthenticationParameters
+        valueFrom:
+          secretKeyRef:
+            name: broker-admin
+            key: token
+      - name: tokenSecretKey
+        value: "file:///mnt/secrets/my-secret.key"
+---
+apiVersion: pulsar.streamnative.io/v1alpha1
+kind: PulsarProxy
+metadata:
+  name: private-cloud
+  namespace: pulsar
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+spec:
+  image: streamnative/private-cloud:3.1.1.1
+  replicas: 1
+  config:
+    custom:
+      authenticationEnabled: "true"
+      authenticateOriginalAuthData: "true"
+      forwardAuthorizationCredentials: "true"
+      authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
+      brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
+      superUserRoles: "broker-admin, proxy-admin"
+  brokerAddress: private-cloud-broker
+  pod:
+    annotations:
+      prometheus.io/port: "8080"
+      prometheus.io/scrape: "true"
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    securityContext:
+      runAsNonRoot: true
+    secretRefs:
+      - mountPath: /mnt/secrets
+        secretName: secret-key
+    vars:
+      - name: brokerClientAuthenticationParameters
+        valueFrom:
+          secretKeyRef:
+            name: proxy-admin
+            key: token
+      - name: tokenSecretKey
+        value: "file:///mnt/secrets/my-secret.key"
