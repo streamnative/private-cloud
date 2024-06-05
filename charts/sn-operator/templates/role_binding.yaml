@@ -1,11 +1,25 @@
 apiVersion: rbac.authorization.k8s.io/v1
+{{- if .Values.watchNamespace }}
+kind: RoleBinding
+{{- else }}
 kind: ClusterRoleBinding
+{{- end }}
 metadata:
   name: '{{ include "sn-operator.fullname" . }}-manager-rolebinding'
+{{- if .Values.watchNamespace }}
+  namespace: {{ .Values.watchNamespace }}
+{{- end }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
+{{- if .Values.watchNamespace }}
+  kind: Role
+{{- else }}
   kind: ClusterRole
+{{- end }}
   name: '{{ include "sn-operator.clusterRoleManagerName" . }}'
+{{- if .Values.watchNamespace }}
+  namespace: {{ .Values.watchNamespace }}
+{{- end }}
 subjects:
 - kind: ServiceAccount
   name: {{ include "sn-operator.serviceAccountName" . }}
