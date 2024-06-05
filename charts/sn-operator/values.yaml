@@ -39,7 +39,7 @@ fullnameOverride: ""
 ## Namespace to watch resources
 # -- Namespace that the controller watches to reconcile pulsar objects.
 # If it's empty, the controller watches for pulsar objects across all namespaces.
-watchNamespace: "snp"
+watchNamespace: ""
 
 serviceAccount:
   # -- Specifies whether a service account should be created
