@@ -137,6 +137,14 @@ rules:
 - apiGroups:
   - ""
   resources:
+  - nodes
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
   - persistentvolumeclaims
   verbs:
   - create
@@ -229,6 +237,14 @@ rules:
 - apiGroups:
   - k8s.streamnative.io
   resources:
+  - connectorcatalogs
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - k8s.streamnative.io
+  resources:
   - consoles
   verbs:
   - create
@@ -274,6 +290,32 @@ rules:
   - k8s.streamnative.io
   resources:
   - oxiaclusters/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - k8s.streamnative.io
+  resources:
+  - oxianamespaces
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - k8s.streamnative.io
+  resources:
+  - oxianamespaces/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - k8s.streamnative.io
+  resources:
+  - oxianamespaces/status
   verbs:
   - get
   - patch

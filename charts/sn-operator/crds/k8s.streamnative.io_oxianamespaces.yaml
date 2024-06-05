@@ -4,20 +4,20 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.10.0
   creationTimestamp: null
-  name: consoles.k8s.streamnative.io
+  name: oxianamespaces.k8s.streamnative.io
 spec:
   group: k8s.streamnative.io
   names:
-    kind: Console
-    listKind: ConsoleList
-    plural: consoles
-    singular: console
+    kind: OxiaNamespace
+    listKind: OxiaNamespaceList
+    plural: oxianamespaces
+    singular: oxianamespace
   scope: Namespaced
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: Console is the Schema for the consoles API
+        description: OxiaNamespace is the Schema for the oxianamespaces API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -32,104 +32,44 @@ spec:
           metadata:
             type: object
           spec:
-            description: ConsoleSpec defines the desired state of Console
+            description: OxiaNamespaceSpec defines the desired state of OxiaNamespace
             properties:
-              config:
-                description: Config defines the config of console,
+              clusterRef:
+                description: ClusterRef defines the reference to the oxia cluster
                 properties:
-                  authentication:
-                    description: Authentication defines console authentication
-                    properties:
-                      apiKey:
-                        description: ApiKeys authentication configuration
-                        properties:
-                          secretName:
-                            description: SecretName The secret that provides the super
-                              token
-                            type: string
-                          serviceUrl:
-                            description: ServiceUrl The service url of API Keys service
-                            type: string
-                          subjectClaim:
-                            default: sub
-                            description: SubjectClaim JWT claim to use as the user
-                              name, by default sub.
-                            type: string
-                          superRole:
-                            default: admin
-                            description: SuperRole The default value is `sub`
-                            type: string
-                        type: object
-                    type: object
+                  name:
+                    type: string
+                  namespace:
+                    type: string
+                required:
+                - name
+                - namespace
                 type: object
-              customization:
-                description: Customization allows the desired manifests of operator
-                  managed resources to be customized.
-                items:
-                  properties:
-                    manifest:
-                      description: Manifest defines the patch to apply to customize
-                        the desired resource
-                      type: string
-                    match:
-                      description: Match defines what resource should be customized
-                        by this customization layer
-                      nullable: true
-                      properties:
-                        groupVersionKinds:
-                          description: Matches the group, version, and kind of the
-                            resource.
-                          items:
-                            properties:
-                              group:
-                                description: Group is the group of the resource. Matches
-                                  all groups if it's empty or `*`.
-                                type: string
-                              kind:
-                                description: Kind is the kind of the resource. Matches
-                                  all kinds if it's `*`.
-                                type: string
-                              version:
-                                description: Version is the version of the resource.
-                                  Matches all versions if it's empty or `*`.
-                                type: string
-                            required:
-                            - kind
-                            type: object
-                          nullable: true
-                          type: array
-                        name:
-                          description: Name matches the resource name defined in the
-                            metadata. It could be defined as a Regex pattern, like
-                            `^.*-bk$`.
-                          type: string
-                      type: object
-                  required:
-                  - manifest
-                  type: object
-                nullable: true
-                type: array
-              image:
-                description: Image is the container image used to run sn console pods.
-                type: string
-              imagePullPolicy:
-                description: Image pull policy, one of Always, Never, IfNotPresent,
-                  default to Always.
-                type: string
-              kopServiceUrl:
-                description: KopServiceUrl defines the kop service url of pulsar cluster,
-                type: string
-              webServiceUrl:
-                description: WebServiceUrl defines the web service url of pulsar cluster,
-                type: string
+              namespaceConfig:
+                properties:
+                  initialShardCount:
+                    default: 3
+                    format: int32
+                    minimum: 0
+                    type: integer
+                  name:
+                    type: string
+                  replicationFactor:
+                    default: 1
+                    format: int32
+                    minimum: 0
+                    type: integer
+                required:
+                - name
+                type: object
             required:
-            - webServiceUrl
+            - clusterRef
+            - namespaceConfig
             type: object
           status:
-            description: ConsoleStatus defines the observed state of Console
+            description: OxiaNamespaceStatus defines the observed state of OxiaNamespace
             properties:
               conditions:
-                description: Conditions is an array of current observed conditions.
                 items:
                   description: "Condition contains details for one aspect of the current
                     state of this API Resource. --- This struct is intended for direct
@@ -200,11 +140,18 @@ spec:
                 x-kubernetes-list-map-keys:
                 - type
                 x-kubernetes-list-type: map
-              observedGeneration:
-                description: ObservedGeneration is the most recent generation observed
-                  for this api keys service.
-                format: int64
-                type: integer
+              shards:
+                items:
+                  properties:
+                    id:
+                      type: string
+                    state:
+                      type: string
+                  required:
+                  - id
+                  - state
+                  type: object
+                type: array
             type: object
         type: object
     served: true
