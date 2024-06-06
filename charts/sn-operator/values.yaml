@@ -36,10 +36,10 @@ nameOverride: ""
 # -- It will override the name of deployment
 fullnameOverride: ""
 
-## Namespace to watch resources
-# -- Namespace that the controller watches to reconcile pulsar objects.
+## Namespaces to watch resources, comma separated
+# -- Namespaces that the controller watches to reconcile pulsar objects.
 # If it's empty, the controller watches for pulsar objects across all namespaces.
-watchNamespace: ""
+watchNamespaces: ""
 
 serviceAccount:
   # -- Specifies whether a service account should be created

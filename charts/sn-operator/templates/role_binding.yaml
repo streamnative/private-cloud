@@ -1,26 +1,34 @@
+{{- if .Values.watchNamespaces }}
+{{- $namespaces := list }}
+{{- range $namespace := split "," .Values.watchNamespaces }}
+{{- $namespaces = append $namespaces $namespace }}
+{{- end }}
+{{- range $namespace := append $namespaces (include "sn-operator.namespace" .) }}
 apiVersion: rbac.authorization.k8s.io/v1
-{{- if .Values.watchNamespace }}
 kind: RoleBinding
-{{- else }}
-kind: ClusterRoleBinding
-{{- end }}
 metadata:
-  name: '{{ include "sn-operator.fullname" . }}-manager-rolebinding'
-{{- if .Values.watchNamespace }}
-  namespace: {{ .Values.watchNamespace }}
-{{- end }}
+  name: '{{ include "sn-operator.fullname" $ }}-manager-rolebinding-{{ $namespace }}'
+  namespace: {{ $namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-{{- if .Values.watchNamespace }}
   kind: Role
-{{- else }}
-  kind: ClusterRole
-{{- end }}
-  name: '{{ include "sn-operator.clusterRoleManagerName" . }}'
-{{- if .Values.watchNamespace }}
-  namespace: {{ .Values.watchNamespace }}
-{{- end }}
+  name: '{{ include "sn-operator.clusterRoleManagerName" $ }}-{{ $namespace }}'
 subjects:
-- kind: ServiceAccount
-  name: {{ include "sn-operator.serviceAccountName" . }}
-  namespace: {{ include "sn-operator.namespace" .}}
+  - kind: ServiceAccount
+    name: {{ include "sn-operator.serviceAccountName" $ }}
+    namespace: {{ include "sn-operator.namespace" $ }}
+---
+{{- end }}
+{{- else }}
+kind: ClusterRoleBinding
+metadata:
+  name: '{{ include "sn-operator.fullname" . }}-manager-rolebinding'
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: '{{ include "sn-operator.clusterRoleManagerName" . }}'
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "sn-operator.serviceAccountName" . }}
+    namespace: {{ include "sn-operator.namespace" .}}
+  {{- end }}
