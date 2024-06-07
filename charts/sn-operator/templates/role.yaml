@@ -1,7 +1,10 @@
 {{- if .Values.watchNamespaces }}
 {{- $namespaces := list }}
+{{- $installNamespace := include "sn-operator.namespace" . }}
 {{- range $namespace := split "," .Values.watchNamespaces }}
-{{- $namespaces = append $namespaces $namespace }}
+{{- if ne $namespace $installNamespace }}
+  {{- $namespaces = append $namespaces $namespace }}
+{{- end }}
 {{- end }}
 {{- range $namespace := append $namespaces (include "sn-operator.namespace" .) }}
 ---
