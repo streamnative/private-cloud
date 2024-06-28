@@ -39,10 +39,12 @@ fullnameOverride: ""
 ## Namespaces to watch resources, comma separated
 # -- Namespaces that the controller watches to reconcile pulsar objects.
 # If it's empty, the controller watches for pulsar objects across all namespaces.
+# If specified, the deployment is "namespaced" and role/role-binding will be created instead of clusterrole/clusterrolebinding.
 watchNamespaces: ""
 
 serviceAccount:
   # -- Specifies whether a service account should be created
+  # if set to false, pre-create service account and specify the sa name, so the chart will bind the role/clusterrole to the sa.
   create: true
   # Annotations to add to the service account
   annotations: {}
