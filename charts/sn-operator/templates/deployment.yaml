@@ -48,6 +48,8 @@ spec:
           value: "false"
         - name: SN_OPERATOR_PULSAR_WEBHOOK_ENABLE
           value: "false"
+        - name: SN_AGENT_ENABLE
+          value: "1"
         - name: OPERATOR_NAMESPACE
           value: {{ include "sn-operator.namespace" .}}
         name: manager
