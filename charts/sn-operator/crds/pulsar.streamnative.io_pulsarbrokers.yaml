@@ -1742,6 +1742,13 @@ spec:
                           the builtin worker service is used
                         type: string
                     type: object
+                  placementPolicy:
+                    description: PlacementPolicy defines the placement policy of the
+                      broker https://github.com/streamnative/sn-pulsar-plugins/tree/master/pulsar-placement-policy#pulsar-placement-policy
+                    enum:
+                    - az-rack-aware
+                    - az-region-aware
+                    type: string
                   protocolHandlers:
                     description: ProtocolHandlers defines the configuration of protocol
                       handlers
