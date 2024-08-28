@@ -2,7 +2,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.10.0
+    controller-gen.kubebuilder.io/version: v0.15.0
   creationTimestamp: null
   name: apikeys.k8s.streamnative.io
 spec:
@@ -20,14 +20,19 @@ spec:
         description: ApiKeys is the Schema for the apikeys API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -72,7 +77,6 @@ spec:
                         description: PulsarClient is the client of the pulsar.
                         type: object
                       pulsarTopic:
-                        default: api_keys_api.example
                         description: PulsarTopic is the topic of the pulsar.
                         type: string
                       retryInterval:
@@ -81,6 +85,23 @@ spec:
                         format: int64
                         type: integer
                     type: object
+                  customAuthenticators:
+                    description: |-
+                      CustomAuthenticators is the custom oidc authenticators, currently only support issuer and audience
+                      we can expand it in the future
+                    items:
+                      properties:
+                        audience:
+                          type: string
+                        issuer:
+                          type: string
+                      type: object
+                    type: array
+                  loadCustomOIDCConfig:
+                    description: |-
+                      LoadCustomOIDCConfig is the custom configuration of the api keys svc
+                      if this is set to true, the api keys svc will load the custom oidc configuration file
+                    type: boolean
                   server:
                     description: Server is the configuration of the api keys server
                     properties:
@@ -122,7 +143,8 @@ spec:
                 description: The external host exposed by istio or ingress
                 type: string
               image:
-                description: Image is the container image used to run api keys pods.
+                description: |-
+                  Image is the container image used to run api keys pods.
                   default is docker.cloudsmith.io/streamnative/sn-api-keys-svc:latest
                 type: string
               imagePullPolicy:
@@ -155,9 +177,9 @@ spec:
                     description: Enabled defines whether to enable Istio
                     type: boolean
                   gateway:
-                    description: Gateway defines the gateway configuration, Gateway
-                      will be ignored if Gateways is not empty The operator could
-                      either create a gateway automatically or use an existing one
+                    description: |-
+                      Gateway defines the gateway configuration, Gateway will be ignored if Gateways is not empty
+                      The operator could either create a gateway automatically or use an existing one
                     properties:
                       advertisedDomain:
                         description: AdvertisedDomain defines the domain name for
@@ -187,20 +209,21 @@ spec:
                       tls:
                         properties:
                           certSecretName:
-                            description: 'SIMPLE mode: CertSecretName defines the
-                              name of the secret that contains the certificate to
-                              use in Istio Ingress Gateway. The value should be name
-                              of the secret in the gateway workload namespace. PASSTHROUGH
-                              mode: CertSecretName defines the name of the secret
-                              that contains the certificate to use in Broker. The
-                              value should be name of the secret name of the secret
-                              in the Broker workload namespace. Required in both SIMPLE
-                              and PASSTHROUGH mode.'
+                            description: "SIMPLE mode:\n  CertSecretName defines the
+                              name of the secret that contains the\n  certificate
+                              to use in Istio Ingress Gateway. The value should be\n
+                              \ name of the secret in the gateway workload namespace.\nPASSTHROUGH
+                              mode:\n\t CertSecretName defines the name of the secret
+                              that contains the\n\t certificate to use in Broker.
+                              The value should be name of the secret\n  name of the
+                              secret in the Broker workload namespace.\nRequired in
+                              both SIMPLE and PASSTHROUGH mode."
                             type: string
                           mode:
-                            description: 'Optional: Indicates whether connections
-                              to this port should be secured using TLS. The value
-                              of this field determines how TLS is enforced.'
+                            description: |-
+                              Optional: Indicates whether connections to this port should be
+                              secured using TLS. The value of this field determines how TLS is
+                              enforced.
                             type: string
                           trustCertsEnabled:
                             description: TrustCertsEnabled defines whether to enable
@@ -241,20 +264,21 @@ spec:
                         tls:
                           properties:
                             certSecretName:
-                              description: 'SIMPLE mode: CertSecretName defines the
-                                name of the secret that contains the certificate to
-                                use in Istio Ingress Gateway. The value should be
-                                name of the secret in the gateway workload namespace.
-                                PASSTHROUGH mode: CertSecretName defines the name
-                                of the secret that contains the certificate to use
-                                in Broker. The value should be name of the secret
-                                name of the secret in the Broker workload namespace.
-                                Required in both SIMPLE and PASSTHROUGH mode.'
+                              description: "SIMPLE mode:\n  CertSecretName defines
+                                the name of the secret that contains the\n  certificate
+                                to use in Istio Ingress Gateway. The value should
+                                be\n  name of the secret in the gateway workload namespace.\nPASSTHROUGH
+                                mode:\n\t CertSecretName defines the name of the secret
+                                that contains the\n\t certificate to use in Broker.
+                                The value should be name of the secret\n  name of
+                                the secret in the Broker workload namespace.\nRequired
+                                in both SIMPLE and PASSTHROUGH mode."
                               type: string
                             mode:
-                              description: 'Optional: Indicates whether connections
-                                to this port should be secured using TLS. The value
-                                of this field determines how TLS is enforced.'
+                              description: |-
+                                Optional: Indicates whether connections to this port should be
+                                secured using TLS. The value of this field determines how TLS is
+                                enforced.
                               type: string
                             trustCertsEnabled:
                               description: TrustCertsEnabled defines whether to enable
@@ -284,6 +308,13 @@ spec:
                       and is part of a workload identity
                     type: string
                 type: object
+              oxiaServiceUrl:
+                description: |-
+                  OxiaServiceUrl defines the service url of oxia.
+                  It includes oxia namespace on the url.
+                  for example: oxiacluster-example-oxia.default.svc.cluster.local:6648/ns-test
+                  oxiacluster-example-oxia.default.svc.cluster.local:6648 is the service address, ns-test is the oxia namespace
+                type: string
               pod:
                 description: Pod defines the policy for creating api key pod for the
                   cluster
@@ -303,6 +334,33 @@ spec:
                     description: Resources is the resource requirement of api key
                       service
                     properties:
+                      claims:
+                        description: |-
+                          Claims lists the names of resources, defined in spec.resourceClaims,
+                          that are used by this container.
+
+
+                          This is an alpha field and requires enabling the
+                          DynamicResourceAllocation feature gate.
+
+
+                          This field is immutable. It can only be set for containers.
+                        items:
+                          description: ResourceClaim references one entry in PodSpec.ResourceClaims.
+                          properties:
+                            name:
+                              description: |-
+                                Name must match the name of one entry in pod.spec.resourceClaims of
+                                the Pod where this field is used. It makes that resource available
+                                inside a container.
+                              type: string
+                          required:
+                          - name
+                          type: object
+                        type: array
+                        x-kubernetes-list-map-keys:
+                        - name
+                        x-kubernetes-list-type: map
                       limits:
                         additionalProperties:
                           anyOf:
@@ -310,8 +368,9 @@ spec:
                           - type: string
                           pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                           x-kubernetes-int-or-string: true
-                        description: 'Limits describes the maximum amount of compute
-                          resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                        description: |-
+                          Limits describes the maximum amount of compute resources allowed.
+                          More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
                         type: object
                       requests:
                         additionalProperties:
@@ -320,49 +379,48 @@ spec:
                           - type: string
                           pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                           x-kubernetes-int-or-string: true
-                        description: 'Requests describes the minimum amount of compute
-                          resources required. If Requests is omitted for a container,
-                          it defaults to Limits if that is explicitly specified, otherwise
-                          to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                        description: |-
+                          Requests describes the minimum amount of compute resources required.
+                          If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+                          otherwise to an implementation-defined value. Requests cannot exceed Limits.
+                          More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
                         type: object
                     type: object
                   tolerations:
                     items:
-                      description: The pod this Toleration is attached to tolerates
-                        any taint that matches the triple <key,value,effect> using
-                        the matching operator <operator>.
+                      description: |-
+                        The pod this Toleration is attached to tolerates any taint that matches
+                        the triple <key,value,effect> using the matching operator <operator>.
                       properties:
                         effect:
-                          description: Effect indicates the taint effect to match.
-                            Empty means match all taint effects. When specified, allowed
-                            values are NoSchedule, PreferNoSchedule and NoExecute.
+                          description: |-
+                            Effect indicates the taint effect to match. Empty means match all taint effects.
+                            When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
                           type: string
                         key:
-                          description: Key is the taint key that the toleration applies
-                            to. Empty means match all taint keys. If the key is empty,
-                            operator must be Exists; this combination means to match
-                            all values and all keys.
+                          description: |-
+                            Key is the taint key that the toleration applies to. Empty means match all taint keys.
+                            If the key is empty, operator must be Exists; this combination means to match all values and all keys.
                           type: string
                         operator:
-                          description: Operator represents a key's relationship to
-                            the value. Valid operators are Exists and Equal. Defaults
-                            to Equal. Exists is equivalent to wildcard for value,
-                            so that a pod can tolerate all taints of a particular
-                            category.
+                          description: |-
+                            Operator represents a key's relationship to the value.
+                            Valid operators are Exists and Equal. Defaults to Equal.
+                            Exists is equivalent to wildcard for value, so that a pod can
+                            tolerate all taints of a particular category.
                           type: string
                         tolerationSeconds:
-                          description: TolerationSeconds represents the period of
-                            time the toleration (which must be of effect NoExecute,
-                            otherwise this field is ignored) tolerates the taint.
-                            By default, it is not set, which means tolerate the taint
-                            forever (do not evict). Zero and negative values will
-                            be treated as 0 (evict immediately) by the system.
+                          description: |-
+                            TolerationSeconds represents the period of time the toleration (which must be
+                            of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+                            it is not set, which means tolerate the taint forever (do not evict). Zero and
+                            negative values will be treated as 0 (evict immediately) by the system.
                           format: int64
                           type: integer
                         value:
-                          description: Value is the taint value the toleration matches
-                            to. If the operator is Exists, the value should be empty,
-                            otherwise just a regular string.
+                          description: |-
+                            Value is the taint value the toleration matches to.
+                            If the operator is Exists, the value should be empty, otherwise just a regular string.
                           type: string
                       type: object
                     nullable: true
@@ -370,13 +428,12 @@ spec:
                 type: object
               replicas:
                 default: 2
-                description: Replicas is the expected size of the api keys svc If
-                  unspecified, defaults to 2.
+                description: |-
+                  Replicas is the expected size of the api keys svc
+                  If unspecified, defaults to 2.
                 format: int32
                 minimum: 0
                 type: integer
-            required:
-            - brokerServiceUrl
             type: object
           status:
             description: ApiKeysStatus defines the observed state of ApiKeys
@@ -385,42 +442,42 @@ spec:
                 description: Conditions is an array of current observed conditions.
                 items:
                   description: "Condition contains details for one aspect of the current
-                    state of this API Resource. --- This struct is intended for direct
-                    use as an array at the field path .status.conditions.  For example,
-                    type FooStatus struct{ // Represents the observations of a foo's
-                    current state. // Known .status.conditions.type are: \"Available\",
-                    \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
-                    // +listType=map // +listMapKey=type Conditions []metav1.Condition
-                    `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
-                    protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
+                    state of this API Resource.\n---\nThis struct is intended for
+                    direct use as an array at the field path .status.conditions.  For
+                    example,\n\n\n\ttype FooStatus struct{\n\t    // Represents the
+                    observations of a foo's current state.\n\t    // Known .status.conditions.type
+                    are: \"Available\", \"Progressing\", and \"Degraded\"\n\t    //
+                    +patchMergeKey=type\n\t    // +patchStrategy=merge\n\t    // +listType=map\n\t
+                    \   // +listMapKey=type\n\t    Conditions []metav1.Condition `json:\"conditions,omitempty\"
+                    patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`\n\n\n\t
+                    \   // other fields\n\t}"
                   properties:
                     lastTransitionTime:
-                      description: lastTransitionTime is the last time the condition
-                        transitioned from one status to another. This should be when
-                        the underlying condition changed.  If that is not known, then
-                        using the time when the API field changed is acceptable.
+                      description: |-
+                        lastTransitionTime is the last time the condition transitioned from one status to another.
+                        This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
                       format: date-time
                       type: string
                     message:
-                      description: message is a human readable message indicating
-                        details about the transition. This may be an empty string.
+                      description: |-
+                        message is a human readable message indicating details about the transition.
+                        This may be an empty string.
                       maxLength: 32768
                       type: string
                     observedGeneration:
-                      description: observedGeneration represents the .metadata.generation
-                        that the condition was set based upon. For instance, if .metadata.generation
-                        is currently 12, but the .status.conditions[x].observedGeneration
-                        is 9, the condition is out of date with respect to the current
-                        state of the instance.
+                      description: |-
+                        observedGeneration represents the .metadata.generation that the condition was set based upon.
+                        For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
+                        with respect to the current state of the instance.
                       format: int64
                       minimum: 0
                       type: integer
                     reason:
-                      description: reason contains a programmatic identifier indicating
-                        the reason for the condition's last transition. Producers
-                        of specific condition types may define expected values and
-                        meanings for this field, and whether the values are considered
-                        a guaranteed API. The value should be a CamelCase string.
+                      description: |-
+                        reason contains a programmatic identifier indicating the reason for the condition's last transition.
+                        Producers of specific condition types may define expected values and meanings for this field,
+                        and whether the values are considered a guaranteed API.
+                        The value should be a CamelCase string.
                         This field may not be empty.
                       maxLength: 1024
                       minLength: 1
@@ -434,11 +491,12 @@ spec:
                       - Unknown
                       type: string
                     type:
-                      description: type of condition in CamelCase or in foo.example.com/CamelCase.
-                        --- Many .condition.type values are consistent across resources
-                        like Available, but because arbitrary conditions can be useful
-                        (see .node.status.conditions), the ability to deconflict is
-                        important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+                      description: |-
+                        type of condition in CamelCase or in foo.example.com/CamelCase.
+                        ---
+                        Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
+                        useful (see .node.status.conditions), the ability to deconflict is important.
+                        The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
                       maxLength: 316
                       pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
                       type: string
@@ -453,6 +511,18 @@ spec:
                 x-kubernetes-list-map-keys:
                 - type
                 x-kubernetes-list-type: map
+              customAuthenticators:
+                description: |-
+                  CustomAuthenticators is the custom oidc authenticators, currently only support issuer and audience
+                  we can expand it in the future
+                items:
+                  properties:
+                    audience:
+                      type: string
+                    issuer:
+                      type: string
+                  type: object
+                type: array
               observedGeneration:
                 description: ObservedGeneration is the most recent generation observed
                   for this api keys service.
