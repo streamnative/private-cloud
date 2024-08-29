@@ -264,6 +264,32 @@ rules:
     - patch
     - update
 - apiGroups:
+  - k8s.streamnative.io
+  resources:
+  - kafkaconnects
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - k8s.streamnative.io
+  resources:
+  - kafkaconnects/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - k8s.streamnative.io
+  resources:
+  - kafkaconnects/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
     - k8s.streamnative.io
   resources:
     - oxiaclusters
