@@ -110,6 +110,12 @@ spec:
                   Detector defines the configuration of SLA detector
                   Detector will be enabled when the field is not nil
                 properties:
+                  image:
+                    description: |-
+                      Image is the container image used to pulsar detector pods.
+                      The default should be same as broker image
+                    nullable: true
+                    type: string
                   kafka:
                     nullable: true
                     properties:
