@@ -123,6 +123,19 @@ spec:
                                 type: array
                             type: object
                           type: array
+                        toOperation:
+                          description: ToOperation defines the ports that the rule
+                            applies to
+                          items:
+                            properties:
+                              ports:
+                                description: Ports defines the ports that the rule
+                                  applies to
+                                items:
+                                  type: string
+                                type: array
+                            type: object
+                          type: array
                       type: object
                     type: array
                   enabled:
@@ -151,6 +164,28 @@ spec:
                         description: Key is used to identify the gateway and related
                           resources, used solely when serving a list of gateways
                         type: string
+                      route:
+                        description: Route defines route policy for the gateway
+                        properties:
+                          topologyAware:
+                            description: TopologyAware defines
+                            properties:
+                              key:
+                                description: Key defines the node label key used to
+                                  detect Pod topology info
+                                type: string
+                              subDomain:
+                                description: SubDomain defines url generation rule
+                                  for broker Pod
+                                type: string
+                            required:
+                            - key
+                            type: object
+                          useWildcardDNS:
+                            description: UseWildcardDNS means inherit DNS record from
+                              wildcard DNS, only works for externalDNS
+                            type: boolean
+                        type: object
                       selector:
                         additionalProperties:
                           type: string
@@ -177,6 +212,12 @@ spec:
                               secured using TLS. The value of this field determines how TLS is
                               enforced.
                             type: string
+                          subjectAltNames:
+                            description: SubjectAltNames defines the subject alternative
+                              names for the certificate
+                            items:
+                              type: string
+                            type: array
                           trustCertsEnabled:
                             description: TrustCertsEnabled defines whether to enable
                               trust store
@@ -206,6 +247,28 @@ spec:
                           description: Key is used to identify the gateway and related
                             resources, used solely when serving a list of gateways
                           type: string
+                        route:
+                          description: Route defines route policy for the gateway
+                          properties:
+                            topologyAware:
+                              description: TopologyAware defines
+                              properties:
+                                key:
+                                  description: Key defines the node label key used
+                                    to detect Pod topology info
+                                  type: string
+                                subDomain:
+                                  description: SubDomain defines url generation rule
+                                    for broker Pod
+                                  type: string
+                              required:
+                              - key
+                              type: object
+                            useWildcardDNS:
+                              description: UseWildcardDNS means inherit DNS record
+                                from wildcard DNS, only works for externalDNS
+                              type: boolean
+                          type: object
                         selector:
                           additionalProperties:
                             type: string
@@ -232,6 +295,12 @@ spec:
                                 secured using TLS. The value of this field determines how TLS is
                                 enforced.
                               type: string
+                            subjectAltNames:
+                              description: SubjectAltNames defines the subject alternative
+                                names for the certificate
+                              items:
+                                type: string
+                              type: array
                             trustCertsEnabled:
                               description: TrustCertsEnabled defines whether to enable
                                 trust store
@@ -277,9 +346,17 @@ spec:
                 description: Server contains configuration specific to the server
                   component
                 properties:
+                  blockCacheSize:
+                    anyOf:
+                    - type: integer
+                    - type: string
+                    description: BlockCacheSize is the max size of the shared DB cache.
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
                   blockCacheSizeMB:
-                    description: BlockCacheSizeMB is the max size of the shared DB
-                      cache.
+                    description: |-
+                      BlockCacheSizeMB is the max size of the shared DB cache.
+                      Deprecate: Use BlockCacheSize instead.
                     format: int32
                     type: integer
                   persistentVolumeClaimRetentionPolicy:
