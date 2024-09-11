@@ -27,21 +27,21 @@ serverFiles:
       - alert: BrokerHighPublishLatency
         annotations:
           summary: Pulsar Broker P99 publish latency is over 1 second.
-        expr: sum(pulsar_broker_publish_latency{quantile="0.99"}) by (pod, cluster) / 1000 > 1
+        expr: sum(pulsar_broker_publish_latency{quantile="0.99"}) by (pod, cloud_streamnative_io_cluster) / 1000 > 1
         for: 15m
         labels:
           severity: error
       - alert: BrokerHighPublishLatency
         annotations:
           summary: Pulsar Broker P99 publish latency is over 1 second.
-        expr: sum(pulsar_broker_publish_latency{quantile="0.99"}) by (pod, cluster) / 1000 > 1
+        expr: sum(pulsar_broker_publish_latency{quantile="0.99"}) by (pod, cloud_streamnative_io_cluster) / 1000 > 1
         for: 5m
         labels:
           severity: warning
       - alert: SizeableCompactedLedger
         annotations:
           summary: There is a topic that has a sizeable compacted ledger with  more than 10 million entries (remove entries_count from the topic name in Grafana)
-        expr: sum(pulsar_compaction_compacted_entries_count{}) by (pod, cluster)  > 10000000
+        expr: sum(pulsar_compaction_compacted_entries_count{}) by (pod, cloud_streamnative_io_cluster)  > 10000000
         for: 5m
         labels:
           severity: error
@@ -55,14 +55,14 @@ serverFiles:
       - alert: BrokerHighTopicLoadPendingRequests
         annotations:
           summary: High number of Topic is pending in Loading requests
-        expr: sum(pulsar_broker_topic_load_pending_requests{}) by (pod, cluster) > 900
+        expr: sum(pulsar_broker_topic_load_pending_requests{}) by (pod, cloud_streamnative_io_cluster) > 900
         for: 10m
         labels:
           severity: error
       - alert: BrokerHighLookUpPendingRequests
         annotations:
           summary: High number of Topic is pending in Lookup requests
-        expr: sum(pulsar_broker_lookup_pending_requests{}) by (pod, cluster) > 200000
+        expr: sum(pulsar_broker_lookup_pending_requests{}) by (pod, cloud_streamnative_io_cluster) > 200000
         for: 10m
         labels:
           severity: error
@@ -76,7 +76,7 @@ serverFiles:
       - alert: PulsarTooManyBacklogs
         annotations:
           summary: Too many backlogs
-        expr: sum(pulsar_msg_backlog{}) by (pod, cluster) > 10000
+        expr: sum(pulsar_msg_backlog{}) by (pod, cloud_streamnative_io_cluster) > 10000
         for: 10m
         labels:
           severity: error
@@ -90,7 +90,7 @@ serverFiles:
       - alert: PulsarTopicLoadFailed
         annotations:
           summary: Topic failed to Load too much times
-        expr: sum by(pod, cluster)(delta(topic_load_failed_total[30m])) > 30
+        expr: sum by(pod, cloud_streamnative_io_cluster)(delta(topic_load_failed_total[30m])) > 30
         for: 5m
         labels:
           severity: error
@@ -264,3 +264,19 @@ serverFiles:
           for: 5m
           labels:
             severity: critical
+    - name: proxy
+      rules:
+        - alert: ProxyHighActiveConnections
+          annotations:
+            summary: The proxies are close to reach the maximum amount of connections.
+          expr: sum(pulsar_proxy_active_connections{}) by (pod, cloud_streamnative_io_cluster)>60000
+          for: 10m
+          labels:
+            severity: error
+        - alert: ProxyContainerOOMKilled
+          annotations:
+            summary: Kubernetes container oom killed.
+          expr: (kube_pod_container_status_restarts_total - kube_pod_container_status_restarts_total offset 15m >= 2) and ignoring (reason) min_over_time(kube_pod_container_status_last_terminated_reason{reason="OOMKilled", pod =~".*-(proxy)-.*"}[15m]) == 1
+          for: 0m
+          labels:
+            severity: error
