@@ -160,14 +160,6 @@ serverFiles:
           labels:
             priority: P3
             severity: error
-        - alert: LegacyBookieTotalLedgerUsage
-          annotations:
-            summary: Total PVC usage of bookie ledger is high.
-          expr: sum by (pod, cloud_streamnative_io_cluster)(bookie_ledger_dir__pulsar_data_bookkeeper_ledgers_0_usage) / count by (pod, cloud_streamnative_io_cluster)(bookie_ledger_dir__pulsar_data_bookkeeper_ledgers_0_usage) > 85
-          for: 5m
-          labels:
-            priority: P2
-            severity: error
         - alert: BookieHighEntryAddLatency
           annotations:
             summary: Bookie Entry add P99 latency is over than 500ms. Possible bottleneck in IO or BW of the disk.
@@ -207,3 +199,68 @@ serverFiles:
           labels:
             priority: P2
             severity: error
+    - name: zookeeper
+      rules:
+        - alert: ZKContainerOOMKilled
+          annotations:
+            summary: Kubernetes container oom killed.
+          expr: (kube_pod_container_status_restarts_total - kube_pod_container_status_restarts_total offset 15m >= 1) and ignoring (reason) min_over_time(kube_pod_container_status_last_terminated_reason{reason="OOMKilled", pod =~".*-(zookeeper|zk)-.*"}[15m]) == 1
+          for: 0m
+          labels:
+            severity: critical
+        - alert: ZKPodNotHealthy
+          annotations:
+            summary: Kubernetes Pod not healthy.
+          expr: kube_pod_status_ready{condition="true", pod =~".*-(zookeeper|zk)-.*"} == 0 AND ON (pod) kube_pod_info{created_by_kind!~"(Job|<none>)"}
+          for: 10m
+          labels:
+            severity: critical
+        - alert: ZKHighWatchers
+          annotations:
+            summary: Watchers of Zookeeper server is over than 1200k.
+          expr: znode_count{} > 1200000
+          for: 5m
+          labels:
+            severity: warning
+        - alert: ZKLeaderLost
+          annotations:
+            summary: Zookeeper cluster leader lost.
+          expr: count by(cloud_streamnative_io_cluster,pod)(leader_uptime) !=1
+          for: 5m
+          labels:
+            severity: critical
+        - alert: ZKDataInconsistent
+          annotations:
+            summary: znode count inconsistent.
+          expr: sum by (cloud_streamnative_io_cluster,po)(increase(diff_count[1m])) > 10
+          for: 2m
+          labels:
+            severity: error
+        - alert: ZKReadLatency
+          annotations:
+            summary: ZK P99 ReadLatency too high.
+          expr: readlatency{quantile="0.99"} > 500
+          for: 5m
+          labels:
+            severity: warning
+        - alert: ZKUpdateLatency
+          annotations:
+            summary: ZK P99 UpdateLatency too high.
+          expr: updatelatency{quantile="0.99"} > 1000
+          for: 5m
+          labels:
+            severity: warning
+        - alert: ZKPVCUsage
+          annotations:
+            summary: High PVC usage.
+          expr: 100 * (1 - (kubelet_volume_stats_available_bytes{persistentvolumeclaim =~".*-(zk|zookeeper)-.*"} / kubelet_volume_stats_capacity_bytes{persistentvolumeclaim =~".*-(zk|zookeeper)-.*"})) > 85
+          for: 5m
+          labels:
+            severity: error
+        - alert: ZKUnrecoverableError
+          annotations:
+            summary: ZK in an unexpected state related to incident 846 or 849. Needs restart of ZK. Dashboard needs correction
+          expr: unrecoverable_error_count > 0
+          for: 5m
+          labels:
+            severity: critical
