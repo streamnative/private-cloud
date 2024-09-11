@@ -1,0 +1,209 @@
+serverFiles:
+  alerting_rules.yml:
+    groups:
+    - name: broker
+      rules:
+      - alert: BrokerPodNotHealthy
+        annotations:
+          summary: Kubernetes Pod not healthy.
+        expr: kube_pod_status_ready{condition="true", pod=~".*-broker-\\d+"} == 0
+        for: 10m
+        labels:
+          severity: error
+      - alert: BrokerContainerOOMKilled
+        annotations:
+          summary: Kubernetes container oom killed.
+        expr: (kube_pod_container_status_restarts_total - kube_pod_container_status_restarts_total offset 15m >= 1) and ignoring (reason) min_over_time(kube_pod_container_status_last_terminated_reason{reason="OOMKilled", pod =~".*-(broker)-.*"}[15m]) == 1
+        for: 0m
+        labels:
+          severity: warning
+      - alert: BrokerContainerOOMKilled
+        annotations:
+          summary: Kubernetes container oom killed.
+        expr: (kube_pod_container_status_restarts_total - kube_pod_container_status_restarts_total offset 15m >= 2) and ignoring (reason) min_over_time(kube_pod_container_status_last_terminated_reason{reason="OOMKilled", pod =~".*-(broker)-.*"}[15m]) == 1
+        for: 0m
+        labels:
+          severity: error
+      - alert: BrokerHighPublishLatency
+        annotations:
+          summary: Pulsar Broker P99 publish latency is over 1 second.
+        expr: sum(pulsar_broker_publish_latency{quantile="0.99"}) by (pod, cluster) / 1000 > 1
+        for: 15m
+        labels:
+          severity: error
+      - alert: BrokerHighPublishLatency
+        annotations:
+          summary: Pulsar Broker P99 publish latency is over 1 second.
+        expr: sum(pulsar_broker_publish_latency{quantile="0.99"}) by (pod, cluster) / 1000 > 1
+        for: 5m
+        labels:
+          severity: warning
+      - alert: SizeableCompactedLedger
+        annotations:
+          summary: There is a topic that has a sizeable compacted ledger with  more than 10 million entries (remove entries_count from the topic name in Grafana)
+        expr: sum(pulsar_compaction_compacted_entries_count{}) by (pod, cluster)  > 10000000
+        for: 5m
+        labels:
+          severity: error
+      - alert: TooManyReplicationBacklogs
+        annotations:
+          summary: There is a topic that has too many replication backlogs.
+        expr: max(pulsar_replication_backlog{}) by (cluster,topic,namespace,pod) > 50000
+        for: 5m
+        labels:
+          severity: error
+      - alert: BrokerHighTopicLoadPendingRequests
+        annotations:
+          summary: High number of Topic is pending in Loading requests
+        expr: sum(pulsar_broker_topic_load_pending_requests{}) by (pod, cluster) > 900
+        for: 10m
+        labels:
+          severity: error
+      - alert: BrokerHighLookUpPendingRequests
+        annotations:
+          summary: High number of Topic is pending in Lookup requests
+        expr: sum(pulsar_broker_lookup_pending_requests{}) by (pod, cluster) > 200000
+        for: 10m
+        labels:
+          severity: error
+      - alert: BrokerHighAuthFailures
+        annotations:
+          summary: Too many authentication failures
+        expr: sum by (pod,cluster)(increase(pulsar_authentication_failures_count{}[1m])) > 100
+        for: 5m
+        labels:
+          severity: warning
+      - alert: PulsarTooManyBacklogs
+        annotations:
+          summary: Too many backlogs
+        expr: sum(pulsar_msg_backlog{}) by (pod, cluster) > 10000
+        for: 10m
+        labels:
+          severity: error
+      - alert: PulsarTopicLoadLatencyP99
+        annotations:
+          summary: Topic Load Latency P99 too high
+        expr: sum by(cluster,pod)(topic_load_times{quantile="0.99"}) / 1000 > 30
+        for: 5m
+        labels:
+          severity: error
+      - alert: PulsarTopicLoadFailed
+        annotations:
+          summary: Topic failed to Load too much times
+        expr: sum by(pod, cluster)(delta(topic_load_failed_total[30m])) > 30
+        for: 5m
+        labels:
+          severity: error
+    - name: bookie
+      rules:
+        - alert: BookieContainerOOMKilled
+          annotations:
+            summary: Kubernetes container oom killed.
+          expr: (kube_pod_container_status_restarts_total - kube_pod_container_status_restarts_total offset 15m >= 2) and ignoring (reason) min_over_time(kube_pod_container_status_last_terminated_reason{reason="OOMKilled", pod =~".*-(bookie|bk)-.*"}[15m]) == 1
+          for: 0m
+          labels:
+            severity: error
+        - alert: BookieContainerOOMKilled
+          annotations:
+            summary: Kubernetes container oom killed.
+          expr: (kube_pod_container_status_restarts_total - kube_pod_container_status_restarts_total offset 15m >= 1) and ignoring (reason) min_over_time(kube_pod_container_status_last_terminated_reason{reason="OOMKilled", pod =~".*-(bookie|bk)-.*"}[15m]) == 1
+          for: 0m
+          labels:
+            severity: warning
+        - alert: BookiePodNotHealthy
+          annotations:
+            summary: Kubernetes Pod not healthy.
+          expr: kube_pod_status_ready{condition="true", pod =~".*-(bookie|bk)-.*"} == 0 AND ON (namespace,pod) kube_pod_info{created_by_kind!~"(Job|<none>)"}
+          for: 10m
+          labels:
+            severity: error
+        - alert: BookiePodNotHealthy
+          annotations:
+            summary: Kubernetes Pod not healthy.
+          expr: sum by(mon_poolmember,namespace,pod,job) (label_replace(kube_job_labels{},"pod","$1","job_name","(.*)-decommission") == 1)  AND ON (namespace,pod) kube_pod_status_ready{condition="true", pod =~".*-(bookie|bk)-.*"} == 0 AND ON (namespace,pod) kube_pod_info{created_by_kind!~"(Job|<none>)"}
+          for: 2m
+          labels:
+            severity: info
+        - alert: BookieDecommissionJobCompletion
+          annotations:
+            summary: Job did not complete in time
+          expr: sum (kube_job_spec_completions{job_name=~".*-decommission"} - kube_job_status_succeeded{job="kube-state-metrics", job_name=~".*-decommission"}) by (mon_poolmember,job,job_name,namespace) >0
+          for: 1h
+          labels:
+            severity: error
+        - alert: BookiePVCUsage
+          annotations:
+            summary: High PVC usage.
+          expr: 100 * (1 - (kubelet_volume_stats_available_bytes{persistentvolumeclaim =~".*-(bk|bookie)-.*"} / kubelet_volume_stats_capacity_bytes{persistentvolumeclaim =~".*-(bk|bookie)-.*"})) > 85
+          for: 5m
+          labels:
+            severity: warning
+        - alert: BookieLedgerFillingUp
+          annotations:
+            summary: PulsarCluster bookie ledger to be fill up.
+          expr: predict_linear(pulsarcluster:bookie_ledger_usage:sum[6h], 8 * 3600) > 95
+          for: 0m
+          labels:
+            severity: warning
+        - alert: BookieTotalLedgerUsage
+          annotations:
+            summary: Total PVC usage of bookie ledger is high.
+          expr: sum by (pod, cloud_streamnative_io_cluster)(bookie_ledger_dir__pulsar_data_bookkeeper_ledgers_0_usage) / count by (pod, cloud_streamnative_io_cluster)(bookie_ledger_dir__pulsar_data_bookkeeper_ledgers_0_usage) > 85
+          labels:
+            priority: P2
+            severity: error
+        - alert: BookieTotalLedgerUsage
+          annotations:
+            summary: At least 2 bookies ledger space usage should be less than 75%.
+          expr: (count by (pod, cloud_streamnative_io_cluster)(bookie_ledger_dir__pulsar_data_bookkeeper_ledgers_0_usage) - count by (pod, cloud_streamnative_io_cluster)(bookie_ledger_dir__pulsar_data_bookkeeper_ledgers_0_usage > 75)) < 2
+          for: 5m
+          labels:
+            priority: P3
+            severity: error
+        - alert: LegacyBookieTotalLedgerUsage
+          annotations:
+            summary: Total PVC usage of bookie ledger is high.
+          expr: sum by (pod, cloud_streamnative_io_cluster)(bookie_ledger_dir__pulsar_data_bookkeeper_ledgers_0_usage) / count by (pod, cloud_streamnative_io_cluster)(bookie_ledger_dir__pulsar_data_bookkeeper_ledgers_0_usage) > 85
+          for: 5m
+          labels:
+            priority: P2
+            severity: error
+        - alert: BookieHighEntryAddLatency
+          annotations:
+            summary: Bookie Entry add P99 latency is over than 500ms. Possible bottleneck in IO or BW of the disk.
+          expr: bookkeeper_server_ADD_ENTRY_REQUEST{quantile="0.99", success="true"} > 500
+          for: 5m
+          labels:
+            priority: P3
+            severity: error
+        - alert: BookieHighEntryReadLatency
+          annotations:
+            summary: Bookie Entry read P99 latency is over than 10s.
+          expr: avg_over_time(bookkeeper_server_READ_ENTRY_REQUEST{quantile="0.99", success="true"}[10m]) /1000 > 10
+          for: 5m
+          labels:
+            priority: P3
+            severity: error
+        - alert: BookieInstanceWritable
+          annotations:
+            summary: Less than 3 Writable Bookie instances.
+          expr: count by(pod, cloud_streamnative_io_cluster)(bookie_SERVER_STATUS == 1) < 3
+          for: 2m
+          labels:
+            priority: P1
+            severity: critical
+        - alert: BookieInstanceReadonly
+          annotations:
+            summary: Bookie instance in readonly status.
+          expr: bookie_SERVER_STATUS == 0
+          for: 5m
+          labels:
+            severity: warning
+        - alert: BookieNotEnoughWritableInstance
+          annotations:
+            summary: Writable bookies count is less than 3.
+          expr: (count by (pod, cloud_streamnative_io_cluster)(bookie_SERVER_STATUS) - count by (pod, cloud_streamnative_io_cluster)(bookie_SERVER_STATUS != 1)) < 3
+          for: 5m
+          labels:
+            priority: P2
+            severity: error
