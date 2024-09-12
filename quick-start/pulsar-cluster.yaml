@@ -66,7 +66,7 @@ metadata:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
   image: streamnative/private-cloud:3.1.1.1
-  replicas: 3
+  replicas: 1
   zkServers: private-cloud-zk:2181
   config:
     clusterName: private-cloud

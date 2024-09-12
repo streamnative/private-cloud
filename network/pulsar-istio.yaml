@@ -4,7 +4,6 @@ metadata:
   name: private-cloud
   namespace: pulsar
 spec:
-  image: streamnative/private-cloud:3.1.1.1
   istio:
     revision: default
     trustDomain: cluster.local
@@ -20,6 +19,8 @@ spec:
   image: streamnative/private-cloud:3.1.1.1
   replicas: 3
   pod:
+    labels:
+      sidecar.istio.io/inject: "true"
     resources:
       requests:
         cpu: 200m
@@ -41,6 +42,8 @@ spec:
   replicas: 3
   zkServers: private-cloud-zk:2181
   pod:
+    labels:
+      sidecar.istio.io/inject: "true"
     resources:
       requests:
         cpu: 200m
@@ -52,6 +55,8 @@ spec:
   autoRecovery:
     replicas: 1
     pod:
+      labels:
+        sidecar.istio.io/inject: "true"
       securityContext:
         runAsNonRoot: true
       resources:
@@ -70,13 +75,15 @@ metadata:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
   image: streamnative/private-cloud:3.1.1.1
-  replicas: 3
+  replicas: 1
   zkServers: private-cloud-zk:2181
   config:
     clusterName: private-cloud
     advertisedDomain: httpbin.example.com
     serviceURLGenerationPolicy: FQDN
   pod:
+    labels:
+      sidecar.istio.io/inject: "true"
     resources:
       requests:
         cpu: 200m
