@@ -346,6 +346,22 @@ spec:
                 description: Server contains configuration specific to the server
                   component
                 properties:
+                  authOptions:
+                    description: AuthOptions defines the configurations for authentication
+                    properties:
+                      authProviderName:
+                        description: AuthProviderName is the name of the authentication
+                          provider
+                        type: string
+                      authProviderParams:
+                        description: AuthProviderParams is the parameters of the authentication
+                          provider
+                        type: string
+                      enabled:
+                        description: Enabled determines whether the authentication
+                          is enabled
+                        type: boolean
+                    type: object
                   blockCacheSize:
                     anyOf:
                     - type: integer

@@ -134,6 +134,24 @@ spec:
                     description: CommonPodPolicy defines the common pod data
                     nullable: true
                     properties:
+                      imagePullSecrets:
+                        description: |-
+                          ImagePullSecrets is an optional list of references to secrets in the same namespace
+                          to use for pulling any of the images used by this PodSpec.
+                        items:
+                          description: |-
+                            LocalObjectReference contains enough information to let you locate the
+                            referenced object inside the same namespace.
+                          properties:
+                            name:
+                              description: |-
+                                Name of the referent.
+                                More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                TODO: Add other useful fields. apiVersion, kind, uid?
+                              type: string
+                          type: object
+                          x-kubernetes-map-type: atomic
+                        type: array
                       labels:
                         additionalProperties:
                           type: string
@@ -246,6 +264,24 @@ spec:
                     description: Pod defines the policy for creating kafka connect
                       pods
                     properties:
+                      imagePullSecrets:
+                        description: |-
+                          ImagePullSecrets is an optional list of references to secrets in the same namespace
+                          to use for pulling any of the images used by this PodSpec.
+                        items:
+                          description: |-
+                            LocalObjectReference contains enough information to let you locate the
+                            referenced object inside the same namespace.
+                          properties:
+                            name:
+                              description: |-
+                                Name of the referent.
+                                More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                TODO: Add other useful fields. apiVersion, kind, uid?
+                              type: string
+                          type: object
+                          x-kubernetes-map-type: atomic
+                        type: array
                       labels:
                         additionalProperties:
                           type: string
@@ -384,6 +420,24 @@ spec:
                     description: CommonPodPolicy defines the common pod data
                     nullable: true
                     properties:
+                      imagePullSecrets:
+                        description: |-
+                          ImagePullSecrets is an optional list of references to secrets in the same namespace
+                          to use for pulling any of the images used by this PodSpec.
+                        items:
+                          description: |-
+                            LocalObjectReference contains enough information to let you locate the
+                            referenced object inside the same namespace.
+                          properties:
+                            name:
+                              description: |-
+                                Name of the referent.
+                                More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                TODO: Add other useful fields. apiVersion, kind, uid?
+                              type: string
+                          type: object
+                          x-kubernetes-map-type: atomic
+                        type: array
                       labels:
                         additionalProperties:
                           type: string
@@ -459,6 +513,24 @@ spec:
                 description: Pod defines the common metadata of the pod that will
                   be used on components
                 properties:
+                  imagePullSecrets:
+                    description: |-
+                      ImagePullSecrets is an optional list of references to secrets in the same namespace
+                      to use for pulling any of the images used by this PodSpec.
+                    items:
+                      description: |-
+                        LocalObjectReference contains enough information to let you locate the
+                        referenced object inside the same namespace.
+                      properties:
+                        name:
+                          description: |-
+                            Name of the referent.
+                            More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                            TODO: Add other useful fields. apiVersion, kind, uid?
+                          type: string
+                      type: object
+                      x-kubernetes-map-type: atomic
+                    type: array
                   labels:
                     additionalProperties:
                       type: string
