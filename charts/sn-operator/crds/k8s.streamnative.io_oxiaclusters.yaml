@@ -43,6 +43,9 @@ spec:
                 description: Coordinator contains configuration specific to the coordinator
                   component
                 properties:
+                  logLevel:
+                    description: LogLevel defines the level of log.
+                    type: string
                   resources:
                     description: Resources is the resource requirement of coordinator
                     properties:
@@ -375,6 +378,9 @@ spec:
                       Deprecate: Use BlockCacheSize instead.
                     format: int32
                     type: integer
+                  logLevel:
+                    description: LogLevel defines the level of log.
+                    type: string
                   persistentVolumeClaimRetentionPolicy:
                     description: PersistentVolumeClaimRetentionPolicy is the policy
                       to retain the persistent volume claim
