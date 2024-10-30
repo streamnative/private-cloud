@@ -5209,6 +5209,26 @@ spec:
                     description: TransactionEnabled defines whether transaction support
                       is enabled in the brokers
                     type: boolean
+                  ursa:
+                    description: Ursa defines the configuration of ursa
+                    nullable: true
+                    properties:
+                      enabled:
+                        description: Enabled defines whether to enable ursa
+                        type: boolean
+                      pulsarStorageUrl:
+                        description: PulsarStorageUrl defines the pulsar storage url
+                        type: string
+                      s3Bucket:
+                        description: S3Bucket defines the s3 bucket
+                        type: string
+                      s3Prefix:
+                        description: S3Prefix defines the s3 prefix
+                        type: string
+                      schemaStorageUrl:
+                        description: SchemaStorageUrl defines the schema storage url
+                        type: string
+                    type: object
                   usePodIPAsAdvertisedAddress:
                     description: UsePodIPAsAdvertisedAddress use pod ip as advertise
                       address.
