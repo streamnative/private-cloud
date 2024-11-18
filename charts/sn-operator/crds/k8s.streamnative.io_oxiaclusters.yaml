@@ -3771,6 +3771,13 @@ spec:
                         type: string
                     type: object
                 type: object
+              serviceURLGenerationPolicy:
+                default: FQDN
+                description: ServiceURLGenerationPolicy defines how the service url
+                  should be generated
+                enum:
+                - FQDN
+                type: string
             type: object
           status:
             description: OxiaClusterStatus defines the observed state of OxiaCluster
@@ -3848,6 +3855,25 @@ spec:
                 x-kubernetes-list-map-keys:
                 - type
                 x-kubernetes-list-type: map
+              coordinatorStatus:
+                description: CoordinatorStatus is the current coordinator status of
+                  the cluster
+                properties:
+                  onMeshReplicas:
+                    description: OnMeshReplicas is the number of Pods with service
+                      mesh enabled
+                    format: int32
+                    type: integer
+                  readyReplicas:
+                    format: int32
+                    type: integer
+                  replica:
+                    format: int32
+                    type: integer
+                required:
+                - readyReplicas
+                - replica
+                type: object
               namespaces:
                 description: Namespaces is the status of the namespaces in the oxia
                   cluster
@@ -3880,6 +3906,11 @@ spec:
               serverStatus:
                 description: ServerStatus is the current server status of the cluster
                 properties:
+                  onMeshReplicas:
+                    description: OnMeshReplicas is the number of Pods with service
+                      mesh enabled
+                    format: int32
+                    type: integer
                   readyReplicas:
                     format: int32
                     type: integer
