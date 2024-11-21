@@ -4439,6 +4439,26 @@ spec:
                           otherwise the builtin worker service is used
                         type: string
                     type: object
+                  loadManagerType:
+                    description: LoadManagerType defines the configuration of load
+                      balancer
+                    enum:
+                    - extensibleLoadManager
+                    - modularLoadManager
+                    type: string
+                  oxiaBasedSystemTopic:
+                    description: OxiaBasedSystemTopic defines the configuration of
+                      oxia based system topic
+                    nullable: true
+                    properties:
+                      enabled:
+                        description: Enabled defines whether to enable oxia based
+                          system topic
+                        type: boolean
+                      schemaStorageUrl:
+                        description: SchemaStorageUrl defines the schema storage url
+                        type: string
+                    type: object
                   placementPolicy:
                     description: |-
                       PlacementPolicy defines the placement policy of the broker
@@ -4658,6 +4678,34 @@ spec:
                 description: ConfigurationStoreConfig defines the configuration store
                   configuration
                 properties:
+                  oxia:
+                    properties:
+                      authParams:
+                        description: AuthParams is the auth params for the oxia service
+                        type: string
+                      authPluginClassName:
+                        description: AuthPluginClassName is the auth plugin class
+                          name for the oxia service
+                        type: string
+                      custom:
+                        additionalProperties:
+                          type: string
+                        description: Custom allows to customize oxia configurations
+                          directly.
+                        type: object
+                      enableTls:
+                        description: EnableTls is the flag to enable tls for the oxia
+                          service
+                        type: boolean
+                      namespace:
+                        description: Namespace is the namespace of the oxia service
+                        type: string
+                      serviceAddress:
+                        description: |-
+                          ServiceAddress is the address of the oxia service
+                          e.g. oxia-service:port
+                        type: string
+                    type: object
                   zk:
                     properties:
                       certSecretName:
@@ -5043,6 +5091,60 @@ spec:
                     description: Template is the log Configuration content, can use
                       golang template syntax
                     type: string
+                type: object
+              metadataStoreConfig:
+                description: MetadataStoreConfig defines the metadata store configuration
+                properties:
+                  oxia:
+                    properties:
+                      authParams:
+                        description: AuthParams is the auth params for the oxia service
+                        type: string
+                      authPluginClassName:
+                        description: AuthPluginClassName is the auth plugin class
+                          name for the oxia service
+                        type: string
+                      custom:
+                        additionalProperties:
+                          type: string
+                        description: Custom allows to customize oxia configurations
+                          directly.
+                        type: object
+                      enableTls:
+                        description: EnableTls is the flag to enable tls for the oxia
+                          service
+                        type: boolean
+                      namespace:
+                        description: Namespace is the namespace of the oxia service
+                        type: string
+                      serviceAddress:
+                        description: |-
+                          ServiceAddress is the address of the oxia service
+                          e.g. oxia-service:port
+                        type: string
+                    type: object
+                  zk:
+                    properties:
+                      certSecretName:
+                        description: |-
+                          CertSecretName is the name of the secret that contains the zk client certificate
+                          if set this, client will use mutual tls, otherwise, client will use simple tls
+                        type: string
+                      clusterIndex:
+                        description: |-
+                          ClusterIndex is the index of the zookeeper cluster in the zookeeper clusters list
+                          to check if the cluster is the client of shared zk
+                        format: int32
+                        type: integer
+                      domain:
+                        description: Domain is the host of the shared zookeeper cluster
+                        type: string
+                      serverPort:
+                        description: ServerPort is the port of the shared zookeeper
+                          cluster
+                        format: int32
+                        type: integer
+                    type: object
                 type: object
               metadataStoreUrl:
                 description: MetadataStoreUrl defines the metadata store url
