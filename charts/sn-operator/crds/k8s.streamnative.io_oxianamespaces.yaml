@@ -40,7 +40,7 @@ spec:
             description: OxiaNamespaceSpec defines the desired state of OxiaNamespace
             properties:
               clusterRef:
-                description: ClusterRef defines the reference to the oxia cluster
+                description: ClusterRef is the reference to the oxia cluster
                 properties:
                   name:
                     type: string
@@ -53,19 +53,33 @@ spec:
               namespaceConfig:
                 properties:
                   initialShardCount:
-                    default: 3
+                    default: 1
                     format: int32
                     minimum: 0
                     type: integer
                   name:
                     type: string
+                  notificationsEnabled:
+                    default: true
+                    type: boolean
                   replicationFactor:
-                    default: 1
+                    default: 3
                     format: int32
                     minimum: 0
                     type: integer
                 required:
                 - name
+                type: object
+              ownerRef:
+                description: OwnerRef is the reference to the owner broker cluster
+                properties:
+                  name:
+                    type: string
+                  namespace:
+                    type: string
+                required:
+                - name
+                - namespace
                 type: object
             required:
             - clusterRef
