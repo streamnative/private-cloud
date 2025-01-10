@@ -6,7 +6,7 @@ metadata:
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud:3.1.1.1
+  image: streamnative/private-cloud:3.3.2.7
   zkServers: private-cloud-zk:2181
   replicas: 3
   pod:
@@ -30,7 +30,7 @@ metadata:
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud:3.1.1.1
+  image: streamnative/private-cloud:3.3.2.7
   replicas: 2
   brokerAddress: brokers-broker
   pod:
