@@ -1120,7 +1120,127 @@ spec:
                             enum:
                             - S3
                             - Local
+                            - GCS
+                            - AzureBlob
+                            - AzureDfs
                             type: string
+                          catalog:
+                            description: Catalog defines the configuration of catalog
+                            nullable: true
+                            properties:
+                              polaris:
+                                description: Polaris is the catalog config for polaris
+                                  catalog
+                                nullable: true
+                                properties:
+                                  accessDelegation:
+                                    description: AccessDelegation is the iceberg access
+                                      delegation
+                                    type: string
+                                  scope:
+                                    description: Scope is the catalog config's scope,
+                                      this option is for polaris and tabular catalog
+                                    type: string
+                                  secret:
+                                    description: Secret is the catalog's secret name
+                                    type: string
+                                  tokenRefreshEnabled:
+                                    description: TokenRefreshEnabled is the catalog
+                                      config's token refresh enabled, this option
+                                      is for polaris and tabular catalog
+                                    type: boolean
+                                  type:
+                                    description: Type is the catalog config's type,
+                                      this option is for polaris and tabular catalog
+                                    type: string
+                                  uri:
+                                    description: URI is the catalog's URI
+                                    type: string
+                                  warehouse:
+                                    description: Warehouse is the catalog config's
+                                      warehouse, this is for tabular and paloris catalog
+                                    type: string
+                                required:
+                                - uri
+                                - warehouse
+                                type: object
+                              tabular:
+                                description: Tabular is the catalog config for tabular
+                                  catalog
+                                nullable: true
+                                properties:
+                                  accessDelegation:
+                                    description: AccessDelegation is the iceberg access
+                                      delegation
+                                    type: string
+                                  scope:
+                                    description: Scope is the catalog config's scope,
+                                      this option is for polaris and tabular catalog
+                                    type: string
+                                  secret:
+                                    description: Secret is the catalog's secret name
+                                    type: string
+                                  tokenRefreshEnabled:
+                                    description: TokenRefreshEnabled is the catalog
+                                      config's token refresh enabled, this option
+                                      is for polaris and tabular catalog
+                                    type: boolean
+                                  type:
+                                    description: Type is the catalog config's type,
+                                      this option is for polaris and tabular catalog
+                                    type: string
+                                  uri:
+                                    description: URI is the catalog's URI
+                                    type: string
+                                  warehouse:
+                                    description: Warehouse is the catalog config's
+                                      warehouse, this is for tabular and paloris catalog
+                                    type: string
+                                required:
+                                - uri
+                                - warehouse
+                                type: object
+                              unity:
+                                description: Unity is the catalog config for unity
+                                  catalog
+                                nullable: true
+                                properties:
+                                  name:
+                                    description: Name is the catalog config's database
+                                      name, this is for unity catalog
+                                    type: string
+                                  schemaName:
+                                    description: SchemaName is the catalog config's
+                                      schema name, this is for unity catalog
+                                    type: string
+                                  secret:
+                                    description: Secret is the catalog's secret name
+                                    type: string
+                                  uri:
+                                    description: URI is the catalog's URI
+                                    type: string
+                                  userAgent:
+                                    description: UserAgent is the catalog config's
+                                      user agent, this is for unity catalog
+                                    type: string
+                                required:
+                                - name
+                                - schemaName
+                                - uri
+                                type: object
+                            type: object
+                          cloudStorageConfig:
+                            description: CloudStorageConfig defines the cloud storage
+                              configuration
+                            properties:
+                              bucketName:
+                                type: string
+                              prefix:
+                                type: string
+                              region:
+                                description: Region is the region of the cloud storage
+                                type: string
+                            type: object
                           compactedThreadNum:
                             description: CompactedThreadNum is the compacted thread
                               number
@@ -1143,7 +1263,9 @@ spec:
                                 type: string
                             type: object
                           s3Config:
-                            description: S3 defines S3 related configuration
+                            description: |-
+                              S3 defines S3 related configuration
+                              Deprecated: Use CloudStorageConfig instead.
                             properties:
                               bucketName:
                                 type: string
@@ -4292,7 +4414,6 @@ spec:
                             type: array
                         type: object
                       replicas:
-                        default: 1
                         description: Replicas is the desired replicas of the compaction
                           scheduler
                         format: int32
@@ -4457,6 +4578,10 @@ spec:
                         type: boolean
                       schemaStorageUrl:
                         description: SchemaStorageUrl defines the schema storage url
+                        type: string
+                      topicPoliciesServiceClassName:
+                        description: TopicPoliciesServiceClassName defines the topic
+                          policies service class name
                         type: string
                     type: object
                   placementPolicy:
@@ -4636,21 +4761,54 @@ spec:
                     description: Ursa defines the configuration of ursa
                     nullable: true
                     properties:
+                      backendStorageType:
+                        default: S3
+                        description: BackendStorageType is the backend storage type
+                        enum:
+                        - S3
+                        - Local
+                        - GCS
+                        - AzureBlob
+                        type: string
+                      bucket:
+                        description: Bucket defines the generic bucket
+                        type: string
                       enabled:
                         description: Enabled defines whether to enable ursa
                         type: boolean
+                      lakehouseType:
+                        description: LakehouseType defines the lakehouse type, support
+                          delta, iceberg and delta_and_iceberg
+                        type: string
+                      prefix:
+                        description: Prefix defines the generic prefix
+                        type: string
                       pulsarStorageUrl:
                         description: PulsarStorageUrl defines the pulsar storage url
                         type: string
+                      region:
+                        description: Region defines the generic region
+                        type: string
                       s3Bucket:
-                        description: S3Bucket defines the s3 bucket
+                        description: |-
+                          S3Bucket defines the s3 bucket
+                          Deprecate: Use Bucket instead.
                         type: string
                       s3Prefix:
-                        description: S3Prefix defines the s3 prefix
+                        description: |-
+                          S3Prefix defines the s3 prefix
+                          Deprecate: Use Prefix instead.
+                        type: string
+                      s3Region:
+                        description: S3Region defines the s3 region
                         type: string
                       schemaStorageUrl:
                         description: SchemaStorageUrl defines the schema storage url
                         type: string
+                      useOwnStorage:
+                        description: UseOwnStorage Local defines local storage related
+                          configuration
+                        type: boolean
                     type: object
                   usePodIPAsAdvertisedAddress:
                     description: UsePodIPAsAdvertisedAddress use pod ip as advertise
