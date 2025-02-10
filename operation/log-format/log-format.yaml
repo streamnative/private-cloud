@@ -6,7 +6,7 @@ metadata:
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud:3.1.1.1
+  image: streamnative/private-cloud:3.3.2.7
   # The field logConfig can be used to change the log level and log format of pods.
   # The logConfig field is optional. If it is not specified, the component will use the default log configuration /pulsar/conf/log4j2.yaml.
   # If it is specified will dynamically change the log level and log format of the component by changing the CR.
