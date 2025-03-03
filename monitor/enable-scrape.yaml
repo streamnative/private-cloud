@@ -4,7 +4,7 @@ metadata:
   name: private-cloud
   namespace: pulsar
 spec:
-  image: streamnative/private-cloud:3.1.1.1
+  image: streamnative/private-cloud:3.3.2.7
   detector:
     serviceEndpoint:
       pulsarServiceURL: 'pulsar://private-cloud-broker-headless:6650'
@@ -18,7 +18,7 @@ metadata:
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud:3.1.1.1
+  image: streamnative/private-cloud:3.3.2.7
   replicas: 3
   pod:
     resources:
@@ -38,7 +38,7 @@ metadata:
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud:3.1.1.1
+  image: streamnative/private-cloud:3.3.2.7
   replicas: 3
   zkServers: private-cloud-zk:2181
   pod:
@@ -69,7 +69,7 @@ metadata:
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud:3.1.1.1
+  image: streamnative/private-cloud:3.3.2.7
   replicas: 1
   zkServers: private-cloud-zk:2181
   config:
@@ -90,7 +90,7 @@ metadata:
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud:3.1.1.1
+  image: streamnative/private-cloud:3.3.2.7
   replicas: 1
   brokerAddress: private-cloud-broker
   config:

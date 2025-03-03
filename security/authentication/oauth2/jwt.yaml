@@ -4,7 +4,7 @@ metadata:
   name: private-cloud
   namespace: pulsar
 spec:
-  image: streamnative/private-cloud:3.1.1.1
+  image: streamnative/private-cloud:3.3.2.7
 ---
 apiVersion: zookeeper.streamnative.io/v1alpha1
 kind: ZooKeeperCluster
@@ -14,7 +14,7 @@ metadata:
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud:3.1.1.1
+  image: streamnative/private-cloud:3.3.2.7
   replicas: 3
   pod:
     resources:
@@ -34,7 +34,7 @@ metadata:
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud:3.1.1.1
+  image: streamnative/private-cloud:3.3.2.7
   replicas: 3
   zkServers: private-cloud-zk:2181
   pod:
@@ -65,7 +65,7 @@ metadata:
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud:3.1.1.1
+  image: streamnative/private-cloud:3.3.2.7
   replicas: 1
   zkServers: private-cloud-zk:2181
   config:
@@ -106,7 +106,7 @@ metadata:
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud:3.1.1.1
+  image: streamnative/private-cloud:3.3.2.7
   replicas: 1
   config:
     custom:
