@@ -513,4 +513,56 @@ rules:
     - subjectaccessreviews
   verbs:
     - create
+- apiGroups:
+  - k8s.streamnative.io
+  resources:
+  - unilinks
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - k8s.streamnative.io
+  resources:
+  - unilinks/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - k8s.streamnative.io
+  resources:
+  - unilinks/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - k8s.streamnative.io
+  resources:
+  - unilinkschemas
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - k8s.streamnative.io
+  resources:
+  - unilinkschemas/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - k8s.streamnative.io
+  resources:
+  - unilinkschemas/status
+  verbs:
+  - get
+  - patch
+  - update
 {{- end -}}
