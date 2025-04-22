@@ -1,0 +1,148 @@
+apiVersion: k8s.streamnative.io/v1alpha1
+kind: PulsarCoordinator
+metadata:
+  name: private-cloud
+  namespace: pulsar
+spec:
+  image: streamnative/private-cloud:4.0.4.1
+---
+apiVersion: k8s.streamnative.io/v1alpha1
+kind: OxiaCluster
+metadata:
+  annotations:
+    cloud.streamnative.io/config-profile: default-config-v2
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+  name: private-cloud
+  namespace: pulsar
+spec:
+  monitoringEnabled: true
+  image: streamnative/oxia:main
+  imagePullPolicy: IfNotPresent
+  server:
+    replicas: 3
+    persistentVolumeClaimRetentionPolicy:
+      whenDeleted: Delete
+---
+apiVersion: k8s.streamnative.io/v1alpha1
+kind: OxiaNamespace
+metadata:
+  name: broker
+  namespace: pulsar
+spec:
+  namespaceConfig:
+    name: broker
+    initialShardCount: 3
+    replicationFactor: 3
+  clusterRef:
+    name: private-cloud
+    namespace: pulsar
+---
+apiVersion: k8s.streamnative.io/v1alpha1
+kind: OxiaNamespace
+metadata:
+  name: bookkeeper
+  namespace: pulsar
+spec:
+  namespaceConfig:
+    name: bookkeeper
+    initialShardCount: 3
+    replicationFactor: 3
+  clusterRef:
+    name: private-cloud
+    namespace: pulsar
+---
+apiVersion: bookkeeper.streamnative.io/v1alpha1
+kind: BookKeeperCluster
+metadata:
+  name: private-cloud
+  namespace: pulsar
+  # For For Oxia based clusters, need to add the default-config-v2 annotation
+  annotations:
+    cloud.streamnative.io/config-profile: default-config-v2
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+spec:
+  image: streamnative/private-cloud:4.0.4.1
+  replicas: 1
+  # Use the oxia namespace address for bookie metadata
+  metadataServiceUri: metadata-store:oxia://private-cloud-oxia:6648/bookkeeper
+  storage:
+    reclaimPolicy: Delete
+  pod:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    securityContext:
+      runAsNonRoot: true
+  autoRecovery:
+    replicas: 1
+    pod:
+      annotations:
+        prometheus.io/port: "8000"
+        prometheus.io/scrape: "true"
+      resources:
+        requests:
+          cpu: 200m
+          memory: 512Mi
+---
+apiVersion: pulsar.streamnative.io/v1alpha1
+kind: PulsarBroker
+metadata:
+  name: private-cloud
+  namespace: pulsar
+  # For For Oxia based clusters, need to add the default-config-v2 annotation
+  annotations:
+    cloud.streamnative.io/config-profile: default-config-v2
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+spec:
+  image: streamnative/private-cloud:4.0.4.1
+  replicas: 1
+  bkMetadataServiceUri: metadata-store:oxia://private-cloud-oxia:6648/bookkeeper
+  # Use the oxia namespace address for broker medata
+  metadataStoreUrl: oxia://private-cloud-oxia:6648/broker
+  # Use the oxia namespace address for broker configuration store
+  configurationMetadataStoreUrl: oxia://private-cloud-oxia:6648/broker
+  config:
+    clusterName: private-cloud
+    function:
+      enabled: false
+      mesh:
+        # Note:
+        # For Oxia based clusters with Function Mesh, need to make the package service with io.streamnative.packages.storage.cloud.CloudStorageProvider.
+        # Otherwise the functions and packages feature should be disabled.
+        uploadEnabled: false
+  pod:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    securityContext:
+      runAsNonRoot: true
+---
+apiVersion: pulsar.streamnative.io/v1alpha1
+kind: PulsarProxy
+metadata:
+  name: private-cloud
+  namespace: pulsar
+  # For For Oxia based clusters, need to add the default-config-v2 annotation
+  annotations:
+    cloud.streamnative.io/config-profile: default-config-v2
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+spec:
+  image: streamnative/private-cloud:4.0.4.1
+  replicas: 1
+  brokerAddress: private-cloud-broker
+  pod:
+    annotations:
+      prometheus.io/port: "8080"
+      prometheus.io/scrape: "true"
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    securityContext:
+      runAsNonRoot: true
