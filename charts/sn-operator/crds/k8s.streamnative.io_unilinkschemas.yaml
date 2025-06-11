@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.15.0
-  creationTimestamp: null
   name: unilinkschemas.k8s.streamnative.io
 spec:
   group: k8s.streamnative.io
@@ -199,6 +199,16 @@ spec:
                 - secretRef
                 - url
                 type: object
+              subjectMappings:
+                items:
+                  properties:
+                    destinationPrefix:
+                      type: string
+                    subjects:
+                      default: .*
+                      type: string
+                  type: object
+                type: array
             required:
             - destClusterRef
             - sourceSchemaRegistry
@@ -289,9 +299,3 @@ spec:
     storage: true
     subresources:
       status: {}
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: null
-  storedVersions: null

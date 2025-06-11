@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.15.0
-  creationTimestamp: null
   name: pulsarbrokers.pulsar.streamnative.io
 spec:
   group: pulsar.streamnative.io
@@ -5450,6 +5450,7 @@ spec:
                     enum:
                     - extensibleLoadManager
                     - modularLoadManager
+                    - shadowNamespaceLoadManager
                     type: string
                   oxiaBasedSystemTopic:
                     description: OxiaBasedSystemTopic defines the configuration of
@@ -9201,6 +9202,12 @@ spec:
                                 description: Key defines the node label key used to
                                   detect Pod topology info
                                 type: string
+                              selector:
+                                additionalProperties:
+                                  type: string
+                                description: Selector defines the additional selector
+                                  for the topology aware gateway
+                                type: object
                               subDomain:
                                 description: SubDomain defines url generation rule
                                   for broker Pod
@@ -9284,6 +9291,12 @@ spec:
                                   description: Key defines the node label key used
                                     to detect Pod topology info
                                   type: string
+                                selector:
+                                  additionalProperties:
+                                    type: string
+                                  description: Selector defines the additional selector
+                                    for the topology aware gateway
+                                  type: object
                                 subDomain:
                                   description: SubDomain defines url generation rule
                                     for broker Pod
@@ -12853,9 +12866,3 @@ spec:
         specReplicasPath: .spec.replicas
         statusReplicasPath: .status.replicas
       status: {}
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: null
-  storedVersions: null
