@@ -1,9 +1,9 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.15.0
-  creationTimestamp: null
   name: apikeys.k8s.streamnative.io
 spec:
   group: k8s.streamnative.io
@@ -145,7 +145,7 @@ spec:
               image:
                 description: |-
                   Image is the container image used to run api keys pods.
-                  default is docker.cloudsmith.io/streamnative/sn-api-keys-svc:latest
+                  default is docker-proxy.streamnative.io/streamnative/sn-api-keys-svc:v0.10.3
                 type: string
               imagePullPolicy:
                 description: Image pull policy, one of Always, Never, IfNotPresent,
@@ -222,6 +222,12 @@ spec:
                                 description: Key defines the node label key used to
                                   detect Pod topology info
                                 type: string
+                              selector:
+                                additionalProperties:
+                                  type: string
+                                description: Selector defines the additional selector
+                                  for the topology aware gateway
+                                type: object
                               subDomain:
                                 description: SubDomain defines url generation rule
                                   for broker Pod
@@ -305,6 +311,12 @@ spec:
                                   description: Key defines the node label key used
                                     to detect Pod topology info
                                   type: string
+                                selector:
+                                  additionalProperties:
+                                    type: string
+                                  description: Selector defines the additional selector
+                                    for the topology aware gateway
+                                  type: object
                                 subDomain:
                                   description: SubDomain defines url generation rule
                                     for broker Pod
@@ -626,9 +638,3 @@ spec:
     storage: true
     subresources:
       status: {}
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: null
-  storedVersions: null

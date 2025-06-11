@@ -290,6 +290,32 @@ rules:
   - patch
   - update
 - apiGroups:
+  - k8s.streamnative.io
+  resources:
+  - mqttproxies
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - k8s.streamnative.io
+  resources:
+  - mqttproxies/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - k8s.streamnative.io
+  resources:
+  - mqttproxies/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
     - k8s.streamnative.io
   resources:
     - oxiaclusters

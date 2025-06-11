@@ -4,20 +4,20 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.15.0
-  name: consoles.k8s.streamnative.io
+  name: mqttproxies.k8s.streamnative.io
 spec:
   group: k8s.streamnative.io
   names:
-    kind: Console
-    listKind: ConsoleList
-    plural: consoles
-    singular: console
+    kind: MqttProxy
+    listKind: MqttProxyList
+    plural: mqttproxies
+    singular: mqttproxy
   scope: Namespaced
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: Console is the Schema for the consoles API
+        description: MqttProxy is the Schema for the mqttproxies API.
         properties:
           apiVersion:
             description: |-
@@ -37,35 +37,28 @@ spec:
           metadata:
             type: object
           spec:
-            description: ConsoleSpec defines the desired state of Console
+            description: MqttProxySpec defines the desired state of MqttProxy.
             properties:
-              config:
-                description: Config defines the config of console,
+              brokerRef:
+                description: BrokerRef is the reference to the broker
                 properties:
-                  authentication:
-                    description: Authentication defines console authentication
-                    properties:
-                      apiKey:
-                        description: ApiKeys authentication configuration
-                        properties:
-                          secretName:
-                            description: SecretName The secret that provides the super
-                              token
-                            type: string
-                          serviceUrl:
-                            description: ServiceUrl The service url of API Keys service
-                            type: string
-                          subjectClaim:
-                            default: sub
-                            description: SubjectClaim JWT claim to use as the user
-                              name, by default sub.
-                            type: string
-                          superRole:
-                            default: admin
-                            description: SuperRole The default value is `sub`
-                            type: string
-                        type: object
-                    type: object
+                  name:
+                    default: ""
+                    description: |-
+                      Name of the referent.
+                      This field is effectively required, but due to backwards compatibility is
+                      allowed to be empty. Instances of this type with an empty value here are
+                      almost certainly wrong.
+                      TODO: Add other useful fields. apiVersion, kind, uid?
+                      More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                      TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+                    type: string
+                type: object
+                x-kubernetes-map-type: atomic
+              custom:
+                additionalProperties:
+                  type: string
+                description: Custom allows to customize the proxy configurations directly
                 type: object
               customization:
                 description: Customization allows the desired manifests of operator
@@ -118,18 +111,251 @@ spec:
                 nullable: true
                 type: array
               image:
-                description: Image is the container image used to run sn console pods.
+                description: Image is the container image used to run MoP proxy pods.
                 type: string
               imagePullPolicy:
-                description: Image pull policy, one of Always, Never, IfNotPresent,
-                  default to Always.
+                description: ImagePullPolicy is the image pull policy of MoP proxy
+                  pods.
                 type: string
-              kopServiceUrl:
-                description: KopServiceUrl defines the kop service url of pulsar cluster,
+              istio:
+                description: Istio defines the configurations for istio gateway
+                properties:
+                  authRules:
+                    description: AuthRules define the AuthorizationPolicies
+                    items:
+                      properties:
+                        fromSource:
+                          items:
+                            properties:
+                              principals:
+                                items:
+                                  type: string
+                                type: array
+                            type: object
+                          type: array
+                        toOperation:
+                          description: ToOperation defines the ports that the rule
+                            applies to
+                          items:
+                            properties:
+                              ports:
+                                description: Ports defines the ports that the rule
+                                  applies to
+                                items:
+                                  type: string
+                                type: array
+                            type: object
+                          type: array
+                      type: object
+                    type: array
+                  enabled:
+                    description: Enabled defines whether to enable Istio
+                    type: boolean
+                  gateway:
+                    description: |-
+                      Gateway defines the gateway configuration, Gateway will be ignored if Gateways is not empty
+                      The operator could either create a gateway automatically or use an existing one
+                    properties:
+                      advertisedDomain:
+                        description: AdvertisedDomain defines the domain name for
+                          the gateway, used solely when serving a list of gateways
+                        type: string
+                      create:
+                        description: Create defines whether to create a gateway
+                        type: boolean
+                      gateways:
+                        description: Gateways defines a list of existing gateways
+                        items:
+                          type: string
+                        nullable: true
+                        type: array
+                      key:
+                        default: istio-generatedid
+                        description: Key is used to identify the gateway and related
+                          resources, used solely when serving a list of gateways
+                        type: string
+                      route:
+                        description: Route defines route policy for the gateway
+                        properties:
+                          topologyAware:
+                            description: TopologyAware defines
+                            properties:
+                              key:
+                                description: Key defines the node label key used to
+                                  detect Pod topology info
+                                type: string
+                              selector:
+                                additionalProperties:
+                                  type: string
+                                description: Selector defines the additional selector
+                                  for the topology aware gateway
+                                type: object
+                              subDomain:
+                                description: SubDomain defines url generation rule
+                                  for broker Pod
+                                type: string
+                            required:
+                            - key
+                            type: object
+                          useWildcardDNS:
+                            description: UseWildcardDNS means inherit DNS record from
+                              wildcard DNS, only works for externalDNS
+                            type: boolean
+                        type: object
+                      selector:
+                        additionalProperties:
+                          type: string
+                        description: Selector defines the selector for the gateway
+                          to create
+                        nullable: true
+                        type: object
+                      tls:
+                        properties:
+                          certSecretName:
+                            description: "SIMPLE mode:\n  CertSecretName defines the
+                              name of the secret that contains the\n  certificate
+                              to use in Istio Ingress Gateway. The value should be\n
+                              \ name of the secret in the gateway workload namespace.\nPASSTHROUGH
+                              mode:\n\t CertSecretName defines the name of the secret
+                              that contains the\n\t certificate to use in Broker.
+                              The value should be name of the secret\n  name of the
+                              secret in the Broker workload namespace.\nRequired in
+                              both SIMPLE and PASSTHROUGH mode."
+                            type: string
+                          mode:
+                            description: |-
+                              Optional: Indicates whether connections to this port should be
+                              secured using TLS. The value of this field determines how TLS is
+                              enforced.
+                            type: string
+                          subjectAltNames:
+                            description: SubjectAltNames defines the subject alternative
+                              names for the certificate
+                            items:
+                              type: string
+                            type: array
+                          trustCertsEnabled:
+                            description: TrustCertsEnabled defines whether to enable
+                              trust store
+                            type: boolean
+                        type: object
+                    type: object
+                  gateways:
+                    description: Gateways define a list of gateway configurations,
+                      Gateway will be used if Gateways is empty
+                    items:
+                      properties:
+                        advertisedDomain:
+                          description: AdvertisedDomain defines the domain name for
+                            the gateway, used solely when serving a list of gateways
+                          type: string
+                        create:
+                          description: Create defines whether to create a gateway
+                          type: boolean
+                        gateways:
+                          description: Gateways defines a list of existing gateways
+                          items:
+                            type: string
+                          nullable: true
+                          type: array
+                        key:
+                          default: istio-generatedid
+                          description: Key is used to identify the gateway and related
+                            resources, used solely when serving a list of gateways
+                          type: string
+                        route:
+                          description: Route defines route policy for the gateway
+                          properties:
+                            topologyAware:
+                              description: TopologyAware defines
+                              properties:
+                                key:
+                                  description: Key defines the node label key used
+                                    to detect Pod topology info
+                                  type: string
+                                selector:
+                                  additionalProperties:
+                                    type: string
+                                  description: Selector defines the additional selector
+                                    for the topology aware gateway
+                                  type: object
+                                subDomain:
+                                  description: SubDomain defines url generation rule
+                                    for broker Pod
+                                  type: string
+                              required:
+                              - key
+                              type: object
+                            useWildcardDNS:
+                              description: UseWildcardDNS means inherit DNS record
+                                from wildcard DNS, only works for externalDNS
+                              type: boolean
+                          type: object
+                        selector:
+                          additionalProperties:
+                            type: string
+                          description: Selector defines the selector for the gateway
+                            to create
+                          nullable: true
+                          type: object
+                        tls:
+                          properties:
+                            certSecretName:
+                              description: "SIMPLE mode:\n  CertSecretName defines
+                                the name of the secret that contains the\n  certificate
+                                to use in Istio Ingress Gateway. The value should
+                                be\n  name of the secret in the gateway workload namespace.\nPASSTHROUGH
+                                mode:\n\t CertSecretName defines the name of the secret
+                                that contains the\n\t certificate to use in Broker.
+                                The value should be name of the secret\n  name of
+                                the secret in the Broker workload namespace.\nRequired
+                                in both SIMPLE and PASSTHROUGH mode."
+                              type: string
+                            mode:
+                              description: |-
+                                Optional: Indicates whether connections to this port should be
+                                secured using TLS. The value of this field determines how TLS is
+                                enforced.
+                              type: string
+                            subjectAltNames:
+                              description: SubjectAltNames defines the subject alternative
+                                names for the certificate
+                              items:
+                                type: string
+                              type: array
+                            trustCertsEnabled:
+                              description: TrustCertsEnabled defines whether to enable
+                                trust store
+                              type: boolean
+                          type: object
+                      type: object
+                    maxItems: 10
+                    type: array
+                    x-kubernetes-list-map-keys:
+                    - key
+                    x-kubernetes-list-type: map
+                  mtls:
+                    description: Mtls defines the mTLS configuration
+                    properties:
+                      mode:
+                        default: strict
+                        type: string
+                    type: object
+                  revision:
+                    default: default
+                    description: Revision defines which Istio control plane inject
+                      sidecar
+                    type: string
+                  trustDomain:
+                    description: TrustDomain corresponds to the trust root of a system
+                      and is part of a workload identity
+                    type: string
+                type: object
+              oxiaUrl:
+                description: OxiaUrl is the URL of the Oxia service
                 type: string
               pod:
-                description: Pod defines the common metadata of the pod that will
-                  be used on components
+                description: Pod defines the resource policy for MoP proxy pod
                 properties:
                   affinity:
                     description: Affinity specifies the scheduling constraints of
@@ -3373,93 +3599,74 @@ spec:
                       type: object
                     type: array
                 type: object
-              webServiceUrl:
-                description: WebServiceUrl defines the web service url of pulsar cluster,
-                type: string
-            required:
-            - webServiceUrl
+              replicas:
+                description: Replicas is the desired replicas of the MoP proxy cluster
+                format: int32
+                type: integer
+              secretRef:
+                description: SecretRef is the reference to the ca certificate secret
+                properties:
+                  name:
+                    default: ""
+                    description: |-
+                      Name of the referent.
+                      This field is effectively required, but due to backwards compatibility is
+                      allowed to be empty. Instances of this type with an empty value here are
+                      almost certainly wrong.
+                      TODO: Add other useful fields. apiVersion, kind, uid?
+                      More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                      TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+                    type: string
+                type: object
+                x-kubernetes-map-type: atomic
             type: object
           status:
-            description: ConsoleStatus defines the observed state of Console
+            description: MqttProxyStatus defines the observed state of MqttProxy.
             properties:
               conditions:
-                description: Conditions is an array of current observed conditions.
+                description: Conditions is a set of Condition instances.
                 items:
-                  description: "Condition contains details for one aspect of the current
-                    state of this API Resource.\n---\nThis struct is intended for
-                    direct use as an array at the field path .status.conditions.  For
-                    example,\n\n\n\ttype FooStatus struct{\n\t    // Represents the
-                    observations of a foo's current state.\n\t    // Known .status.conditions.type
-                    are: \"Available\", \"Progressing\", and \"Degraded\"\n\t    //
-                    +patchMergeKey=type\n\t    // +patchStrategy=merge\n\t    // +listType=map\n\t
-                    \   // +listMapKey=type\n\t    Conditions []metav1.Condition `json:\"conditions,omitempty\"
-                    patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`\n\n\n\t
-                    \   // other fields\n\t}"
+                  description: |-
+                    Condition represents an observation of an object's state. Conditions are an
+                    extension mechanism intended to be used when the details of an observation
+                    are not a priori known or would not apply to all instances of a given Kind.
+
+
+                    Conditions should be added to explicitly convey properties that users and
+                    components care about rather than requiring those properties to be inferred
+                    from other observations. Once defined, the meaning of a Condition can not be
+                    changed arbitrarily - it becomes part of the API, and has the same
+                    backwards- and forwards-compatibility concerns of any other part of the API.
                   properties:
                     lastTransitionTime:
-                      description: |-
-                        lastTransitionTime is the last time the condition transitioned from one status to another.
-                        This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
                       format: date-time
                       type: string
                     message:
-                      description: |-
-                        message is a human readable message indicating details about the transition.
-                        This may be an empty string.
-                      maxLength: 32768
                       type: string
-                    observedGeneration:
-                      description: |-
-                        observedGeneration represents the .metadata.generation that the condition was set based upon.
-                        For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
-                        with respect to the current state of the instance.
-                      format: int64
-                      minimum: 0
-                      type: integer
                     reason:
                       description: |-
-                        reason contains a programmatic identifier indicating the reason for the condition's last transition.
-                        Producers of specific condition types may define expected values and meanings for this field,
-                        and whether the values are considered a guaranteed API.
-                        The value should be a CamelCase string.
-                        This field may not be empty.
-                      maxLength: 1024
-                      minLength: 1
-                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                        ConditionReason is intended to be a one-word, CamelCase representation of
+                        the category of cause of the current status. It is intended to be used in
+                        concise output, such as one-line kubectl get output, and in summarizing
+                        occurrences of causes.
                       type: string
                     status:
-                      description: status of the condition, one of True, False, Unknown.
-                      enum:
-                      - "True"
-                      - "False"
-                      - Unknown
                       type: string
                     type:
                       description: |-
-                        type of condition in CamelCase or in foo.example.com/CamelCase.
-                        ---
-                        Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
-                        useful (see .node.status.conditions), the ability to deconflict is important.
-                        The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
-                      maxLength: 316
-                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                        ConditionType is the type of the condition and is typically a CamelCased
+                        word or short phrase.
+
+
+                        Condition types should indicate state in the "abnormal-true" polarity. For
+                        example, if the condition indicates when a policy is invalid, the "is valid"
+                        case is probably the norm, so the condition should be called "Invalid".
                       type: string
                   required:
-                  - lastTransitionTime
-                  - message
-                  - reason
                   - status
                   - type
                   type: object
                 type: array
-                x-kubernetes-list-map-keys:
-                - type
-                x-kubernetes-list-type: map
-              observedGeneration:
-                description: ObservedGeneration is the most recent generation observed
-                  for this api keys service.
-                format: int64
-                type: integer
             type: object
         type: object
     served: true
