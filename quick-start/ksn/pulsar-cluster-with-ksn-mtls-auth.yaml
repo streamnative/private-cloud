@@ -60,8 +60,8 @@ spec:
     encoding: PKCS8
     size: 4096
   dnsNames:
-    - "*.pulsar.svc.cluster.local"
-    - "*.ksn.aws.sn2.dev"
+    - "*.pulsar.svc.cluster.local" # need to cover internal endpoints of broker
+    - "*.pulsar.example.com" # need to cover external endpoints of broker
   isCA: false
   issuerRef:
     name: "ca-tls"
@@ -132,7 +132,7 @@ metadata:
   name: private-cloud
   namespace: pulsar
 spec:
-  image: streamnative/private-cloud:3.2.1.3
+  image: streamnative/private-cloud:4.0.5.5
   istio:
     revision: ""
     trustDomain: cluster.local
@@ -145,7 +145,7 @@ metadata:
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud:3.2.1.3
+  image: streamnative/private-cloud:4.0.5.5
   replicas: 1
   pod:
     resources:
@@ -165,7 +165,7 @@ metadata:
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud:3.2.1.3
+  image: streamnative/private-cloud:4.0.5.5
   replicas: 1
   zkServers: private-cloud-zk:2181
   pod:
@@ -197,12 +197,12 @@ metadata:
   labels:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
-  image: streamnative/private-cloud:3.2.1.3
+  image: streamnative/private-cloud:4.0.5.5
   replicas: 3
   zkServers: private-cloud-zk:2181
   config:
     clusterName: private-cloud
-    advertisedDomain: broker.ksn.aws.sn2.dev
+    advertisedDomain: pulsar.example.com
     serviceURLGenerationPolicy: OrdinalPrefix
     protocolHandlers:
       kop:
@@ -223,17 +223,20 @@ spec:
       PULSAR_PREFIX_authorizationEnabled: "true"
       PULSAR_PREFIX_authorizationProvider: "org.apache.pulsar.broker.authorization.PulsarAuthorizationProvider"
       PULSAR_PREFIX_superUserRoles: "admin"
+      # KSN setup
+      PULSAR_PREFIX_kopSslClientAuth: "required"
+      # TLS setup
       PULSAR_PREFIX_tlsCertificateFilePath: "/etc/tls/pulsar-kop/tls.crt"
       PULSAR_PREFIX_tlsKeyFilePath: "/etc/tls/pulsar-kop/tls.key"
       PULSAR_PREFIX_tlsTrustCertsFilePath: "/etc/tls/pulsar-kop/ca.crt"
       PULSAR_PREFIX_tlsRequireTrustedClientCertOnConnect: "true"
+      # broker internal client setup
       PULSAR_PREFIX_brokerClientTlsEnabled: "true"
       PULSAR_PREFIX_brokerClientTrustCertsFilePath: "/etc/tls/pulsar-kop-client/ca.crt"
       PULSAR_PREFIX_brokerClientKeyFilePath: "/etc/tls/pulsar-kop-client/tls.key"
       PULSAR_PREFIX_brokerClientCertificateFilePath: "/etc/tls/pulsar-kop-client/tls.crt"
       PULSAR_PREFIX_brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationTls"
-      PULSAR_PREFIX_brokerClientAuthenticationParameters: tlsCertFile:/etc/tls/pulsar-kop-client/tls.crt,tlsKeyFile:/etc/tls/pulsar-kop-client/tls.key
-      PULSAR_PREFIX_kopSslClientAuth: "required"
+      PULSAR_PREFIX_brokerClientAuthenticationParameters: "tlsCertFile:/etc/tls/pulsar-kop-client/tls.crt,tlsKeyFile:/etc/tls/pulsar-kop-client/tls.key"
   pod:
     resources:
       requests:
@@ -249,7 +252,7 @@ spec:
     enabled: true
     gateway:
       selector:
-        app: istio-ingressgateway
+        cloud.streamnative.io/role: istio-ingressgateway
       tls:
         mode: "passthrough"
         certSecretName: generic-tls
@@ -270,5 +273,4 @@ spec:
         groupVersionKinds:
           - kind: AuthorizationPolicy
             group: security.istio.io
-            version: v1beta1
         name: .*-broker$
