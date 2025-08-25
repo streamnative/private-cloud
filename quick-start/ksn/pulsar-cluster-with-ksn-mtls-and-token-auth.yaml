@@ -1,0 +1,279 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: "ca-privatekey-issuer"
+  namespace: pulsar
+spec:
+  selfSigned: {}
+---
+apiVersion: v1
+data:
+  # Base64 encoded password-key: password
+  password-key: cGFzc3dvcmQ=
+kind: Secret
+metadata:
+  name: jks-password-secret
+  namespace: pulsar
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "ca-tls"
+  namespace: pulsar
+spec:
+  secretName: "ca-tls"
+  commonName: "ca"
+  usages:
+    - digital signature
+    - crl sign
+    - cert sign
+  isCA: true
+  privateKey:
+    size: 4096
+    algorithm: RSA
+  issuerRef:
+    name: "ca-privatekey-issuer"
+    kind: Issuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: "ca-tls"
+  namespace: pulsar
+spec:
+  ca:
+    secretName: "ca-tls"
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "generic-tls"
+  namespace: pulsar
+spec:
+  secretName: "generic-tls"
+  usages:
+    - server auth
+    - client auth
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS8
+    size: 4096
+  dnsNames:
+    - "*.pulsar.svc.cluster.local" # need to cover internal endpoints of broker
+    - "*.pulsar.example.com" # need to cover external endpoints of broker
+  isCA: false
+  issuerRef:
+    name: "ca-tls"
+    kind: Issuer
+    group: cert-manager.io
+  keystores:
+    jks:
+      create: true
+      passwordSecretRef:
+        key: password-key
+        name: jks-password-secret
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "admin-client-tls"
+  namespace: pulsar
+spec:
+  secretName: "admin-client-tls"
+  commonName: "admin"
+  usages:
+    - client auth
+  isCA: false
+  privateKey:
+    size: 4096
+    algorithm: RSA
+    encoding: PKCS8
+  issuerRef:
+    name: "ca-tls"
+    kind: Issuer
+    group: cert-manager.io
+  keystores:
+    jks:
+      create: true
+      passwordSecretRef:
+        key: password-key
+        name: jks-password-secret
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "another-client-tls"
+  namespace: pulsar
+spec:
+  secretName: "another-client-tls"
+  commonName: "another-user"
+  usages:
+    - client auth
+  isCA: false
+  privateKey:
+    size: 4096
+    algorithm: RSA
+    encoding: PKCS8
+  issuerRef:
+    name: "ca-tls"
+    kind: Issuer
+    group: cert-manager.io
+  keystores:
+    jks:
+      create: true
+      passwordSecretRef:
+        key: password-key
+        name: jks-password-secret
+---
+apiVersion: k8s.streamnative.io/v1alpha1
+kind: PulsarCoordinator
+metadata:
+  name: private-cloud
+  namespace: pulsar
+spec:
+  image: streamnative/private-cloud:4.0.5.5
+  istio:
+    revision: ""
+    trustDomain: cluster.local
+---
+apiVersion: zookeeper.streamnative.io/v1alpha1
+kind: ZooKeeperCluster
+metadata:
+  name: private-cloud
+  namespace: pulsar
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+spec:
+  image: streamnative/private-cloud:4.0.5.5
+  replicas: 1
+  pod:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    securityContext:
+      runAsNonRoot: true
+  persistence:
+    reclaimPolicy: Delete
+---
+apiVersion: bookkeeper.streamnative.io/v1alpha1
+kind: BookKeeperCluster
+metadata:
+  name: private-cloud
+  namespace: pulsar
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+spec:
+  image: streamnative/private-cloud:4.0.5.5
+  replicas: 1
+  zkServers: private-cloud-zk:2181
+  pod:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    securityContext:
+      runAsNonRoot: true
+  storage:
+    reclaimPolicy: Delete
+  autoRecovery:
+    replicas: 1
+    pod:
+      securityContext:
+        runAsNonRoot: true
+      resources:
+        requests:
+          cpu: 200m
+          memory: 512Mi
+    conf:
+      zkServers: private-cloud-zk:2181
+---
+apiVersion: pulsar.streamnative.io/v1alpha1
+kind: PulsarBroker
+metadata:
+  name: private-cloud
+  namespace: pulsar
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+spec:
+  image: streamnative/private-cloud:4.0.5.5
+  replicas: 3
+  zkServers: private-cloud-zk:2181
+  config:
+    clusterName: private-cloud
+    advertisedDomain: pulsar.example.com
+    serviceURLGenerationPolicy: OrdinalPrefix
+    protocolHandlers:
+      kop:
+        enabled: true
+        tls:
+          enabled: true
+          trustCertsEnabled: true
+          certSecretName: "generic-tls"
+          passwordSecretRef:
+            name: jks-password-secret
+            key: password-key
+    custom:
+      managedLedgerDefaultEnsembleSize: "1"
+      managedLedgerDefaultWriteQuorum: "1"
+      managedLedgerDefaultAckQuorum: "1"
+      PULSAR_PREFIX_authenticationEnabled: "true"
+      PULSAR_PREFIX_authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderTls,org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
+      PULSAR_PREFIX_authorizationEnabled: "true"
+      PULSAR_PREFIX_authorizationProvider: "org.apache.pulsar.broker.authorization.PulsarAuthorizationProvider"
+      PULSAR_PREFIX_superUserRoles: "admin"
+      # KSN setup
+      PULSAR_PREFIX_kopSslClientAuth: "required"
+      # JWT setup
+      PULSAR_PREFIX_tokenSecretKey: "file:///etc/jwt/my-secret.key"
+      # TLS setup
+      PULSAR_PREFIX_tlsCertificateFilePath: "/etc/tls/pulsar-kop/tls.crt"
+      PULSAR_PREFIX_tlsKeyFilePath: "/etc/tls/pulsar-kop/tls.key"
+      PULSAR_PREFIX_tlsTrustCertsFilePath: "/etc/tls/pulsar-kop/ca.crt"
+      PULSAR_PREFIX_tlsRequireTrustedClientCertOnConnect: "true"
+      # broker internal client setup
+      PULSAR_PREFIX_brokerClientAuthenticationPlugin: 'org.apache.pulsar.client.impl.auth.AuthenticationToken'
+  pod:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    securityContext:
+      runAsNonRoot: true
+    secretRefs:
+    - secretName: jwt-secret-key
+      mountPath: /etc/jwt
+    vars:
+      - name: brokerClientAuthenticationParameters
+        valueFrom:
+          secretKeyRef:
+            name: broker-admin
+            key: token
+  istio:
+    enabled: true
+    gateway:
+      selector:
+        cloud.streamnative.io/role: istio-ingressgateway
+      tls:
+        mode: "passthrough"
+        certSecretName: generic-tls
+        trustCertsEnabled: true
+  customization:
+    - manifest: |
+        spec:
+          rules:
+          - to:
+            - operation:
+                ports:
+                - "8080" # this one is required when JWT authentication enabled
+                - "8443"
+                - "6650"
+                - "6653"
+                - "9092"
+                - "9095"
+      match:
+        groupVersionKinds:
+          - kind: AuthorizationPolicy
+            group: security.istio.io
+        name: .*-broker$
