@@ -706,7 +706,11 @@ spec:
                               unity:
                                 nullable: true
                                 properties:
+                                  catalogName:
+                                    type: string
                                   name:
+                                    type: string
+                                  oauth2ServerURI:
                                     type: string
                                   schemaName:
                                     type: string
@@ -717,8 +721,6 @@ spec:
                                   userAgent:
                                     type: string
                                 required:
-                                - name
-                                - schemaName
                                 - uri
                                 type: object
                             type: object
@@ -739,6 +741,22 @@ spec:
                           custom:
                             additionalProperties:
                               type: string
+                            type: object
+                          lakehouseType:
+                            type: string
+                          localCache:
+                            nullable: true
+                            properties:
+                              enabled:
+                                type: boolean
+                              fileName:
+                                type: string
+                              storageClass:
+                                type: string
+                              storagePath:
+                                type: string
+                              storageSize:
+                                type: string
                             type: object
                           localConfig:
                             properties:
@@ -2452,6 +2470,16 @@ spec:
                     - modularLoadManager
                     - shadowNamespaceLoadManager
                     type: string
+                  managedLedgerOffloadConfig:
+                    nullable: true
+                    properties:
+                      enabled:
+                        type: boolean
+                      tsMetadataStoreUrl:
+                        type: string
+                      tsStorageMetadataStoreUrl:
+                        type: string
+                    type: object
                   oxiaBasedSystemTopic:
                     nullable: true
                     properties:
@@ -2603,6 +2631,8 @@ spec:
                         type: boolean
                     type: object
                   usePodIPAsAdvertisedAddress:
+                    type: boolean
+                  useStorageCatalog:
                     type: boolean
                   webSocketServiceEnabled:
                     type: boolean
