@@ -617,7 +617,6 @@ rules:
     - get
     - patch
     - update
-
 - apiGroups:
     - k8s.streamnative.io
   resources:
