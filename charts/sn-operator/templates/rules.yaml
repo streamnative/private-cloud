@@ -591,4 +591,57 @@ rules:
   - get
   - patch
   - update
+- apiGroups:
+    - k8s.streamnative.io
+  resources:
+    - storagecatalogs
+  verbs:
+    - create
+    - delete
+    - get
+    - list
+    - patch
+    - update
+    - watch
+- apiGroups:
+    - k8s.streamnative.io
+  resources:
+    - storagecatalogs/finalizers
+  verbs:
+    - update
+- apiGroups:
+    - k8s.streamnative.io
+  resources:
+    - storagecatalogs/status
+  verbs:
+    - get
+    - patch
+    - update
+
+- apiGroups:
+    - k8s.streamnative.io
+  resources:
+    - agentfunctions
+  verbs:
+    - create
+    - delete
+    - get
+    - list
+    - patch
+    - update
+    - watch
+- apiGroups:
+    - k8s.streamnative.io
+  resources:
+    - agentfunctions/finalizers
+  verbs:
+    - update
+- apiGroups:
+    - k8s.streamnative.io
+  resources:
+    - agentfunctions/status
+  verbs:
+    - get
+    - patch
+    - update
 {{- end -}}
