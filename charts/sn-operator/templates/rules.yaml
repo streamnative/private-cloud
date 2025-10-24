@@ -75,7 +75,7 @@ rules:
 - apiGroups:
     - bookkeeper.streamnative.io
   resources:
-    - '*'
+    - 'bookkeeperclusters'
   verbs:
     - create
     - delete
@@ -99,7 +99,11 @@ rules:
 - apiGroups:
     - compute.functionmesh.io
   resources:
-    - '*'
+    - backendconfigs
+    - functionmeshes
+    - functions
+    - sources
+    - sinks
   verbs:
     - create
     - delete
@@ -422,7 +426,15 @@ rules:
 - apiGroups:
     - networking.istio.io
   resources:
-    - '*'
+    - destinationrules'
+    - 'envoyfilters'
+    - 'gateways'
+    - 'proxyconfigs'
+    - 'serviceentries'
+    - 'sidecars'
+    - 'virtualservices'
+    - 'workloadentries'
+    - 'workloadgroups'
   verbs:
     - create
     - delete
@@ -458,7 +470,10 @@ rules:
 - apiGroups:
     - pulsar.streamnative.io
   resources:
-    - '*'
+    - 'pulsarbrokerrevisions'
+    - 'pulsarbrokers'
+    - 'pulsarfunctionsworkers'
+    - 'pulsarproxies'
   verbs:
     - create
     - delete
@@ -494,7 +509,9 @@ rules:
 - apiGroups:
     - security.istio.io
   resources:
-    - '*'
+    - 'authorizationpolicies'
+    - 'peerauthentications'
+    - 'requestauthentications'
   verbs:
     - create
     - delete
@@ -518,7 +535,7 @@ rules:
 - apiGroups:
     - zookeeper.streamnative.io
   resources:
-    - '*'
+    - 'zookeeperclusters'
   verbs:
     - create
     - delete
