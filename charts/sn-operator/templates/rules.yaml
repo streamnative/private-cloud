@@ -426,7 +426,7 @@ rules:
 - apiGroups:
     - networking.istio.io
   resources:
-    - destinationrules'
+    - 'destinationrules'
     - 'envoyfilters'
     - 'gateways'
     - 'proxyconfigs'
