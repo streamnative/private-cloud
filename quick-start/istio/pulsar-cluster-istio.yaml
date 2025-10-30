@@ -1,0 +1,107 @@
+apiVersion: k8s.streamnative.io/v1alpha1
+kind: PulsarCoordinator
+metadata:
+  name: private-cloud
+  namespace: pulsar
+spec:
+  image: streamnative/private-cloud:4.0.5.2
+  istio:
+    revision: default
+    trustDomain: cluster.local
+---
+apiVersion: zookeeper.streamnative.io/v1alpha1
+kind: ZooKeeperCluster
+metadata:
+  name: private-cloud
+  namespace: pulsar
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+  annotations:
+    # Required if sn-operator is not Istio sidecar injected
+    cloud.streamnative.io/ignore-leader-check: "true"
+spec:
+  image: streamnative/private-cloud:4.0.5.2
+  replicas: 3
+  pod:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    securityContext:
+      runAsNonRoot: true
+  persistence:
+    reclaimPolicy: Delete
+  istio:
+    enabled: true
+    mtls:
+      mode: strict
+    revision: default
+---
+apiVersion: bookkeeper.streamnative.io/v1alpha1
+kind: BookKeeperCluster
+metadata:
+  name: private-cloud
+  namespace: pulsar
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+spec:
+  image: streamnative/private-cloud:4.0.5.2
+  replicas: 3
+  zkServers: private-cloud-zk:2181
+  pod:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    securityContext:
+      runAsNonRoot: true
+  storage:
+    reclaimPolicy: Delete
+  autoRecovery:
+    replicas: 1
+    pod:
+      securityContext:
+        runAsNonRoot: true
+      resources:
+        requests:
+          cpu: 200m
+          memory: 512Mi
+  istio:
+    enabled: true
+    mtls:
+      mode: strict
+    revision: default
+---
+apiVersion: pulsar.streamnative.io/v1alpha1
+kind: PulsarBroker
+metadata:
+  name: private-cloud
+  namespace: pulsar
+  labels:
+    k8s.streamnative.io/coordinator-name: private-cloud
+spec:
+  image: streamnative/private-cloud:4.0.5.2
+  replicas: 2
+  zkServers: private-cloud-zk:2181
+  config:
+    clusterName: private-cloud
+    advertisedDomain: pulsar.example.com
+    serviceURLGenerationPolicy: OrdinalPrefix
+  pod:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    securityContext:
+      runAsNonRoot: true
+  istio:
+    enabled: true
+    mtls:
+      mode: strict
+    revision: default
+    gateway:
+      selector:
+        istio: ingressgateway
+      tls:
+        certSecretName: "ingressgateway-tls"
+        mode: "simple"
