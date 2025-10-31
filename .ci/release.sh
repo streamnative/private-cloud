@@ -54,7 +54,7 @@ function release::package_chart() {
 
 function release::upload_packages() {
     echo "Uploading charts..."
-    ${CR} upload -t ${GITHUB_TOKEN} --commit ${RELEASE_BRANCH}
+    ${CR} upload -t ${GITHUB_TOKEN} --commit ${RELEASE_BRANCH} --generate-release-notes
 }
 
 
