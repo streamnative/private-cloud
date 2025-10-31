@@ -85,6 +85,20 @@ rules:
     - update
     - watch
 - apiGroups:
+    - bookkeeper.streamnative.io
+  resources:
+    - bookkeeperclusters/finalizers
+  verbs:
+    - update
+- apiGroups:
+    - bookkeeper.streamnative.io
+  resources:
+    - bookkeeperclusters/status
+  verbs:
+    - get
+    - patch
+    - update
+- apiGroups:
     - cert-manager.io
   resources:
     - certificates
@@ -483,6 +497,28 @@ rules:
     - update
     - watch
 - apiGroups:
+    - pulsar.streamnative.io
+  resources:
+    - 'pulsarbrokers/status'
+    - 'pulsarfunctionsworkers/status'
+    - 'pulsarproxies/status'
+    - 'pulsarbrokerrevisions/status'
+  verbs:
+    - get
+    - patch
+    - update
+- apiGroups:
+    - pulsar.streamnative.io
+  resources:
+    - pulsarbrokerrevissions/finalizers
+    - pulsarbrokers/finalizers
+    - pulsarfunctionsworkers/finalizers
+    - pulsarproxies/finalizers
+  verbs:
+    - get
+    - patch
+    - update
+- apiGroups:
     - rbac.authorization.k8s.io
   resources:
     - rolebindings
@@ -544,6 +580,20 @@ rules:
     - patch
     - update
     - watch
+- apiGroups:
+    - zookeeper.streamnative.io
+  resources:
+    - zookeeperclusters/finalizers
+  verbs:
+    - update
+- apiGroups:
+    - zookeeper.streamnative.io
+  resources:
+    - zookeeperclusters/status
+  verbs:
+    - get
+    - patch
+    - update
 - apiGroups:
     - authentication.k8s.io
   resources:
