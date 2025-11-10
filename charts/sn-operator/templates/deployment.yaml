@@ -65,6 +65,14 @@ spec:
           periodSeconds: 20
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
+        {{- if .Values.volumeMounts }}
+        volumeMounts:
+          {{- toYaml .Values.volumeMounts | nindent 10 }}
+        {{- end }}
+      {{- if .Values.volumes }}
+      volumes:
+        {{- toYaml .Values.volumes | nindent 8 }}
+      {{- end }}
       nodeSelector:
         {{- toYaml .Values.nodeSelector | nindent 8 }}
       affinity:
