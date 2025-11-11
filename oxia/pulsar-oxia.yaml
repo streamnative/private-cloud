@@ -17,7 +17,7 @@ metadata:
   namespace: pulsar
 spec:
   monitoringEnabled: true
-  image: streamnative/oxia:main
+  image: oxia/oxia:main
   imagePullPolicy: IfNotPresent
   server:
     replicas: 3
