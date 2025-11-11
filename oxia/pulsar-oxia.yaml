@@ -17,7 +17,7 @@ metadata:
   namespace: pulsar
 spec:
   monitoringEnabled: true
-  image: oxia/oxia:main
+  image: oxia/oxia:0.14.4
   imagePullPolicy: IfNotPresent
   server:
     replicas: 3
@@ -64,7 +64,7 @@ metadata:
     k8s.streamnative.io/coordinator-name: private-cloud
 spec:
   image: streamnative/private-cloud:4.0.4.1
-  replicas: 1
+  replicas: 3
   # Use the oxia namespace address for bookie metadata
   metadataServiceUri: metadata-store:oxia://private-cloud-oxia:6648/bookkeeper
   storage:
