@@ -3,7 +3,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.15.0
+    controller-gen.kubebuilder.io/version: v0.16.5
   name: pulsarcoordinators.k8s.streamnative.io
 spec:
   group: k8s.streamnative.io
@@ -132,6 +132,108 @@ spec:
                         type: string
                       webServiceURL:
                         type: string
+                    type: object
+                type: object
+              fullMetrics:
+                nullable: true
+                properties:
+                  config:
+                    properties:
+                      image:
+                        type: string
+                      replicas:
+                        format: int32
+                        type: integer
+                      resources:
+                        properties:
+                          claims:
+                            items:
+                              properties:
+                                name:
+                                  type: string
+                              required:
+                              - name
+                              type: object
+                            type: array
+                            x-kubernetes-list-map-keys:
+                            - name
+                            x-kubernetes-list-type: map
+                          limits:
+                            additionalProperties:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                              x-kubernetes-int-or-string: true
+                            type: object
+                          requests:
+                            additionalProperties:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                              x-kubernetes-int-or-string: true
+                            type: object
+                        type: object
+                      retentionTime:
+                        type: string
+                      scrapeInterval:
+                        type: string
+                      serviceAccountName:
+                        type: string
+                    type: object
+                  enabled:
+                    type: boolean
+                  gateway:
+                    properties:
+                      advertisedDomain:
+                        type: string
+                      create:
+                        type: boolean
+                      gateways:
+                        items:
+                          type: string
+                        nullable: true
+                        type: array
+                      key:
+                        default: istio-generatedid
+                        type: string
+                      route:
+                        properties:
+                          topologyAware:
+                            properties:
+                              key:
+                                type: string
+                              selector:
+                                additionalProperties:
+                                  type: string
+                                type: object
+                              subDomain:
+                                type: string
+                            required:
+                            - key
+                            type: object
+                          useWildcardDNS:
+                            type: boolean
+                        type: object
+                      selector:
+                        additionalProperties:
+                          type: string
+                        nullable: true
+                        type: object
+                      tls:
+                        properties:
+                          certSecretName:
+                            type: string
+                          mode:
+                            type: string
+                          subjectAltNames:
+                            items:
+                              type: string
+                            type: array
+                          trustCertsEnabled:
+                            type: boolean
+                        type: object
                     type: object
                 type: object
               image:

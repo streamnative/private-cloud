@@ -3,7 +3,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.15.0
+    controller-gen.kubebuilder.io/version: v0.16.5
   name: pulsarbrokerrevisions.pulsar.streamnative.io
 spec:
   group: pulsar.streamnative.io
@@ -724,6 +724,130 @@ spec:
                                 - uri
                                 type: object
                             type: object
+                          catalogEnabledOnCluster:
+                            type: boolean
+                          catalogs:
+                            items:
+                              properties:
+                                mode:
+                                  default: MANAGED
+                                  enum:
+                                  - MANAGED
+                                  - EXTERNAL
+                                  type: string
+                                name:
+                                  type: string
+                                openCatalog:
+                                  nullable: true
+                                  properties:
+                                    accessDelegation:
+                                      type: string
+                                    scope:
+                                      type: string
+                                    secret:
+                                      type: string
+                                    tokenRefreshEnabled:
+                                      type: boolean
+                                    type:
+                                      type: string
+                                    uri:
+                                      type: string
+                                    warehouse:
+                                      type: string
+                                  required:
+                                  - uri
+                                  - warehouse
+                                  type: object
+                                polaris:
+                                  nullable: true
+                                  properties:
+                                    accessDelegation:
+                                      type: string
+                                    scope:
+                                      type: string
+                                    secret:
+                                      type: string
+                                    tokenRefreshEnabled:
+                                      type: boolean
+                                    type:
+                                      type: string
+                                    uri:
+                                      type: string
+                                    warehouse:
+                                      type: string
+                                  required:
+                                  - uri
+                                  - warehouse
+                                  type: object
+                                s3Table:
+                                  nullable: true
+                                  properties:
+                                    accessDelegation:
+                                      type: string
+                                    scope:
+                                      type: string
+                                    secret:
+                                      type: string
+                                    tokenRefreshEnabled:
+                                      type: boolean
+                                    type:
+                                      type: string
+                                    uri:
+                                      type: string
+                                    warehouse:
+                                      type: string
+                                  required:
+                                  - uri
+                                  - warehouse
+                                  type: object
+                                tabular:
+                                  nullable: true
+                                  properties:
+                                    accessDelegation:
+                                      type: string
+                                    scope:
+                                      type: string
+                                    secret:
+                                      type: string
+                                    tokenRefreshEnabled:
+                                      type: boolean
+                                    type:
+                                      type: string
+                                    uri:
+                                      type: string
+                                    warehouse:
+                                      type: string
+                                  required:
+                                  - uri
+                                  - warehouse
+                                  type: object
+                                unity:
+                                  nullable: true
+                                  properties:
+                                    catalogName:
+                                      type: string
+                                    name:
+                                      type: string
+                                    oauth2ServerURI:
+                                      type: string
+                                    schemaName:
+                                      type: string
+                                    secret:
+                                      type: string
+                                    uri:
+                                      type: string
+                                    userAgent:
+                                      type: string
+                                  required:
+                                  - uri
+                                  type: object
+                              required:
+                              - name
+                              type: object
+                            type: array
+                            x-kubernetes-list-map-keys:
+                            - name
+                            x-kubernetes-list-type: map
                           cloudStorageConfig:
                             properties:
                               bucketName:
@@ -742,6 +866,14 @@ spec:
                             additionalProperties:
                               type: string
                             type: object
+                          defaultCatalogOnCluster:
+                            type: string
+                          deployMode:
+                            default: Deployment
+                            enum:
+                            - StatefulSet
+                            - Deployment
+                            type: string
                           lakehouseType:
                             type: string
                           localCache:
@@ -1356,6 +1488,7 @@ spec:
                                           format: int32
                                           type: integer
                                         service:
+                                          default: ""
                                           type: string
                                       required:
                                       - port
@@ -1438,6 +1571,7 @@ spec:
                                           format: int32
                                           type: integer
                                         service:
+                                          default: ""
                                           type: string
                                       required:
                                       - port
@@ -1549,6 +1683,7 @@ spec:
                                           format: int32
                                           type: integer
                                         service:
+                                          default: ""
                                           type: string
                                       required:
                                       - port
@@ -1867,6 +2002,7 @@ spec:
                                           format: int32
                                           type: integer
                                         service:
+                                          default: ""
                                           type: string
                                       required:
                                       - port
@@ -1949,6 +2085,7 @@ spec:
                                           format: int32
                                           type: integer
                                         service:
+                                          default: ""
                                           type: string
                                       required:
                                       - port
@@ -2060,6 +2197,7 @@ spec:
                                           format: int32
                                           type: integer
                                         service:
+                                          default: ""
                                           type: string
                                       required:
                                       - port
@@ -2370,6 +2508,8 @@ spec:
                         format: int32
                         minimum: 0
                         type: integer
+                    required:
+                    - image
                     type: object
                   concurrentUnloadPerSecond:
                     format: int64
@@ -2663,6 +2803,9 @@ spec:
                         type: string
                       serviceAddress:
                         type: string
+                    required:
+                    - namespace
+                    - serviceAddress
                     type: object
                   zk:
                     properties:
@@ -2676,6 +2819,10 @@ spec:
                       serverPort:
                         format: int32
                         type: integer
+                    required:
+                    - clusterIndex
+                    - domain
+                    - serverPort
                     type: object
                 type: object
               configurationStoreServers:
@@ -2940,6 +3087,9 @@ spec:
                         type: string
                       serviceAddress:
                         type: string
+                    required:
+                    - namespace
+                    - serviceAddress
                     type: object
                   zk:
                     properties:
@@ -2953,6 +3103,10 @@ spec:
                       serverPort:
                         format: int32
                         type: integer
+                    required:
+                    - clusterIndex
+                    - domain
+                    - serverPort
                     type: object
                 type: object
               metadataStoreUrl:
@@ -3539,6 +3693,7 @@ spec:
                                   format: int32
                                   type: integer
                                 service:
+                                  default: ""
                                   type: string
                               required:
                               - port
@@ -3621,6 +3776,7 @@ spec:
                                   format: int32
                                   type: integer
                                 service:
+                                  default: ""
                                   type: string
                               required:
                               - port
@@ -3732,6 +3888,7 @@ spec:
                                   format: int32
                                   type: integer
                                 service:
+                                  default: ""
                                   type: string
                               required:
                               - port
@@ -4050,6 +4207,7 @@ spec:
                                   format: int32
                                   type: integer
                                 service:
+                                  default: ""
                                   type: string
                               required:
                               - port
@@ -4132,6 +4290,7 @@ spec:
                                   format: int32
                                   type: integer
                                 service:
+                                  default: ""
                                   type: string
                               required:
                               - port
@@ -4243,6 +4402,7 @@ spec:
                                   format: int32
                                   type: integer
                                 service:
+                                  default: ""
                                   type: string
                               required:
                               - port
