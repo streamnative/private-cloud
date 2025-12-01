@@ -16,6 +16,8 @@ image:
     # -- Image tag, it can override the image tag whose default is the chart appVersion.
     tag: ""
 
+env: []
+
 # -- Specifies image pull secrets for private registry, the format is `- name: gcr`
 imagePullSecrets: []
 # If you want to specify secrets, follow this format

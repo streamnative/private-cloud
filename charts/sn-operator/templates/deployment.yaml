@@ -52,6 +52,9 @@ spec:
           value: "1"
         - name: OPERATOR_NAMESPACE
           value: {{ include "sn-operator.namespace" .}}
+        {{- if .Values.env }}
+        {{- toYaml .Values.env | nindent 8 }}
+        {{- end }}
         name: manager
         securityContext:
           {{- toYaml .Values.securityContext | nindent 10 }}
