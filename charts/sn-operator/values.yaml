@@ -16,6 +16,8 @@ image:
     # -- Image tag, it can override the image tag whose default is the chart appVersion.
     tag: ""
 
+env: []
+
 # -- Specifies image pull secrets for private registry, the format is `- name: gcr`
 imagePullSecrets: []
 # If you want to specify secrets, follow this format
@@ -31,7 +33,7 @@ fullnameOverride: ""
 # -- Namespaces that the controller watches to reconcile pulsar objects.
 # If it's empty, the controller watches for pulsar objects across all namespaces.
 # If specified, the deployment is "namespaced" and role/role-binding will be created instead of clusterrole/clusterrolebinding.
-watchNamespaces: "operators"
+watchNamespaces: ""
 
 serviceAccount:
   # -- Specifies whether a service account should be created
