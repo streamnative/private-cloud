@@ -31,7 +31,7 @@ fullnameOverride: ""
 # -- Namespaces that the controller watches to reconcile pulsar objects.
 # If it's empty, the controller watches for pulsar objects across all namespaces.
 # If specified, the deployment is "namespaced" and role/role-binding will be created instead of clusterrole/clusterrolebinding.
-watchNamespaces: "operators"
+watchNamespaces: ""
 
 serviceAccount:
   # -- Specifies whether a service account should be created
