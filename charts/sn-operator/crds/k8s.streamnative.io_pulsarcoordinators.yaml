@@ -240,6 +240,12 @@ spec:
                 type: string
               istio:
                 properties:
+                  dataplaneMode:
+                    default: sidecar
+                    enum:
+                    - sidecar
+                    - ambient
+                    type: string
                   mtls:
                     properties:
                       mode:
