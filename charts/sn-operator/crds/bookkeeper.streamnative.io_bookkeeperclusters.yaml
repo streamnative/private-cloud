@@ -3110,6 +3110,12 @@ spec:
                           type: array
                       type: object
                     type: array
+                  dataplaneMode:
+                    default: sidecar
+                    enum:
+                    - sidecar
+                    - ambient
+                    type: string
                   enabled:
                     type: boolean
                   gateway:
