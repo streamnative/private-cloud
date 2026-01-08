@@ -73,6 +73,15 @@ rules:
     - update
     - watch
 - apiGroups:
+    - ""
+  resources:
+    - namespaces
+    - nodes
+  verbs:
+    - get
+    - list
+    - watch
+- apiGroups:
     - bookkeeper.streamnative.io
   resources:
     - 'bookkeeperclusters'
