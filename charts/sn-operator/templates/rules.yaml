@@ -150,6 +150,7 @@ rules:
 - apiGroups:
     - ""
   resources:
+    - namespaces
     - nodes
   verbs:
     - get
