@@ -132,6 +132,7 @@ rules:
     - leases
   verbs:
     - create
+    - delete
     - get
     - list
     - update
@@ -561,6 +562,20 @@ rules:
     - storage.k8s.io
   resources:
     - storageclasses
+  verbs:
+    - create
+    - delete
+    - get
+    - list
+    - patch
+    - update
+    - watch
+- apiGroups:
+    - monitoring.coreos.com
+  resources:
+    - podmonitors
+    - prometheuses
+    - servicemonitors
   verbs:
     - create
     - delete

@@ -151,6 +151,8 @@ spec:
                               properties:
                                 name:
                                   type: string
+                                request:
+                                  type: string
                               required:
                               - name
                               type: object
@@ -178,6 +180,8 @@ spec:
                       retentionTime:
                         type: string
                       scrapeInterval:
+                        type: string
+                      scrapeTimeout:
                         type: string
                       serviceAccountName:
                         type: string
@@ -299,6 +303,8 @@ spec:
                             items:
                               properties:
                                 name:
+                                  type: string
+                                request:
                                   type: string
                               required:
                               - name
@@ -491,6 +497,8 @@ spec:
                             items:
                               properties:
                                 name:
+                                  type: string
+                                request:
                                   type: string
                               required:
                               - name

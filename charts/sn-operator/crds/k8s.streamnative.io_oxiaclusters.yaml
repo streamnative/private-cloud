@@ -37,6 +37,8 @@ spec:
                           properties:
                             name:
                               type: string
+                            request:
+                              type: string
                           required:
                           - name
                           type: object
@@ -989,6 +991,8 @@ spec:
                                     properties:
                                       name:
                                         type: string
+                                      request:
+                                        type: string
                                     required:
                                     - name
                                     type: object
@@ -1168,6 +1172,8 @@ spec:
                             items:
                               properties:
                                 name:
+                                  type: string
+                                request:
                                   type: string
                               required:
                               - name
@@ -1502,6 +1508,8 @@ spec:
                                   items:
                                     properties:
                                       name:
+                                        type: string
+                                      request:
                                         type: string
                                     required:
                                     - name
@@ -1865,6 +1873,8 @@ spec:
                           properties:
                             name:
                               type: string
+                            request:
+                              type: string
                           required:
                           - name
                           type: object
@@ -2063,6 +2073,28 @@ spec:
                   - ready
                   - shards
                   type: object
+                type: array
+              pendingChanges:
+                items:
+                  properties:
+                    action:
+                      type: string
+                    apiVersion:
+                      type: string
+                    diff:
+                      type: string
+                    kind:
+                      type: string
+                    name:
+                      type: string
+                  required:
+                  - action
+                  - apiVersion
+                  - diff
+                  - kind
+                  - name
+                  type: object
+                nullable: true
                 type: array
               serverStatus:
                 properties:

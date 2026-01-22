@@ -118,6 +118,30 @@ spec:
                           type: string
                         type: array
                     type: object
+                  kafkaFunctionMeshConfigMap:
+                    properties:
+                      managed:
+                        type: boolean
+                      metadata:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: string
+                            nullable: true
+                            type: object
+                          labels:
+                            additionalProperties:
+                              type: string
+                            nullable: true
+                            type: object
+                          name:
+                            type: string
+                        type: object
+                      updatePolicy:
+                        items:
+                          type: string
+                        type: array
+                    type: object
                   pdb:
                     properties:
                       managed:
@@ -735,6 +759,17 @@ spec:
                                   type: string
                                 issuerUrl:
                                   type: string
+                                publicKeyFilePath:
+                                  type: string
+                                publicKeySecretRef:
+                                  properties:
+                                    key:
+                                      type: string
+                                    name:
+                                      type: string
+                                  required:
+                                  - name
+                                  type: object
                                 requiredScope:
                                   type: string
                                 scopeClaim:
@@ -754,6 +789,15 @@ spec:
                           revocationListLoadIntervalInSecs:
                             format: int32
                             type: integer
+                          revocationListSecretRef:
+                            properties:
+                              key:
+                                type: string
+                              name:
+                                type: string
+                            required:
+                            - name
+                            type: object
                           revocationListUrl:
                             type: string
                           skipRevocationListValidationOnRevocationListInitFailure:
@@ -768,6 +812,12 @@ spec:
                             type: string
                           tokenSecretKey:
                             type: string
+                        type: object
+                      mtls:
+                        nullable: true
+                        properties:
+                          enabled:
+                            type: boolean
                         type: object
                     type: object
                   authorization:
@@ -803,6 +853,13 @@ spec:
                           token:
                             type: string
                         type: object
+                      mtls:
+                        properties:
+                          certSecretName:
+                            type: string
+                        required:
+                        - certSecretName
+                        type: object
                     type: object
                   custom:
                     additionalProperties:
@@ -834,6 +891,18 @@ spec:
                             type: string
                           python:
                             type: string
+                          snJava:
+                            type: string
+                        type: object
+                      functionState:
+                        properties:
+                          oxia:
+                            properties:
+                              cluster:
+                                type: string
+                            required:
+                            - cluster
+                            type: object
                         type: object
                       labels:
                         additionalProperties:
@@ -1856,6 +1925,8 @@ spec:
                                 properties:
                                   name:
                                     type: string
+                                  request:
+                                    type: string
                                 required:
                                 - name
                                 type: object
@@ -2035,6 +2106,8 @@ spec:
                         items:
                           properties:
                             name:
+                              type: string
+                            request:
                               type: string
                           required:
                           - name
@@ -2369,6 +2442,8 @@ spec:
                               items:
                                 properties:
                                   name:
+                                    type: string
+                                  request:
                                     type: string
                                 required:
                                 - name
