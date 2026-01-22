@@ -44,6 +44,61 @@ spec:
             type: object
           spec:
             properties:
+              advertisedListeners:
+                items:
+                  properties:
+                    hostTemplate:
+                      type: string
+                    name:
+                      maxLength: 63
+                      pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
+                      type: string
+                    protocols:
+                      properties:
+                        kafka:
+                          properties:
+                            advertisedPort:
+                              format: int32
+                              maximum: 65535
+                              minimum: 1
+                              type: integer
+                            containerPort:
+                              format: int32
+                              maximum: 65535
+                              minimum: 1
+                              type: integer
+                            enabled:
+                              type: boolean
+                            scheme:
+                              type: string
+                          type: object
+                        pulsar:
+                          properties:
+                            advertisedPort:
+                              format: int32
+                              maximum: 65535
+                              minimum: 1
+                              type: integer
+                            containerPort:
+                              format: int32
+                              maximum: 65535
+                              minimum: 1
+                              type: integer
+                            enabled:
+                              type: boolean
+                            scheme:
+                              type: string
+                          type: object
+                      type: object
+                  required:
+                  - hostTemplate
+                  - name
+                  type: object
+                maxItems: 10
+                type: array
+                x-kubernetes-list-map-keys:
+                - name
+                x-kubernetes-list-type: map
               apiObjects:
                 properties:
                   brokerConfigMap:
@@ -215,6 +270,30 @@ spec:
                         type: array
                     type: object
                   internalService:
+                    properties:
+                      managed:
+                        type: boolean
+                      metadata:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: string
+                            nullable: true
+                            type: object
+                          labels:
+                            additionalProperties:
+                              type: string
+                            nullable: true
+                            type: object
+                          name:
+                            type: string
+                        type: object
+                      updatePolicy:
+                        items:
+                          type: string
+                        type: array
+                    type: object
+                  kafkaFunctionMeshConfigMap:
                     properties:
                       managed:
                         type: boolean
@@ -863,6 +942,17 @@ spec:
                                   type: string
                                 issuerUrl:
                                   type: string
+                                publicKeyFilePath:
+                                  type: string
+                                publicKeySecretRef:
+                                  properties:
+                                    key:
+                                      type: string
+                                    name:
+                                      type: string
+                                  required:
+                                  - name
+                                  type: object
                                 requiredScope:
                                   type: string
                                 scopeClaim:
@@ -882,6 +972,15 @@ spec:
                           revocationListLoadIntervalInSecs:
                             format: int32
                             type: integer
+                          revocationListSecretRef:
+                            properties:
+                              key:
+                                type: string
+                              name:
+                                type: string
+                            required:
+                            - name
+                            type: object
                           revocationListUrl:
                             type: string
                           skipRevocationListValidationOnRevocationListInitFailure:
@@ -896,6 +995,12 @@ spec:
                             type: string
                           tokenSecretKey:
                             type: string
+                        type: object
+                      mtls:
+                        nullable: true
+                        properties:
+                          enabled:
+                            type: boolean
                         type: object
                     type: object
                   authorization:
@@ -930,6 +1035,13 @@ spec:
                             type: string
                           token:
                             type: string
+                        type: object
+                      mtls:
+                        properties:
+                          certSecretName:
+                            type: string
+                        required:
+                        - certSecretName
                         type: object
                     type: object
                   clusterName:
@@ -1977,6 +2089,8 @@ spec:
                                         properties:
                                           name:
                                             type: string
+                                          request:
+                                            type: string
                                         required:
                                         - name
                                         type: object
@@ -2156,6 +2270,8 @@ spec:
                                 items:
                                   properties:
                                     name:
+                                      type: string
+                                    request:
                                       type: string
                                   required:
                                   - name
@@ -2490,6 +2606,8 @@ spec:
                                       items:
                                         properties:
                                           name:
+                                            type: string
+                                          request:
                                             type: string
                                         required:
                                         - name
@@ -2845,8 +2963,6 @@ spec:
                         format: int32
                         minimum: 0
                         type: integer
-                    required:
-                    - image
                     type: object
                   concurrentUnloadPerSecond:
                     format: int64
@@ -2881,6 +2997,18 @@ spec:
                             type: string
                           python:
                             type: string
+                          snJava:
+                            type: string
+                        type: object
+                      functionState:
+                        properties:
+                          oxia:
+                            properties:
+                              cluster:
+                                type: string
+                            required:
+                            - cluster
+                            type: object
                         type: object
                       labels:
                         additionalProperties:
@@ -3936,6 +4064,8 @@ spec:
                                 properties:
                                   name:
                                     type: string
+                                  request:
+                                    type: string
                                 required:
                                 - name
                                 type: object
@@ -4115,6 +4245,8 @@ spec:
                         items:
                           properties:
                             name:
+                              type: string
+                            request:
                               type: string
                           required:
                           - name
@@ -4449,6 +4581,8 @@ spec:
                               items:
                                 properties:
                                   name:
+                                    type: string
+                                  request:
                                     type: string
                                 required:
                                 - name
@@ -5059,6 +5193,55 @@ spec:
               metadataStoreUrl:
                 nullable: true
                 type: string
+              networking:
+                properties:
+                  podService:
+                    properties:
+                      annotations:
+                        additionalProperties:
+                          type: string
+                        type: object
+                      enabled:
+                        default: true
+                        type: boolean
+                      labels:
+                        additionalProperties:
+                          type: string
+                        type: object
+                      ports:
+                        items:
+                          properties:
+                            appProtocol:
+                              type: string
+                            name:
+                              type: string
+                            nodePort:
+                              format: int32
+                              type: integer
+                            port:
+                              format: int32
+                              type: integer
+                            protocol:
+                              default: TCP
+                              type: string
+                            targetPort:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              x-kubernetes-int-or-string: true
+                          required:
+                          - port
+                          type: object
+                        type: array
+                      type:
+                        default: ClusterIP
+                        enum:
+                        - ClusterIP
+                        - LoadBalancer
+                        - NodePort
+                        type: string
+                    type: object
+                type: object
               pod:
                 properties:
                   affinity:
@@ -5792,6 +5975,8 @@ spec:
                                 properties:
                                   name:
                                     type: string
+                                  request:
+                                    type: string
                                 required:
                                 - name
                                 type: object
@@ -5971,6 +6156,8 @@ spec:
                         items:
                           properties:
                             name:
+                              type: string
+                            request:
                               type: string
                           required:
                           - name
@@ -6305,6 +6492,8 @@ spec:
                               items:
                                 properties:
                                   name:
+                                    type: string
+                                  request:
                                     type: string
                                 required:
                                 - name

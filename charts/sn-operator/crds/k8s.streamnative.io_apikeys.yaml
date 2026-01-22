@@ -77,6 +77,8 @@ spec:
                         type: array
                       currentKid:
                         type: string
+                      disableV1Routes:
+                        type: boolean
                       logLevel:
                         enum:
                         - panic
@@ -286,6 +288,8 @@ spec:
                         items:
                           properties:
                             name:
+                              type: string
+                            request:
                               type: string
                           required:
                           - name
