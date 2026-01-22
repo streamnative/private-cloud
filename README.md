@@ -13,7 +13,7 @@ With StreamNative Private Cloud, you can simplify operations and maintenance, in
 
 ### Apply for trial
 
-Before installing StreamNative Private Cloud, you need to import a valid license. You can contact StreamNative to apply for a [free trial](https://streamnative.io/deployment/start-free-trial). 
+Before installing StreamNative Private Cloud, you need to import a valid license. You can contact StreamNative to apply for a [free trial](https://streamnative.io/deployment/private-cloud-license). 
 
 ### Quick Start
 
