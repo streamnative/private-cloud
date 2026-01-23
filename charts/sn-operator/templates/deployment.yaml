@@ -52,6 +52,8 @@ spec:
           value: "1"
         - name: OPERATOR_NAMESPACE
           value: {{ include "sn-operator.namespace" .}}
+        - name: AGENT_FUNCTION_ENABLE
+          value: "false"
         {{- if .Values.env }}
         {{- toYaml .Values.env | nindent 8 }}
         {{- end }}
