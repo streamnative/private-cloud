@@ -16,7 +16,11 @@ image:
     # -- Image tag, it can override the image tag whose default is the chart appVersion.
     tag: ""
 
-env: []
+env:
+- name: DISABLE_AUTO_FILL_UP_GATEWAY_TLS_FIELDS
+  value: "true"
+- name: AGENT_FUNCTION_ENABLE
+  value: "false"
 
 # -- Specifies image pull secrets for private registry, the format is `- name: gcr`
 imagePullSecrets: []
