@@ -28,20 +28,90 @@ spec:
             properties:
               config:
                 properties:
+                  authentication:
+                    properties:
+                      apiKey:
+                        properties:
+                          oidcIssuers:
+                            items:
+                              properties:
+                                adminScope:
+                                  default: admin
+                                  type: string
+                                audience:
+                                  type: string
+                                authzAdminRole:
+                                  type: string
+                                authzRoleClaim:
+                                  type: string
+                                issuerUrl:
+                                  type: string
+                                publicKeyFilePath:
+                                  type: string
+                                publicKeySecretRef:
+                                  properties:
+                                    key:
+                                      type: string
+                                    name:
+                                      type: string
+                                  required:
+                                  - name
+                                  type: object
+                                requiredScope:
+                                  type: string
+                                scopeClaim:
+                                  default: scope
+                                  type: string
+                                subjectClaim:
+                                  default: sub
+                                  type: string
+                              required:
+                              - audience
+                              - issuerUrl
+                              type: object
+                            type: array
+                            x-kubernetes-list-map-keys:
+                            - issuerUrl
+                            x-kubernetes-list-type: map
+                          revocationListLoadIntervalInSecs:
+                            format: int32
+                            type: integer
+                          revocationListSecretRef:
+                            properties:
+                              key:
+                                type: string
+                              name:
+                                type: string
+                            required:
+                            - name
+                            type: object
+                          revocationListUrl:
+                            type: string
+                          skipRevocationListValidationOnRevocationListInitFailure:
+                            type: boolean
+                        type: object
+                    type: object
                   authenticationEnabled:
                     default: true
                     type: boolean
                   authenticationProviders:
                     default: io.streamnative.pulsar.broker.authentication.AuthenticationProviderApiKeys
                     type: string
+                  authorization:
+                    properties:
+                      superUserRoles:
+                        type: string
+                    type: object
                   authorizationEnabled:
                     default: true
                     type: boolean
+                  clusterName:
+                    type: string
                   custom:
                     additionalProperties:
                       type: string
                     type: object
-                  oxiaServiceUrl:
+                  metadataStoreConfig:
                     type: string
                   schemaRegistryListeners:
                     default: http://0.0.0.0:8081
@@ -49,11 +119,11 @@ spec:
                   schemaRegistryProtocolMap:
                     default: HTTP:http
                     type: string
+                  schemaStorageConfig:
+                    type: string
                   snrbacDelegateAuthorizationProviders:
                     default: io.streamnative.pulsar.broker.authorization.AuthorizationProviderApiKeys
                     type: string
-                required:
-                - oxiaServiceUrl
                 type: object
               customization:
                 items:
@@ -138,6 +208,10 @@ spec:
                       key:
                         default: istio-generatedid
                         type: string
+                      listenerName:
+                        maxLength: 63
+                        pattern: ^[a-z0-9]([a-z0-9_]*[a-z0-9])?$
+                        type: string
                       route:
                         properties:
                           topologyAware:
@@ -189,6 +263,10 @@ spec:
                           type: array
                         key:
                           default: istio-generatedid
+                          type: string
+                        listenerName:
+                          maxLength: 63
+                          pattern: ^[a-z0-9]([a-z0-9_]*[a-z0-9])?$
                           type: string
                         route:
                           properties:
@@ -743,6 +821,23 @@ spec:
                                     - fieldPath
                                     type: object
                                     x-kubernetes-map-type: atomic
+                                  fileKeyRef:
+                                    properties:
+                                      key:
+                                        type: string
+                                      optional:
+                                        default: false
+                                        type: boolean
+                                      path:
+                                        type: string
+                                      volumeName:
+                                        type: string
+                                    required:
+                                    - key
+                                    - path
+                                    - volumeName
+                                    type: object
+                                    x-kubernetes-map-type: atomic
                                   resourceFieldRef:
                                     properties:
                                       containerName:
@@ -1261,6 +1356,23 @@ spec:
                                     - fieldPath
                                     type: object
                                     x-kubernetes-map-type: atomic
+                                  fileKeyRef:
+                                    properties:
+                                      key:
+                                        type: string
+                                      optional:
+                                        default: false
+                                        type: boolean
+                                      path:
+                                        type: string
+                                      volumeName:
+                                        type: string
+                                    required:
+                                    - key
+                                    - path
+                                    - volumeName
+                                    type: object
+                                    x-kubernetes-map-type: atomic
                                   resourceFieldRef:
                                     properties:
                                       containerName:
@@ -1747,6 +1859,23 @@ spec:
                                   type: string
                               required:
                               - fieldPath
+                              type: object
+                              x-kubernetes-map-type: atomic
+                            fileKeyRef:
+                              properties:
+                                key:
+                                  type: string
+                                optional:
+                                  default: false
+                                  type: boolean
+                                path:
+                                  type: string
+                                volumeName:
+                                  type: string
+                              required:
+                              - key
+                              - path
+                              - volumeName
                               type: object
                               x-kubernetes-map-type: atomic
                             resourceFieldRef:

@@ -199,6 +199,10 @@ spec:
                       key:
                         default: istio-generatedid
                         type: string
+                      listenerName:
+                        maxLength: 63
+                        pattern: ^[a-z0-9]([a-z0-9_]*[a-z0-9])?$
+                        type: string
                       route:
                         properties:
                           topologyAware:
@@ -250,6 +254,10 @@ spec:
                           type: array
                         key:
                           default: istio-generatedid
+                          type: string
+                        listenerName:
+                          maxLength: 63
+                          pattern: ^[a-z0-9]([a-z0-9_]*[a-z0-9])?$
                           type: string
                         route:
                           properties:

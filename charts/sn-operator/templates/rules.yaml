@@ -146,6 +146,7 @@ rules:
   resources:
   - agentfunctions
   - apikeys
+  - connections
   - consoles
   - coordinators
   - kafkaclusters
@@ -173,6 +174,7 @@ rules:
   resources:
   - agentfunctions/finalizers
   - apikeys/finalizers
+  - connections/finalizers
   - consoles/finalizers
   - coordinators/finalizers
   - kafkaclusters/finalizers
@@ -194,6 +196,7 @@ rules:
   resources:
   - agentfunctions/status
   - apikeys/status
+  - connections/status
   - consoles/status
   - coordinators/status
   - kafkaclusters/status
@@ -224,8 +227,19 @@ rules:
   - kafka.strimzi.io
   resources:
   - kafkanodepools
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - kafka.strimzi.io
+  resources:
   - kafkas
   verbs:
+  - create
+  - delete
   - get
   - list
   - patch

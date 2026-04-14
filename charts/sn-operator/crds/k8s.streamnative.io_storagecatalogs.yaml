@@ -42,6 +42,10 @@ spec:
                 type: string
               region:
                 type: string
+              schemaRegistryStorageClassName:
+                type: string
+              schemaRegistryUrl:
+                type: string
               schemaStorageUrl:
                 type: string
               storageUrl:
