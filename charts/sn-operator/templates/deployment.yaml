@@ -54,6 +54,8 @@ spec:
           value: {{ include "sn-operator.namespace" .}}
         - name: AGENT_FUNCTION_ENABLE
           value: "false"
+        - name: ORCA_AGENT_ENABLE
+          value: "false"
         {{- if .Values.env }}
         {{- toYaml .Values.env | nindent 8 }}
         {{- end }}
