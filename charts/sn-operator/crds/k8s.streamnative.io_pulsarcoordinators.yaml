@@ -71,6 +71,8 @@ spec:
                   image:
                     nullable: true
                     type: string
+                  isNativeKafka:
+                    type: boolean
                   kafka:
                     nullable: true
                     properties:

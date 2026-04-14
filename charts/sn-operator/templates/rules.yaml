@@ -1,656 +1,149 @@
 {{- define "sn-operator.rules" -}}
 rules:
 - apiGroups:
-    - ""
+  - ""
   resources:
-    - configmaps
+  - configmaps
+  - persistentvolumeclaims
+  - pods
+  - pods/exec
+  - secrets
+  - serviceaccounts
+  - services
   verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
 - apiGroups:
-    - ""
+  - ""
   resources:
-    - services
+  - namespaces
+  - nodes
   verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
+  - get
+  - list
+  - watch
 - apiGroups:
-    - apps
+  - apps
   resources:
-    - deployments
+  - deployments
+  - statefulsets
   verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
 - apiGroups:
-    - apps
+  - autoscaling
   resources:
-    - statefulsets
+  - horizontalpodautoscalers
   verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
 - apiGroups:
-    - autoscaling
+  - batch
   resources:
-    - horizontalpodautoscalers
+  - jobs
   verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
 - apiGroups:
-    - batch
+  - bookkeeper.streamnative.io
   resources:
-    - jobs
+  - '*'
+  - bookkeeperclusters
   verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
 - apiGroups:
-    - bookkeeper.streamnative.io
+  - bookkeeper.streamnative.io
   resources:
-    - 'bookkeeperclusters'
+  - bookkeeperclusters/finalizers
   verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
+  - update
 - apiGroups:
-    - bookkeeper.streamnative.io
+  - bookkeeper.streamnative.io
   resources:
-    - bookkeeperclusters/finalizers
+  - bookkeeperclusters/status
   verbs:
-    - update
+  - get
+  - patch
+  - update
 - apiGroups:
-    - bookkeeper.streamnative.io
+  - cert-manager.io
   resources:
-    - bookkeeperclusters/status
+  - certificates
   verbs:
-    - get
-    - patch
-    - update
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
 - apiGroups:
-    - cert-manager.io
+  - compute.functionmesh.io
+  - security.istio.io
   resources:
-    - certificates
+  - '*'
   verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
 - apiGroups:
-    - compute.functionmesh.io
+  - coordination.k8s.io
   resources:
-    - backendconfigs
-    - functionmeshes
-    - functions
-    - sources
-    - sinks
+  - leases
   verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
-- apiGroups:
-    - coordination.k8s.io
-  resources:
-    - leases
-  verbs:
-    - create
-    - delete
-    - get
-    - list
-    - update
-- apiGroups:
-    - ""
-  resources:
-    - configmaps
-  verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
-- apiGroups:
-    - ""
-  resources:
-    - namespaces
-    - nodes
-  verbs:
-    - get
-    - list
-    - watch
-- apiGroups:
-    - ""
-  resources:
-    - persistentvolumeclaims
-  verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
-- apiGroups:
-    - ""
-  resources:
-    - pods
-  verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
-- apiGroups:
-    - ""
-  resources:
-    - pods/exec
-  verbs:
-    - create
-- apiGroups:
-    - ""
-  resources:
-    - secrets
-  verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
-- apiGroups:
-    - ""
-  resources:
-    - serviceaccounts
-  verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
-- apiGroups:
-    - ""
-  resources:
-    - services
-  verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
-- apiGroups:
-    - k8s.streamnative.io
-  resources:
-    - apikeys
-  verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
-- apiGroups:
-    - k8s.streamnative.io
-  resources:
-    - apikeys/finalizers
-  verbs:
-    - update
-- apiGroups:
-    - k8s.streamnative.io
-  resources:
-    - apikeys/status
-  verbs:
-    - get
-    - patch
-    - update
-- apiGroups:
-    - k8s.streamnative.io
-  resources:
-    - connectorcatalogs
-  verbs:
-    - get
-    - list
-    - watch
-- apiGroups:
-    - k8s.streamnative.io
-  resources:
-    - consoles
-  verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
-- apiGroups:
-    - k8s.streamnative.io
-  resources:
-    - consoles/finalizers
-  verbs:
-    - update
-- apiGroups:
-    - k8s.streamnative.io
-  resources:
-    - consoles/status
-  verbs:
-    - get
-    - patch
-    - update
+  - create
+  - delete
+  - get
+  - list
+  - update
 - apiGroups:
   - k8s.streamnative.io
   resources:
+  - agentfunctions
+  - apikeys
+  - consoles
+  - coordinators
+  - kafkaclusters
   - kafkaconnects
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - k8s.streamnative.io
-  resources:
-  - kafkaconnects/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - k8s.streamnative.io
-  resources:
-  - kafkaconnects/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - k8s.streamnative.io
-  resources:
+  - kafkarestproxies
   - mqttproxies
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - k8s.streamnative.io
-  resources:
-  - mqttproxies/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - k8s.streamnative.io
-  resources:
-  - mqttproxies/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-    - k8s.streamnative.io
-  resources:
-    - oxiaclusters
-  verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
-- apiGroups:
-    - k8s.streamnative.io
-  resources:
-    - oxiaclusters/finalizers
-  verbs:
-    - update
-- apiGroups:
-    - k8s.streamnative.io
-  resources:
-    - oxiaclusters/status
-  verbs:
-    - get
-    - patch
-    - update
-- apiGroups:
-    - k8s.streamnative.io
-  resources:
-    - oxianamespaces
-  verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
-- apiGroups:
-    - k8s.streamnative.io
-  resources:
-    - oxianamespaces/finalizers
-  verbs:
-    - update
-- apiGroups:
-    - k8s.streamnative.io
-  resources:
-    - oxianamespaces/status
-  verbs:
-    - get
-    - patch
-    - update
-- apiGroups:
-    - k8s.streamnative.io
-  resources:
-    - pfsqlclusters
-  verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
-- apiGroups:
-    - k8s.streamnative.io
-  resources:
-    - pfsqlclusters/finalizers
-  verbs:
-    - update
-- apiGroups:
-    - k8s.streamnative.io
-  resources:
-    - pfsqlclusters/status
-  verbs:
-    - get
-    - patch
-    - update
-- apiGroups:
-    - k8s.streamnative.io
-  resources:
-    - pulsarcoordinators
-  verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
-- apiGroups:
-    - k8s.streamnative.io
-  resources:
-    - pulsarcoordinators/finalizers
-  verbs:
-    - update
-- apiGroups:
-    - k8s.streamnative.io
-  resources:
-    - pulsarcoordinators/status
-  verbs:
-    - get
-    - patch
-    - update
-- apiGroups:
-    - networking.istio.io
-  resources:
-    - 'destinationrules'
-    - 'envoyfilters'
-    - 'gateways'
-    - 'proxyconfigs'
-    - 'serviceentries'
-    - 'sidecars'
-    - 'virtualservices'
-    - 'workloadentries'
-    - 'workloadgroups'
-  verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
-- apiGroups:
-    - networking.k8s.io
-  resources:
-    - ingresses
-  verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
-- apiGroups:
-    - policy
-  resources:
-    - poddisruptionbudgets
-  verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
-- apiGroups:
-    - pulsar.streamnative.io
-  resources:
-    - 'pulsarbrokerrevisions'
-    - 'pulsarbrokers'
-    - 'pulsarfunctionsworkers'
-    - 'pulsarproxies'
-  verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
-- apiGroups:
-    - pulsar.streamnative.io
-  resources:
-    - 'pulsarbrokers/status'
-    - 'pulsarfunctionsworkers/status'
-    - 'pulsarproxies/status'
-    - 'pulsarbrokerrevisions/status'
-  verbs:
-    - get
-    - patch
-    - update
-- apiGroups:
-    - pulsar.streamnative.io
-  resources:
-    - pulsarbrokerrevissions/finalizers
-    - pulsarbrokers/finalizers
-    - pulsarfunctionsworkers/finalizers
-    - pulsarproxies/finalizers
-  verbs:
-    - get
-    - patch
-    - update
-- apiGroups:
-    - rbac.authorization.k8s.io
-  resources:
-    - rolebindings
-  verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
-- apiGroups:
-    - rbac.authorization.k8s.io
-  resources:
-    - roles
-  verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
-- apiGroups:
-    - security.istio.io
-  resources:
-    - 'authorizationpolicies'
-    - 'peerauthentications'
-    - 'requestauthentications'
-  verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
-- apiGroups:
-    - storage.k8s.io
-  resources:
-    - storageclasses
-  verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
-- apiGroups:
-    - monitoring.coreos.com
-  resources:
-    - podmonitors
-    - prometheuses
-    - servicemonitors
-  verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
-- apiGroups:
-    - zookeeper.streamnative.io
-  resources:
-    - 'zookeeperclusters'
-  verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
-- apiGroups:
-    - zookeeper.streamnative.io
-  resources:
-    - zookeeperclusters/finalizers
-  verbs:
-    - update
-- apiGroups:
-    - zookeeper.streamnative.io
-  resources:
-    - zookeeperclusters/status
-  verbs:
-    - get
-    - patch
-    - update
-- apiGroups:
-    - authentication.k8s.io
-  resources:
-    - tokenreviews
-  verbs:
-    - create
-- apiGroups:
-    - authorization.k8s.io
-  resources:
-    - subjectaccessreviews
-  verbs:
-    - create
-- apiGroups:
-  - k8s.streamnative.io
-  resources:
+  - oxiaclusters
+  - oxianamespaces
+  - pfsqlclusters
+  - pulsarcoordinators
+  - snschemaregistries
+  - storagecatalogs
   - unilinks
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - k8s.streamnative.io
-  resources:
-  - unilinks/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - k8s.streamnative.io
-  resources:
-  - unilinks/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - k8s.streamnative.io
-  resources:
   - unilinkschemas
   verbs:
   - create
@@ -663,67 +156,205 @@ rules:
 - apiGroups:
   - k8s.streamnative.io
   resources:
+  - agentfunctions/finalizers
+  - apikeys/finalizers
+  - consoles/finalizers
+  - coordinators/finalizers
+  - kafkaclusters/finalizers
+  - kafkaconnects/finalizers
+  - kafkarestproxies/finalizers
+  - mqttproxies/finalizers
+  - oxiaclusters/finalizers
+  - oxianamespaces/finalizers
+  - pfsqlclusters/finalizers
+  - pulsarcoordinators/finalizers
+  - snschemaregistries/finalizers
+  - storagecatalogs/finalizers
+  - unilinks/finalizers
   - unilinkschemas/finalizers
   verbs:
   - update
 - apiGroups:
   - k8s.streamnative.io
   resources:
+  - agentfunctions/status
+  - apikeys/status
+  - consoles/status
+  - coordinators/status
+  - kafkaclusters/status
+  - kafkaconnects/status
+  - kafkarestproxies/status
+  - mqttproxies/status
+  - oxiaclusters/status
+  - oxianamespaces/status
+  - pfsqlclusters/status
+  - pulsarcoordinators/status
+  - snschemaregistries/status
+  - storagecatalogs/status
+  - unilinks/status
   - unilinkschemas/status
   verbs:
   - get
   - patch
   - update
 - apiGroups:
-    - k8s.streamnative.io
+  - k8s.streamnative.io
   resources:
-    - storagecatalogs
+  - connectorcatalogs
   verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
+  - get
+  - list
+  - watch
 - apiGroups:
-    - k8s.streamnative.io
+  - kafka.strimzi.io
   resources:
-    - storagecatalogs/finalizers
+  - kafkanodepools
+  - kafkas
   verbs:
-    - update
+  - get
+  - list
+  - patch
+  - update
+  - watch
 - apiGroups:
-    - k8s.streamnative.io
+  - monitoring.coreos.com
   resources:
-    - storagecatalogs/status
+  - podmonitors
+  - prometheuses
+  - servicemonitors
   verbs:
-    - get
-    - patch
-    - update
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
 - apiGroups:
-    - k8s.streamnative.io
+  - networking.istio.io
   resources:
-    - agentfunctions
+  - '*'
+  - destinationrules
+  - gateways
+  - virtualservices
   verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
 - apiGroups:
-    - k8s.streamnative.io
+  - networking.k8s.io
   resources:
-    - agentfunctions/finalizers
+  - ingresses
   verbs:
-    - update
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
 - apiGroups:
-    - k8s.streamnative.io
+  - policy
   resources:
-    - agentfunctions/status
+  - poddisruptionbudgets
   verbs:
-    - get
-    - patch
-    - update
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - pulsar.streamnative.io
+  resources:
+  - '*'
+  - pulsarbrokerrevissions
+  - pulsarbrokers
+  - pulsarfunctionsworkers
+  - pulsarproxies
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - pulsar.streamnative.io
+  resources:
+  - pulsarbrokerrevissions/finalizers
+  - pulsarbrokers/finalizers
+  - pulsarfunctionsworkers/finalizers
+  - pulsarproxies/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - pulsar.streamnative.io
+  resources:
+  - pulsarbrokerrevissions/status
+  - pulsarbrokers/status
+  - pulsarfunctionsworkers/status
+  - pulsarproxies/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - rolebindings
+  - roles
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - storage.k8s.io
+  resources:
+  - storageclasses
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - zookeeper.streamnative.io
+  resources:
+  - '*'
+  - zookeeperclusters
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - zookeeper.streamnative.io
+  resources:
+  - zookeeperclusters/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - zookeeper.streamnative.io
+  resources:
+  - zookeeperclusters/status
+  verbs:
+  - get
+  - patch
+  - update
 {{- end -}}
