@@ -252,11 +252,37 @@ rules:
 - apiGroups:
     - k8s.streamnative.io
   resources:
+    - connections
+  verbs:
+    - create
+    - delete
+    - get
+    - list
+    - patch
+    - update
+    - watch
+- apiGroups:
+    - k8s.streamnative.io
+  resources:
     - connectorcatalogs
   verbs:
     - get
     - list
     - watch
+- apiGroups:
+    - k8s.streamnative.io
+  resources:
+    - connections/finalizers
+  verbs:
+    - update
+- apiGroups:
+    - k8s.streamnative.io
+  resources:
+    - connections/status
+  verbs:
+    - get
+    - patch
+    - update
 - apiGroups:
     - k8s.streamnative.io
   resources:
@@ -284,9 +310,61 @@ rules:
     - patch
     - update
 - apiGroups:
-  - k8s.streamnative.io
+    - k8s.streamnative.io
   resources:
-  - kafkaconnects
+    - coordinators
+  verbs:
+    - create
+    - delete
+    - get
+    - list
+    - patch
+    - update
+    - watch
+- apiGroups:
+    - k8s.streamnative.io
+  resources:
+    - coordinators/finalizers
+  verbs:
+    - update
+- apiGroups:
+    - k8s.streamnative.io
+  resources:
+    - coordinators/status
+  verbs:
+    - get
+    - patch
+    - update
+- apiGroups:
+    - k8s.streamnative.io
+  resources:
+    - kafkaclusters
+  verbs:
+    - create
+    - delete
+    - get
+    - list
+    - patch
+    - update
+    - watch
+- apiGroups:
+    - k8s.streamnative.io
+  resources:
+    - kafkaclusters/finalizers
+  verbs:
+    - update
+- apiGroups:
+    - k8s.streamnative.io
+  resources:
+    - kafkaclusters/status
+  verbs:
+    - get
+    - patch
+    - update
+- apiGroups:
+    - k8s.streamnative.io
+  resources:
+    - kafkaconnects
   verbs:
   - create
   - delete
@@ -305,6 +383,32 @@ rules:
   - k8s.streamnative.io
   resources:
   - kafkaconnects/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - k8s.streamnative.io
+  resources:
+  - kafkarestproxies
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - k8s.streamnative.io
+  resources:
+  - kafkarestproxies/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - k8s.streamnative.io
+  resources:
+  - kafkarestproxies/status
   verbs:
   - get
   - patch
@@ -409,6 +513,32 @@ rules:
     - k8s.streamnative.io
   resources:
     - pfsqlclusters/status
+  verbs:
+    - get
+    - patch
+    - update
+- apiGroups:
+    - k8s.streamnative.io
+  resources:
+    - snschemaregistries
+  verbs:
+    - create
+    - delete
+    - get
+    - list
+    - patch
+    - update
+    - watch
+- apiGroups:
+    - k8s.streamnative.io
+  resources:
+    - snschemaregistries/finalizers
+  verbs:
+    - update
+- apiGroups:
+    - k8s.streamnative.io
+  resources:
+    - snschemaregistries/status
   verbs:
     - get
     - patch
