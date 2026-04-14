@@ -1,0 +1,270 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.16.5
+  name: kafkaclusters.k8s.streamnative.io
+spec:
+  group: k8s.streamnative.io
+  names:
+    kind: KafkaCluster
+    listKind: KafkaClusterList
+    plural: kafkaclusters
+    shortNames:
+    - kc
+    - kafkac
+    singular: kafkacluster
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .status.brokerCount
+      name: Brokers
+      type: integer
+    - jsonPath: .status.readyBrokerCount
+      name: Ready
+      type: integer
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        properties:
+          apiVersion:
+            type: string
+          kind:
+            type: string
+          metadata:
+            type: object
+          spec:
+            properties:
+              advertisedListeners:
+                items:
+                  properties:
+                    authentication:
+                      properties:
+                        apiKey:
+                          properties:
+                            oidcIssuers:
+                              items:
+                                properties:
+                                  adminScope:
+                                    default: admin
+                                    type: string
+                                  audience:
+                                    type: string
+                                  authzAdminRole:
+                                    type: string
+                                  authzRoleClaim:
+                                    type: string
+                                  issuerUrl:
+                                    type: string
+                                  publicKeyFilePath:
+                                    type: string
+                                  publicKeySecretRef:
+                                    properties:
+                                      key:
+                                        type: string
+                                      name:
+                                        type: string
+                                    required:
+                                    - name
+                                    type: object
+                                  requiredScope:
+                                    type: string
+                                  scopeClaim:
+                                    default: scope
+                                    type: string
+                                  subjectClaim:
+                                    default: sub
+                                    type: string
+                                required:
+                                - audience
+                                - issuerUrl
+                                type: object
+                              type: array
+                              x-kubernetes-list-map-keys:
+                              - issuerUrl
+                              x-kubernetes-list-type: map
+                            revocationListLoadIntervalInSecs:
+                              format: int32
+                              type: integer
+                            revocationListSecretRef:
+                              properties:
+                                key:
+                                  type: string
+                                name:
+                                  type: string
+                              required:
+                              - name
+                              type: object
+                            revocationListUrl:
+                              type: string
+                            skipRevocationListValidationOnRevocationListInitFailure:
+                              type: boolean
+                          type: object
+                        custom:
+                          type: object
+                          x-kubernetes-preserve-unknown-fields: true
+                        type:
+                          default: plain
+                          enum:
+                          - plain
+                          - scram-sha-512
+                          - tls
+                          - oauth
+                          - apikey
+                          - custom
+                          type: string
+                      type: object
+                    containerPort:
+                      default: 9092
+                      format: int32
+                      maximum: 65535
+                      minimum: 1
+                      type: integer
+                    hostTemplate:
+                      type: string
+                    istioGateway:
+                      properties:
+                        advertisedPort:
+                          format: int32
+                          maximum: 65535
+                          minimum: 1
+                          type: integer
+                        clusterAddress:
+                          type: string
+                        selector:
+                          additionalProperties:
+                            type: string
+                          type: object
+                        tls:
+                          properties:
+                            certSecretName:
+                              type: string
+                            mode:
+                              enum:
+                              - SIMPLE
+                              - PASSTHROUGH
+                              type: string
+                          type: object
+                      required:
+                      - advertisedPort
+                      type: object
+                    name:
+                      type: string
+                    protocol:
+                      default: PLAINTEXT
+                      enum:
+                      - PLAINTEXT
+                      - SSL
+                      - SASL_SSL
+                      - SASL_PLAINTEXT
+                      type: string
+                    tls:
+                      properties:
+                        certificate:
+                          default: tls.crt
+                          type: string
+                        key:
+                          default: tls.key
+                          type: string
+                        secretName:
+                          type: string
+                      required:
+                      - secretName
+                      type: object
+                  required:
+                  - name
+                  type: object
+                maxItems: 10
+                type: array
+                x-kubernetes-list-map-keys:
+                - name
+                x-kubernetes-list-type: map
+              config:
+                properties:
+                  custom:
+                    additionalProperties:
+                      type: string
+                    type: object
+                type: object
+              externalKafkaResourceRefs:
+                items:
+                  properties:
+                    apiGroup:
+                      type: string
+                    kind:
+                      type: string
+                    name:
+                      type: string
+                  required:
+                  - kind
+                  - name
+                  type: object
+                minItems: 1
+                type: array
+            required:
+            - externalKafkaResourceRefs
+            type: object
+          status:
+            properties:
+              brokerCount:
+                format: int32
+                type: integer
+              conditions:
+                items:
+                  properties:
+                    lastTransitionTime:
+                      format: date-time
+                      type: string
+                    message:
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+              endpoints:
+                items:
+                  type: string
+                type: array
+              observedGeneration:
+                format: int64
+                type: integer
+              readyBrokerCount:
+                format: int32
+                type: integer
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

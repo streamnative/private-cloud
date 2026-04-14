@@ -77,6 +77,48 @@ spec:
                         type: array
                       currentKid:
                         type: string
+                      defaultSigningKey:
+                        properties:
+                          googleCloudKMS:
+                            properties:
+                              currentVersion:
+                                minimum: 1
+                                type: integer
+                              gcpProject:
+                                type: string
+                              keyName:
+                                type: string
+                              keyRing:
+                                type: string
+                              location:
+                                type: string
+                            required:
+                            - currentVersion
+                            - gcpProject
+                            - keyName
+                            - keyRing
+                            - location
+                            type: object
+                          localSecret:
+                            properties:
+                              keyName:
+                                type: string
+                              namespace:
+                                type: string
+                              secretName:
+                                type: string
+                            required:
+                            - keyName
+                            - secretName
+                            type: object
+                          source:
+                            enum:
+                            - GoogleCloudKMS
+                            - LocalSecret
+                            type: string
+                        required:
+                        - source
+                        type: object
                       disableV1Routes:
                         type: boolean
                       logLevel:
@@ -95,6 +137,11 @@ spec:
                       maxRevoked:
                         default: 10000
                         type: integer
+                      multiTenant:
+                        properties:
+                          enable:
+                            type: boolean
+                        type: object
                     type: object
                 type: object
               hostname:

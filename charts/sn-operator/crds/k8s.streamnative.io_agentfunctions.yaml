@@ -34,6 +34,10 @@ spec:
                     type: string
                   agentFramework:
                     type: string
+                  funcs:
+                    items:
+                      type: string
+                    type: array
                   log:
                     properties:
                       format:
