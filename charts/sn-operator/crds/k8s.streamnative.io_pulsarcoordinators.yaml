@@ -68,6 +68,37 @@ spec:
                 type: object
               detector:
                 properties:
+                  clientAuth:
+                    properties:
+                      generic:
+                        properties:
+                          authParams:
+                            type: string
+                          authPlugin:
+                            type: string
+                          custom:
+                            additionalProperties:
+                              type: string
+                            type: object
+                        required:
+                        - authParams
+                        - authPlugin
+                        type: object
+                      jwt:
+                        properties:
+                          secret:
+                            type: string
+                          token:
+                            type: string
+                        type: object
+                      mtls:
+                        properties:
+                          certSecretName:
+                            type: string
+                        required:
+                        - certSecretName
+                        type: object
+                    type: object
                   image:
                     nullable: true
                     type: string
@@ -139,6 +170,33 @@ spec:
               fullMetrics:
                 nullable: true
                 properties:
+                  authConfig:
+                    properties:
+                      allowedScopes:
+                        default:
+                        - admin
+                        items:
+                          type: string
+                        type: array
+                      audience:
+                        type: string
+                      issuerUrl:
+                        type: string
+                      jwksUri:
+                        type: string
+                      jwtHeaderName:
+                        default: x-jwt-Authorization
+                        type: string
+                      jwtHeaderPrefix:
+                        default: 'ApiKey '
+                        type: string
+                      scopeClaimKey:
+                        default: https://streamnative.io/scope
+                        type: string
+                    required:
+                    - audience
+                    - issuerUrl
+                    type: object
                   config:
                     properties:
                       image:
@@ -203,6 +261,10 @@ spec:
                         type: array
                       key:
                         default: istio-generatedid
+                        type: string
+                      listenerName:
+                        maxLength: 63
+                        pattern: ^[a-z0-9]([a-z0-9_]*[a-z0-9])?$
                         type: string
                       route:
                         properties:
@@ -469,7 +531,44 @@ spec:
                 type: object
               toolSet:
                 properties:
+                  bootstrapServer:
+                    type: string
+                  clientAuth:
+                    properties:
+                      generic:
+                        properties:
+                          authParams:
+                            type: string
+                          authPlugin:
+                            type: string
+                          custom:
+                            additionalProperties:
+                              type: string
+                            type: object
+                        required:
+                        - authParams
+                        - authPlugin
+                        type: object
+                      jwt:
+                        properties:
+                          secret:
+                            type: string
+                          token:
+                            type: string
+                        type: object
+                      mtls:
+                        properties:
+                          certSecretName:
+                            type: string
+                        required:
+                        - certSecretName
+                        type: object
+                    type: object
                   enabled:
+                    type: boolean
+                  image:
+                    type: string
+                  isNativeKafka:
                     type: boolean
                   pod:
                     properties:

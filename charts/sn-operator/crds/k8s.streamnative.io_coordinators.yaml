@@ -39,6 +39,37 @@ spec:
             properties:
               detector:
                 properties:
+                  clientAuth:
+                    properties:
+                      generic:
+                        properties:
+                          authParams:
+                            type: string
+                          authPlugin:
+                            type: string
+                          custom:
+                            additionalProperties:
+                              type: string
+                            type: object
+                        required:
+                        - authParams
+                        - authPlugin
+                        type: object
+                      jwt:
+                        properties:
+                          secret:
+                            type: string
+                          token:
+                            type: string
+                        type: object
+                      mtls:
+                        properties:
+                          certSecretName:
+                            type: string
+                        required:
+                        - certSecretName
+                        type: object
+                    type: object
                   image:
                     nullable: true
                     type: string
@@ -151,7 +182,44 @@ spec:
                 type: object
               toolSet:
                 properties:
+                  bootstrapServer:
+                    type: string
+                  clientAuth:
+                    properties:
+                      generic:
+                        properties:
+                          authParams:
+                            type: string
+                          authPlugin:
+                            type: string
+                          custom:
+                            additionalProperties:
+                              type: string
+                            type: object
+                        required:
+                        - authParams
+                        - authPlugin
+                        type: object
+                      jwt:
+                        properties:
+                          secret:
+                            type: string
+                          token:
+                            type: string
+                        type: object
+                      mtls:
+                        properties:
+                          certSecretName:
+                            type: string
+                        required:
+                        - certSecretName
+                        type: object
+                    type: object
                   enabled:
+                    type: boolean
+                  image:
+                    type: string
+                  isNativeKafka:
                     type: boolean
                   pod:
                     properties:
