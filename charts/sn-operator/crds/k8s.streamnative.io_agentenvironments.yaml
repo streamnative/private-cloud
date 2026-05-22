@@ -4,17 +4,29 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.5
-  name: storagecatalogs.k8s.streamnative.io
+  name: agentenvironments.k8s.streamnative.io
 spec:
   group: k8s.streamnative.io
   names:
-    kind: StorageCatalog
-    listKind: StorageCatalogList
-    plural: storagecatalogs
-    singular: storagecatalog
+    kind: AgentEnvironment
+    listKind: AgentEnvironmentList
+    plural: agentenvironments
+    shortNames:
+    - saenv
+    singular: agentenvironment
   scope: Namespaced
   versions:
-  - name: v1alpha1
+  - additionalPrinterColumns:
+    - jsonPath: .spec.provider
+      name: Provider
+      type: string
+    - jsonPath: .spec.claudeManagedAgent.objectId
+      name: ExternalID
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1alpha1
     schema:
       openAPIV3Schema:
         properties:
@@ -26,35 +38,19 @@ spec:
             type: object
           spec:
             properties:
-              backendStorageType:
-                default: S3
-                enum:
-                - S3
-                - Local
-                - GCS
-                - AzureBlob
-                - AZUREBLOB
+              claudeManagedAgent:
+                properties:
+                  objectId:
+                    minLength: 1
+                    type: string
+                required:
+                - objectId
+                type: object
+              provider:
+                minLength: 1
                 type: string
-              bucket:
-                type: string
-              oxiaMetadataServiceUrl:
-                type: string
-              prefix:
-                type: string
-              region:
-                type: string
-              schemaRegistryStorageClassName:
-                type: string
-              schemaRegistryUrl:
-                type: string
-              schemaStorageUrl:
-                type: string
-              storageUrl:
-                type: string
-              useOwnStorage:
-                type: boolean
             required:
-            - oxiaMetadataServiceUrl
+            - provider
             type: object
           status:
             properties:
@@ -97,6 +93,9 @@ spec:
                 x-kubernetes-list-map-keys:
                 - type
                 x-kubernetes-list-type: map
+              observedGeneration:
+                format: int64
+                type: integer
             type: object
         type: object
     served: true

@@ -861,6 +861,8 @@ spec:
                             type: string
                           skipRevocationListValidationOnRevocationListInitFailure:
                             type: boolean
+                        required:
+                        - oidcIssuers
                         type: object
                       jwt:
                         properties:

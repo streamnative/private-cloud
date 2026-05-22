@@ -137,6 +137,18 @@ spec:
                       webServiceURL:
                         type: string
                     type: object
+                  topicsLoad:
+                    nullable: true
+                    properties:
+                      enabled:
+                        type: boolean
+                      interval:
+                        type: string
+                      rateLimit:
+                        type: string
+                      startDelay:
+                        type: string
+                    type: object
                 type: object
               image:
                 type: string
