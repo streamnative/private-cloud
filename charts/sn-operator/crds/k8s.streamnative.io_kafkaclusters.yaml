@@ -103,6 +103,8 @@ spec:
                               type: string
                             skipRevocationListValidationOnRevocationListInitFailure:
                               type: boolean
+                          required:
+                          - oidcIssuers
                           type: object
                         custom:
                           type: object
@@ -185,6 +187,99 @@ spec:
                 x-kubernetes-list-type: map
               config:
                 properties:
+                  broker:
+                    properties:
+                      annotations:
+                        additionalProperties:
+                          type: string
+                        type: object
+                      jvmOptions:
+                        properties:
+                          javaSystemProperties:
+                            items:
+                              properties:
+                                name:
+                                  type: string
+                                value:
+                                  type: string
+                              required:
+                              - name
+                              - value
+                              type: object
+                            type: array
+                          xms:
+                            type: string
+                          xmx:
+                            type: string
+                          xx:
+                            additionalProperties:
+                              type: string
+                            type: object
+                        type: object
+                      labels:
+                        additionalProperties:
+                          type: string
+                        type: object
+                      replicas:
+                        format: int32
+                        type: integer
+                      resources:
+                        properties:
+                          claims:
+                            items:
+                              properties:
+                                name:
+                                  type: string
+                                request:
+                                  type: string
+                              required:
+                              - name
+                              type: object
+                            type: array
+                            x-kubernetes-list-map-keys:
+                            - name
+                            x-kubernetes-list-type: map
+                          limits:
+                            additionalProperties:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                              x-kubernetes-int-or-string: true
+                            type: object
+                          requests:
+                            additionalProperties:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                              x-kubernetes-int-or-string: true
+                            type: object
+                        type: object
+                      storage:
+                        properties:
+                          class:
+                            type: string
+                          deleteClaim:
+                            type: boolean
+                          selector:
+                            additionalProperties:
+                              type: string
+                            type: object
+                          size:
+                            anyOf:
+                            - type: integer
+                            - type: string
+                            pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                            x-kubernetes-int-or-string: true
+                          sizeLimit:
+                            type: string
+                          type:
+                            type: string
+                          volumeAttributesClass:
+                            type: string
+                        type: object
+                    type: object
                   compactionScheduler:
                     properties:
                       config:
@@ -196,6 +291,7 @@ spec:
                             - Local
                             - GCS
                             - AzureBlob
+                            - AZUREBLOB
                             - AzureDfs
                             type: string
                           catalog:
@@ -224,6 +320,27 @@ spec:
                                 - uri
                                 - warehouse
                                 type: object
+                              horizon:
+                                nullable: true
+                                properties:
+                                  accessDelegation:
+                                    type: string
+                                  scope:
+                                    type: string
+                                  secret:
+                                    type: string
+                                  tokenRefreshEnabled:
+                                    type: boolean
+                                  type:
+                                    type: string
+                                  uri:
+                                    type: string
+                                  warehouse:
+                                    type: string
+                                required:
+                                - uri
+                                - warehouse
+                                type: object
                               mode:
                                 default: MANAGED
                                 enum:
@@ -244,8 +361,6 @@ spec:
                                   type:
                                     type: string
                                   uri:
-                                    type: string
-                                  userProject:
                                     type: string
                                   warehouse:
                                     type: string
@@ -268,8 +383,6 @@ spec:
                                     type: string
                                   uri:
                                     type: string
-                                  userProject:
-                                    type: string
                                   warehouse:
                                     type: string
                                 required:
@@ -291,8 +404,6 @@ spec:
                                     type: string
                                   uri:
                                     type: string
-                                  userProject:
-                                    type: string
                                   warehouse:
                                     type: string
                                 required:
@@ -313,8 +424,6 @@ spec:
                                   type:
                                     type: string
                                   uri:
-                                    type: string
-                                  userProject:
                                     type: string
                                   warehouse:
                                     type: string
@@ -371,6 +480,27 @@ spec:
                                   - uri
                                   - warehouse
                                   type: object
+                                horizon:
+                                  nullable: true
+                                  properties:
+                                    accessDelegation:
+                                      type: string
+                                    scope:
+                                      type: string
+                                    secret:
+                                      type: string
+                                    tokenRefreshEnabled:
+                                      type: boolean
+                                    type:
+                                      type: string
+                                    uri:
+                                      type: string
+                                    warehouse:
+                                      type: string
+                                  required:
+                                  - uri
+                                  - warehouse
+                                  type: object
                                 mode:
                                   default: MANAGED
                                   enum:
@@ -394,8 +524,6 @@ spec:
                                       type: string
                                     uri:
                                       type: string
-                                    userProject:
-                                      type: string
                                     warehouse:
                                       type: string
                                   required:
@@ -416,8 +544,6 @@ spec:
                                     type:
                                       type: string
                                     uri:
-                                      type: string
-                                    userProject:
                                       type: string
                                     warehouse:
                                       type: string
@@ -440,8 +566,6 @@ spec:
                                       type: string
                                     uri:
                                       type: string
-                                    userProject:
-                                      type: string
                                     warehouse:
                                       type: string
                                   required:
@@ -462,8 +586,6 @@ spec:
                                     type:
                                       type: string
                                     uri:
-                                      type: string
-                                    userProject:
                                       type: string
                                     warehouse:
                                       type: string
@@ -2216,6 +2338,99 @@ spec:
                         minimum: 0
                         type: integer
                     type: object
+                  controller:
+                    properties:
+                      annotations:
+                        additionalProperties:
+                          type: string
+                        type: object
+                      jvmOptions:
+                        properties:
+                          javaSystemProperties:
+                            items:
+                              properties:
+                                name:
+                                  type: string
+                                value:
+                                  type: string
+                              required:
+                              - name
+                              - value
+                              type: object
+                            type: array
+                          xms:
+                            type: string
+                          xmx:
+                            type: string
+                          xx:
+                            additionalProperties:
+                              type: string
+                            type: object
+                        type: object
+                      labels:
+                        additionalProperties:
+                          type: string
+                        type: object
+                      replicas:
+                        format: int32
+                        type: integer
+                      resources:
+                        properties:
+                          claims:
+                            items:
+                              properties:
+                                name:
+                                  type: string
+                                request:
+                                  type: string
+                              required:
+                              - name
+                              type: object
+                            type: array
+                            x-kubernetes-list-map-keys:
+                            - name
+                            x-kubernetes-list-type: map
+                          limits:
+                            additionalProperties:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                              x-kubernetes-int-or-string: true
+                            type: object
+                          requests:
+                            additionalProperties:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                              x-kubernetes-int-or-string: true
+                            type: object
+                        type: object
+                      storage:
+                        properties:
+                          class:
+                            type: string
+                          deleteClaim:
+                            type: boolean
+                          selector:
+                            additionalProperties:
+                              type: string
+                            type: object
+                          size:
+                            anyOf:
+                            - type: integer
+                            - type: string
+                            pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                            x-kubernetes-int-or-string: true
+                          sizeLimit:
+                            type: string
+                          type:
+                            type: string
+                          volumeAttributesClass:
+                            type: string
+                        type: object
+                    type: object
                   cruiseControl:
                     properties:
                       config:
@@ -2270,6 +2485,14 @@ spec:
                     type: object
                   entityOperator:
                     properties:
+                      annotations:
+                        additionalProperties:
+                          type: string
+                        type: object
+                      labels:
+                        additionalProperties:
+                          type: string
+                        type: object
                       topicOperator:
                         properties:
                           image:
@@ -2361,6 +2584,40 @@ spec:
                           - value
                           type: object
                         type: array
+                      xms:
+                        type: string
+                      xmx:
+                        type: string
+                      xx:
+                        additionalProperties:
+                          type: string
+                        type: object
+                    type: object
+                  metricsConfig:
+                    properties:
+                      type:
+                        type: string
+                      valueFrom:
+                        properties:
+                          configMapKeyRef:
+                            properties:
+                              key:
+                                type: string
+                              name:
+                                type: string
+                              optional:
+                                type: boolean
+                            type: object
+                        type: object
+                      values:
+                        properties:
+                          allowList:
+                            items:
+                              type: string
+                            type: array
+                        type: object
+                    required:
+                    - type
                     type: object
                   template:
                     properties:
@@ -2459,6 +2716,28 @@ spec:
               observedGeneration:
                 format: int64
                 type: integer
+              pendingChanges:
+                items:
+                  properties:
+                    action:
+                      type: string
+                    apiVersion:
+                      type: string
+                    diff:
+                      type: string
+                    kind:
+                      type: string
+                    name:
+                      type: string
+                  required:
+                  - action
+                  - apiVersion
+                  - diff
+                  - kind
+                  - name
+                  type: object
+                nullable: true
+                type: array
               readyBrokerCount:
                 format: int32
                 type: integer

@@ -299,7 +299,11 @@ spec:
                 type: object
               java:
                 properties:
+                  entryClass:
+                    type: string
                   extraDependenciesDir:
+                    type: string
+                  instancePath:
                     type: string
                   jar:
                     type: string
@@ -1340,6 +1344,8 @@ spec:
                     items:
                       type: string
                     type: array
+                  disableDefaultAffinity:
+                    type: boolean
                   env:
                     items:
                       properties:
@@ -3964,6 +3970,90 @@ spec:
                   tlsSecret:
                     type: string
                 type: object
+              pulsarPackageService:
+                properties:
+                  authConfig:
+                    properties:
+                      genericAuth:
+                        properties:
+                          clientAuthenticationParameters:
+                            type: string
+                          clientAuthenticationPlugin:
+                            type: string
+                        required:
+                        - clientAuthenticationParameters
+                        - clientAuthenticationPlugin
+                        type: object
+                      oauth2Config:
+                        properties:
+                          audience:
+                            type: string
+                          issuerUrl:
+                            type: string
+                          keySecretKey:
+                            type: string
+                          keySecretName:
+                            type: string
+                          scope:
+                            type: string
+                        required:
+                        - audience
+                        - issuerUrl
+                        - keySecretKey
+                        - keySecretName
+                        type: object
+                    type: object
+                  authSecret:
+                    type: string
+                  cleanupAuthConfig:
+                    properties:
+                      genericAuth:
+                        properties:
+                          clientAuthenticationParameters:
+                            type: string
+                          clientAuthenticationPlugin:
+                            type: string
+                        required:
+                        - clientAuthenticationParameters
+                        - clientAuthenticationPlugin
+                        type: object
+                      oauth2Config:
+                        properties:
+                          audience:
+                            type: string
+                          issuerUrl:
+                            type: string
+                          keySecretKey:
+                            type: string
+                          keySecretName:
+                            type: string
+                          scope:
+                            type: string
+                        required:
+                        - audience
+                        - issuerUrl
+                        - keySecretKey
+                        - keySecretName
+                        type: object
+                    type: object
+                  pulsarConfig:
+                    type: string
+                  tlsConfig:
+                    properties:
+                      allowInsecure:
+                        type: boolean
+                      certSecretKey:
+                        type: string
+                      certSecretName:
+                        type: string
+                      enabled:
+                        type: boolean
+                      hostnameVerification:
+                        type: boolean
+                    type: object
+                  tlsSecret:
+                    type: string
+                type: object
               python:
                 properties:
                   log:
@@ -4072,8 +4162,42 @@ spec:
                 type: object
               showPreciseParallelism:
                 type: boolean
+              sinkConfig:
+                properties:
+                  className:
+                    type: string
+                  configs:
+                    type: object
+                    x-kubernetes-preserve-unknown-fields: true
+                  sinkType:
+                    type: string
+                  typeClassName:
+                    type: string
+                type: object
               skipToLatest:
                 type: boolean
+              sourceConfig:
+                properties:
+                  batchSourceConfig:
+                    properties:
+                      discoveryTriggererClassName:
+                        type: string
+                      discoveryTriggererConfig:
+                        type: object
+                        x-kubernetes-preserve-unknown-fields: true
+                    required:
+                    - discoveryTriggererClassName
+                    type: object
+                  className:
+                    type: string
+                  configs:
+                    type: object
+                    x-kubernetes-preserve-unknown-fields: true
+                  sourceType:
+                    type: string
+                  typeClassName:
+                    type: string
+                type: object
               statefulConfig:
                 properties:
                   pulsar:
@@ -4319,6 +4443,11 @@ spec:
                   maxLagMs:
                     format: int64
                     type: integer
+                  processingGuarantees:
+                    enum:
+                    - ATLEAST_ONCE
+                    - ATMOST_ONCE
+                    type: string
                   slidingIntervalCount:
                     format: int32
                     type: integer

@@ -28,6 +28,9 @@ spec:
             properties:
               coordinator:
                 properties:
+                  config:
+                    type: object
+                    x-kubernetes-preserve-unknown-fields: true
                   logLevel:
                     type: string
                   resources:
@@ -257,6 +260,9 @@ spec:
                   blockCacheSizeMB:
                     format: int32
                     type: integer
+                  config:
+                    type: object
+                    x-kubernetes-preserve-unknown-fields: true
                   logLevel:
                     type: string
                   persistentVolumeClaimRetentionPolicy:

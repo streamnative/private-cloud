@@ -814,6 +814,8 @@ spec:
                             type: string
                           skipRevocationListValidationOnRevocationListInitFailure:
                             type: boolean
+                        required:
+                        - oidcIssuers
                         type: object
                       jwt:
                         properties:
@@ -910,7 +912,11 @@ spec:
                         properties:
                           oxia:
                             properties:
+                              agentNamespace:
+                                type: string
                               cluster:
+                                type: string
+                              functionNamespace:
                                 type: string
                             required:
                             - cluster

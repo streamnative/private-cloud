@@ -49,8 +49,29 @@ spec:
                   properties:
                     hostTemplate:
                       type: string
+                    istioGateway:
+                      properties:
+                        clusterAddress:
+                          type: string
+                        selector:
+                          additionalProperties:
+                            type: string
+                          type: object
+                        tls:
+                          properties:
+                            certSecretName:
+                              type: string
+                            mode:
+                              enum:
+                              - SIMPLE
+                              - PASSTHROUGH
+                              type: string
+                          required:
+                          - mode
+                          type: object
+                      type: object
                     name:
-                      maxLength: 63
+                      maxLength: 8
                       pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
                       type: string
                     protocols:
@@ -997,6 +1018,8 @@ spec:
                             type: string
                           skipRevocationListValidationOnRevocationListInitFailure:
                             type: boolean
+                        required:
+                        - oidcIssuers
                         type: object
                       jwt:
                         properties:
@@ -1069,6 +1092,7 @@ spec:
                             - Local
                             - GCS
                             - AzureBlob
+                            - AZUREBLOB
                             - AzureDfs
                             type: string
                           catalog:
@@ -1097,6 +1121,27 @@ spec:
                                 - uri
                                 - warehouse
                                 type: object
+                              horizon:
+                                nullable: true
+                                properties:
+                                  accessDelegation:
+                                    type: string
+                                  scope:
+                                    type: string
+                                  secret:
+                                    type: string
+                                  tokenRefreshEnabled:
+                                    type: boolean
+                                  type:
+                                    type: string
+                                  uri:
+                                    type: string
+                                  warehouse:
+                                    type: string
+                                required:
+                                - uri
+                                - warehouse
+                                type: object
                               mode:
                                 default: MANAGED
                                 enum:
@@ -1117,8 +1162,6 @@ spec:
                                   type:
                                     type: string
                                   uri:
-                                    type: string
-                                  userProject:
                                     type: string
                                   warehouse:
                                     type: string
@@ -1141,8 +1184,6 @@ spec:
                                     type: string
                                   uri:
                                     type: string
-                                  userProject:
-                                    type: string
                                   warehouse:
                                     type: string
                                 required:
@@ -1164,8 +1205,6 @@ spec:
                                     type: string
                                   uri:
                                     type: string
-                                  userProject:
-                                    type: string
                                   warehouse:
                                     type: string
                                 required:
@@ -1186,8 +1225,6 @@ spec:
                                   type:
                                     type: string
                                   uri:
-                                    type: string
-                                  userProject:
                                     type: string
                                   warehouse:
                                     type: string
@@ -1244,6 +1281,27 @@ spec:
                                   - uri
                                   - warehouse
                                   type: object
+                                horizon:
+                                  nullable: true
+                                  properties:
+                                    accessDelegation:
+                                      type: string
+                                    scope:
+                                      type: string
+                                    secret:
+                                      type: string
+                                    tokenRefreshEnabled:
+                                      type: boolean
+                                    type:
+                                      type: string
+                                    uri:
+                                      type: string
+                                    warehouse:
+                                      type: string
+                                  required:
+                                  - uri
+                                  - warehouse
+                                  type: object
                                 mode:
                                   default: MANAGED
                                   enum:
@@ -1267,8 +1325,6 @@ spec:
                                       type: string
                                     uri:
                                       type: string
-                                    userProject:
-                                      type: string
                                     warehouse:
                                       type: string
                                   required:
@@ -1289,8 +1345,6 @@ spec:
                                     type:
                                       type: string
                                     uri:
-                                      type: string
-                                    userProject:
                                       type: string
                                     warehouse:
                                       type: string
@@ -1313,8 +1367,6 @@ spec:
                                       type: string
                                     uri:
                                       type: string
-                                    userProject:
-                                      type: string
                                     warehouse:
                                       type: string
                                   required:
@@ -1335,8 +1387,6 @@ spec:
                                     type:
                                       type: string
                                     uri:
-                                      type: string
-                                    userProject:
                                       type: string
                                     warehouse:
                                       type: string
@@ -3129,7 +3179,11 @@ spec:
                         properties:
                           oxia:
                             properties:
+                              agentNamespace:
+                                type: string
                               cluster:
+                                type: string
+                              functionNamespace:
                                 type: string
                             required:
                             - cluster
@@ -3341,6 +3395,7 @@ spec:
                         - Local
                         - GCS
                         - AzureBlob
+                        - AZUREBLOB
                         type: string
                       bucket:
                         type: string
