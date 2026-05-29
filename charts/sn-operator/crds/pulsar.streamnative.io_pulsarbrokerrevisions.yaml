@@ -2948,11 +2948,45 @@ spec:
                         properties:
                           enabled:
                             type: boolean
+                          saslAllowedMechanisms:
+                            items:
+                              type: string
+                            type: array
+                          schemaRegistry:
+                            properties:
+                              istioGateway:
+                                properties:
+                                  clusterAddress:
+                                    type: string
+                                  selector:
+                                    additionalProperties:
+                                      type: string
+                                    type: object
+                                  tls:
+                                    properties:
+                                      certSecretName:
+                                        type: string
+                                      mode:
+                                        enum:
+                                        - SIMPLE
+                                        - PASSTHROUGH
+                                        type: string
+                                    required:
+                                    - mode
+                                    type: object
+                                type: object
+                            type: object
                           schemaRegistryEnabled:
                             type: boolean
                           tls:
                             properties:
                               certSecretName:
+                                type: string
+                              clientAuth:
+                                enum:
+                                - none
+                                - requested
+                                - required
                                 type: string
                               enabled:
                                 type: boolean
