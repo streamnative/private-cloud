@@ -16,7 +16,7 @@ metadata:
   name: private-cloud
   namespace: pulsar
 spec:
-  monitoringEnabled: true
+  monitoringEnabled: false
   image: oxia/oxia:0.16.7
   imagePullPolicy: IfNotPresent
   server:
