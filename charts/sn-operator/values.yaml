@@ -18,6 +18,9 @@ image:
 
 env: []
 
+# -- Container name for the sn-operator manager container.
+containerName: manager
+
 # -- Specifies image pull secrets for private registry, the format is `- name: gcr`
 imagePullSecrets: []
 # If you want to specify secrets, follow this format
