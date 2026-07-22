@@ -92,5 +92,5 @@ tolerations: []
 # -- Add affinity for pod
 affinity: {}
 
-# -- The period seconds that pod will be termiated gracefully
+# -- The period seconds that pod will be terminated gracefully
 terminationGracePeriodSeconds: 10
