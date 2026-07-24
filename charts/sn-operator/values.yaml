@@ -18,6 +18,9 @@ image:
 
 env: []
 
+# -- Container name for the sn-operator manager container.
+containerName: manager
+
 # -- Specifies image pull secrets for private registry, the format is `- name: gcr`
 imagePullSecrets: []
 # If you want to specify secrets, follow this format
@@ -89,5 +92,5 @@ tolerations: []
 # -- Add affinity for pod
 affinity: {}
 
-# -- The period seconds that pod will be termiated gracefully
+# -- The period seconds that pod will be terminated gracefully
 terminationGracePeriodSeconds: 10
