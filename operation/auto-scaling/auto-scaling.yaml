@@ -20,6 +20,13 @@ spec:
   autoScalingPolicy:
     minReplicas: 1
     maxReplicas: 4
+    metrics:
+      - type: Resource
+        resource:
+          name: cpu
+          target:
+            type: Utilization
+            averageUtilization: 80
 ---
 apiVersion: pulsar.streamnative.io/v1alpha1
 kind: PulsarProxy
@@ -42,3 +49,10 @@ spec:
   autoScalingPolicy:
     minReplicas: 1
     maxReplicas: 4
+    metrics:
+      - type: Resource
+        resource:
+          name: cpu
+          target:
+            type: Utilization
+            averageUtilization: 80
