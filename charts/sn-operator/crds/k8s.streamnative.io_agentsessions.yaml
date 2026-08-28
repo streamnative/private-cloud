@@ -4,21 +4,24 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.5
-  name: agentvaults.k8s.streamnative.io
+  name: agentsessions.k8s.streamnative.io
 spec:
   group: k8s.streamnative.io
   names:
-    kind: AgentVault
-    listKind: AgentVaultList
-    plural: agentvaults
+    kind: AgentSession
+    listKind: AgentSessionList
+    plural: agentsessions
     shortNames:
-    - sav
-    singular: agentvault
+    - sas
+    singular: agentsession
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
     - jsonPath: .spec.provider
       name: Provider
+      type: string
+    - jsonPath: .spec.agentId
+      name: AgentID
       type: string
     - jsonPath: .spec.claudeManagedAgent.objectId
       name: ExternalID
@@ -29,7 +32,7 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: AgentVault is the Schema for agent vault binding/index records.
+        description: AgentSession is the Schema for agent session binding/index records.
         properties:
           apiVersion:
             description: |-
@@ -49,8 +52,13 @@ spec:
           metadata:
             type: object
           spec:
-            description: AgentVaultSpec defines the desired state of AgentVault.
+            description: AgentSessionSpec defines the desired state of AgentSession.
             properties:
+              agentId:
+                description: AgentID is the local managed agent id that owns this
+                  session.
+                minLength: 1
+                type: string
               claudeManagedAgent:
                 description: ClaudeManagedAgent stores Anthropic Claude Managed Agent-specific
                   routing data.
@@ -64,15 +72,17 @@ spec:
                 - objectId
                 type: object
               provider:
-                description: It can represent either a provider type or a provider
+                description: Provider can represent either a provider type or a provider
                   connection id.
                 minLength: 1
                 type: string
             required:
+            - agentId
             - provider
             type: object
           status:
-            description: AgentVaultStatus provides the standard status shape for AgentVault.
+            description: AgentSessionStatus provides the standard status shape for
+              AgentSession.
             properties:
               conditions:
                 description: Conditions is an array of current observed conditions.

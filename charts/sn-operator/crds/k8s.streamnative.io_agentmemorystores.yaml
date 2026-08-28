@@ -4,16 +4,16 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.5
-  name: agentvaults.k8s.streamnative.io
+  name: agentmemorystores.k8s.streamnative.io
 spec:
   group: k8s.streamnative.io
   names:
-    kind: AgentVault
-    listKind: AgentVaultList
-    plural: agentvaults
+    kind: AgentMemoryStore
+    listKind: AgentMemoryStoreList
+    plural: agentmemorystores
     shortNames:
-    - sav
-    singular: agentvault
+    - sams
+    singular: agentmemorystore
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -29,7 +29,8 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: AgentVault is the Schema for agent vault binding/index records.
+        description: AgentMemoryStore is the Schema for agent memory store binding/index
+          records.
         properties:
           apiVersion:
             description: |-
@@ -49,7 +50,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: AgentVaultSpec defines the desired state of AgentVault.
+            description: AgentMemoryStoreSpec defines the desired state of AgentMemoryStore.
             properties:
               claudeManagedAgent:
                 description: ClaudeManagedAgent stores Anthropic Claude Managed Agent-specific
@@ -72,7 +73,8 @@ spec:
             - provider
             type: object
           status:
-            description: AgentVaultStatus provides the standard status shape for AgentVault.
+            description: AgentMemoryStoreStatus provides the standard status shape
+              for AgentMemoryStore.
             properties:
               conditions:
                 description: Conditions is an array of current observed conditions.

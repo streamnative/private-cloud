@@ -4,20 +4,19 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.5
-  name: kafkaconnects.k8s.streamnative.io
+  name: agenttriggers.k8s.streamnative.io
 spec:
   group: k8s.streamnative.io
   names:
-    kind: KafkaConnect
-    listKind: KafkaConnectList
-    plural: kafkaconnects
-    singular: kafkaconnect
+    kind: AgentTrigger
+    listKind: AgentTriggerList
+    plural: agenttriggers
+    singular: agenttrigger
   scope: Namespaced
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: KafkaConnect is the Schema for the apikeys API
         properties:
           apiVersion:
             description: |-
@@ -37,672 +36,21 @@ spec:
           metadata:
             type: object
           spec:
-            description: KafkaConnectSpec defines the desired state of KafkaConnect
             properties:
-              autoAck:
-                type: boolean
-              className:
-                type: string
-              cleanupImage:
-                description: the image used to clean up subscription, if empty, the
-                  runner image will be used
-                type: string
-              cleanupSubscription:
-                type: boolean
-              clusterName:
-                type: string
-              connectWorkerConfig:
-                description: ConnectWorkerConfig connect specific configurations
+              agentRef:
                 properties:
-                  additionalConfigs:
-                    description: Additional configs that are not present in the KafkaConnectConfig
-                      yet
-                    type: object
-                    x-kubernetes-preserve-unknown-fields: true
-                  bootstrapServers:
-                    description: KafkaConnect servers, can be leave empty and got
-                      from the `KafkaMessaging.BootstrapServers`
-                    type: string
-                  clientDNSLookup:
-                    description: Controls how the client uses DNS lookups.
-                    enum:
-                    - use_all_dns_ips
-                    - resolve_canonical_bootstrap_servers_only
-                    type: string
-                  clientId:
-                    description: An id string to pass to the kafka when making requests
-                    type: string
-                  configProviders:
-                    description: Comma-separated names of <code>org.apache.kafka.common.config.provider.ConfigProvider</code>
-                      classes
-                    type: string
-                  connectionsMaxIdleMs:
-                    description: Close idle connections after the number of milliseconds
-                      specified by this config
-                    format: int64
-                    type: integer
-                  connectorClientConfigOverridePolicy:
-                    description: Defines what client configurations can be overridden
-                      by the connector
-                    type: string
-                  exactlyOnceSourceSupport:
-                    description: Whether to enable exactly-once support for source
-                      connectors, valid values are DISABLED, PREPARING, ENABLED
-                    enum:
-                    - DISABLED
-                    - PREPARING
-                    - ENABLED
-                    type: string
-                  groupId:
-                    description: The group id of the connect cluster
-                    type: string
-                  headerConverter:
-                    description: Class used to convert between KafkaConnect Connect
-                      format and the serialized form that is written to KafkaConnect
-                    type: string
-                  keyConverter:
-                    description: Converter class used to convert between KafkaConnect
-                      Connect format and the serialized form that is written to KafkaConnect
-                    type: string
-                  metricsNumSample:
-                    description: The number of samples maintained to compute metrics
-                    type: integer
-                  metricsRecordingLevel:
-                    description: The highest recording level for metrics
-                    enum:
-                    - INFO
-                    - DEBUG
-                    type: string
-                  metricsReporter:
-                    description: A list of classes to use as metrics reporters
-                    type: string
-                  metricsSampleWindowMs:
-                    description: The window of time a metrics sample is computed over
-                    format: int64
-                    type: integer
-                  offsetCommitIntervalMs:
-                    description: Interval at which to try committing offsets for tasks
-                    format: int64
-                    type: integer
-                  offsetCommitTimeoutMs:
-                    description: |-
-                      Maximum number of milliseconds to wait for records to flush and partition offset data to be committed to offset
-                      storage before cancelling the process and restoring the offset data to be committed in a future attempt
-                    format: int64
-                    type: integer
-                  offsetStoragePartitions:
-                    description: Replication factor used when creating the offset
-                      storage topic
-                    format: int32
-                    type: integer
-                  offsetStorageReplicationFactor:
-                    description: The number of partitions used when creating the offset
-                      storage topic
-                    type: integer
-                  offsetStorageTopic:
-                    description: The name of the KafkaConnect topic where source connector
-                      offsets are stored
-                    type: string
-                  pluginDiscovery:
-                    description: Method to use to discover plugins present in the
-                      classpath and plugin.path configuration.
-                    enum:
-                    - only_scan
-                    - hybrid_warn
-                    - hybrid_fail
-                    - service_load
-                    type: string
-                  pluginPath:
-                    description: List of paths separated by commas (,) that contain
-                      plugins (connectors, converters, transformations)
-                    type: string
-                  receiveBuffer:
-                    description: The size of the TCP receive buffer (SO_RCVBUF) to
-                      use when reading data
-                    type: integer
-                  reconnectBackoffMaxMs:
-                    description: The maximum amount of time in milliseconds to wait
-                      when reconnecting to a broker that has repeatedly failed to
-                      connect
-                    format: int64
-                    type: integer
-                  reconnectBackoffMs:
-                    description: The base amount of time to wait before attempting
-                      to reconnect to a given hosts
-                    format: int64
-                    type: integer
-                  requestTimeoutMs:
-                    description: The maximum amount of time the client will wait for
-                      the response of a request
-                    format: int64
-                    type: integer
-                  retryBackoffMs:
-                    description: The amount of time to wait before attempting to retry
-                      a failed request to a given topic partition
-                    format: int64
-                    type: integer
-                  securityProtocol:
-                    description: 'Protocol used to communicate with brokers. Valid
-                      values are: PLAINTEXT, SSL, SASL_PLAIN, SASL_SSL'
-                    enum:
-                    - PLAINTEXT
-                    - SSL
-                    - SASL_PLAIN
-                    - SASL_SSL
-                    type: string
-                  sendBuffer:
-                    description: The size of the TCP send buffer (SO_SNDBUF) to use
-                      when sending data
-                    type: integer
-                  socketConnectionSetupTimeoutMaxMs:
-                    description: The maximum amount of time the client will wait for
-                      the socket connection to be established
-                    format: int64
-                    type: integer
-                  socketConnectionSetupTimeoutMs:
-                    description: The amount of time the client will wait for the socket
-                      connection to be established
-                    format: int64
-                    type: integer
-                  taskShutdownGracefulTimeoutMs:
-                    description: Amount of time to wait for tasks to shut down gracefully.
-                    format: int64
-                    type: integer
-                  topicCreationEnable:
-                    description: Whether to allow automatic creation of topics used
-                      by source connectors
-                    type: boolean
-                  valueConverter:
-                    description: Converter class used to convert between KafkaConnect
-                      Connect format and the serialized form that is written to KafkaConnect.
-                    type: string
-                type: object
-              deadLetterTopic:
-                type: string
-              downloaderImage:
-                type: string
-              filebeatImage:
-                type: string
-              forwardSourceMessageProperty:
-                type: boolean
-              funcConfig:
-                description: Config represents untyped YAML configuration.
-                type: object
-                x-kubernetes-preserve-unknown-fields: true
-              genericRuntime:
-                description: GenericRuntime contains the generic runtime configs
-                properties:
-                  functionFile:
-                    type: string
-                  functionFileLocation:
-                    type: string
-                  language:
+                  name:
                     type: string
                 required:
-                - functionFile
-                - language
-                type: object
-              golang:
-                description: GoRuntime contains the golang runtime configs
-                properties:
-                  go:
-                    type: string
-                  goLocation:
-                    type: string
-                  log:
-                    properties:
-                      format:
-                        enum:
-                        - json
-                        - text
-                        type: string
-                      javaLog4JConfigFileType:
-                        enum:
-                        - yaml
-                        - xml
-                        - ini
-                        type: string
-                      level:
-                        description: LogLevel describes the level of the logging
-                        enum:
-                        - "off"
-                        - trace
-                        - debug
-                        - info
-                        - warn
-                        - error
-                        - fatal
-                        - all
-                        - panic
-                        type: string
-                      logConfig:
-                        properties:
-                          key:
-                            type: string
-                          name:
-                            type: string
-                        required:
-                        - key
-                        - name
-                        type: object
-                      rotatePolicy:
-                        description: TriggeringPolicy is using to determine if a rollover
-                          should occur.
-                        enum:
-                        - TimedPolicyWithDaily
-                        - TimedPolicyWithWeekly
-                        - TimedPolicyWithMonthly
-                        - SizedPolicyWith10MB
-                        - SizedPolicyWith50MB
-                        - SizedPolicyWith100MB
-                        type: string
-                    type: object
-                required:
-                - go
+                - name
                 type: object
               image:
-                description: |-
-                  Image is the container image used to run function pods.
-                  default is streamnative/pulsar-functions-java-runner
+                default: streamnative/orca-agent-trigger
                 type: string
-              imageHasGet:
-                description: Image which has wget will use wget to download http package
-                type: boolean
-              imageHasPulsarctl:
-                description: Image which has pulsarctl will use pulsarctl to download
-                  package and do cleanup
-                type: boolean
-              imagePullPolicy:
-                description: Image pull policy, one of Always, Never, IfNotPresent,
-                  default to IfNotPresent.
-                type: string
-              input:
-                properties:
-                  customSchemaSources:
-                    additionalProperties:
-                      type: string
-                    type: object
-                  customSerdeSources:
-                    additionalProperties:
-                      type: string
-                    type: object
-                  sourceSpecs:
-                    additionalProperties:
-                      properties:
-                        consumerProperties:
-                          additionalProperties:
-                            type: string
-                          type: object
-                        cryptoConfig:
-                          properties:
-                            consumerCryptoFailureAction:
-                              type: string
-                            cryptoKeyReaderClassName:
-                              type: string
-                            cryptoKeyReaderConfig:
-                              additionalProperties:
-                                type: string
-                              type: object
-                            cryptoSecrets:
-                              items:
-                                properties:
-                                  asVolume:
-                                    type: string
-                                  secretKey:
-                                    type: string
-                                  secretName:
-                                    type: string
-                                required:
-                                - secretKey
-                                - secretName
-                                type: object
-                              type: array
-                            encryptionKeys:
-                              items:
-                                type: string
-                              type: array
-                            producerCryptoFailureAction:
-                              type: string
-                          type: object
-                        isRegexPattern:
-                          type: boolean
-                        receiverQueueSize:
-                          format: int32
-                          type: integer
-                        schemaProperties:
-                          additionalProperties:
-                            type: string
-                          type: object
-                        schemaType:
-                          type: string
-                        serdeClassname:
-                          type: string
-                      type: object
-                    type: object
-                  topicPattern:
-                    type: string
-                  topics:
-                    items:
-                      type: string
-                    type: array
-                  typeClassName:
-                    type: string
-                type: object
-              java:
-                description: JavaRuntime contains the java runtime configs
-                properties:
-                  entryClass:
-                    type: string
-                  extraDependenciesDir:
-                    type: string
-                  instancePath:
-                    type: string
-                  jar:
-                    type: string
-                  jarLocation:
-                    type: string
-                  javaOpts:
-                    items:
-                      type: string
-                    type: array
-                  log:
-                    properties:
-                      format:
-                        enum:
-                        - json
-                        - text
-                        type: string
-                      javaLog4JConfigFileType:
-                        enum:
-                        - yaml
-                        - xml
-                        - ini
-                        type: string
-                      level:
-                        description: LogLevel describes the level of the logging
-                        enum:
-                        - "off"
-                        - trace
-                        - debug
-                        - info
-                        - warn
-                        - error
-                        - fatal
-                        - all
-                        - panic
-                        type: string
-                      logConfig:
-                        properties:
-                          key:
-                            type: string
-                          name:
-                            type: string
-                        required:
-                        - key
-                        - name
-                        type: object
-                      rotatePolicy:
-                        description: TriggeringPolicy is using to determine if a rollover
-                          should occur.
-                        enum:
-                        - TimedPolicyWithDaily
-                        - TimedPolicyWithWeekly
-                        - TimedPolicyWithMonthly
-                        - SizedPolicyWith10MB
-                        - SizedPolicyWith50MB
-                        - SizedPolicyWith100MB
-                        type: string
-                    type: object
-                required:
-                - jar
-                type: object
-              kafka:
-                properties:
-                  authConfig:
-                    properties:
-                      genericAuth:
-                        description: for backward compatibility
-                        properties:
-                          clientAuthenticationParameters:
-                            type: string
-                          clientAuthenticationPlugin:
-                            type: string
-                        required:
-                        - clientAuthenticationParameters
-                        - clientAuthenticationPlugin
-                        type: object
-                      oauth2Config:
-                        properties:
-                          audience:
-                            type: string
-                          issuerUrl:
-                            type: string
-                          keySecretKey:
-                            description: the secret key of the OAuth2 private key
-                              file, such as `auth.json`
-                            type: string
-                          keySecretName:
-                            description: the secret name of the OAuth2 private key
-                              file
-                            type: string
-                          scope:
-                            type: string
-                        required:
-                        - audience
-                        - issuerUrl
-                        - keySecretKey
-                        - keySecretName
-                        type: object
-                      plainAuthConfig:
-                        properties:
-                          passwordKey:
-                            type: string
-                          secretName:
-                            description: The name of the k8s secret that contains
-                              the username and password for Kafka authentication
-                            type: string
-                          usernameKey:
-                            type: string
-                        required:
-                        - secretName
-                        type: object
-                      scramAuthConfig:
-                        properties:
-                          hashAlgorithm:
-                            enum:
-                            - SHA-256
-                            - SHA-512
-                            type: string
-                          passwordKey:
-                            type: string
-                          secretName:
-                            description: The name of the k8s secret that contains
-                              the username and password for Kafka authentication
-                            type: string
-                          usernameKey:
-                            type: string
-                        required:
-                        - secretName
-                        type: object
-                    type: object
-                  bootstrapServers:
-                    description: A list of host/port pairs to use for establishing
-                      the initial connection to the KafkaConnect cluster
-                    type: string
-                  tlsConfig:
-                    properties:
-                      enabled:
-                        type: boolean
-                      keyStoreConfig:
-                        properties:
-                          fileKey:
-                            description: The key in the secret that contains the keystore
-                              file(either JKS, PEM or PKCS12 file)
-                            type: string
-                          keyPasswordKey:
-                            description: The key in the secret that contains the key
-                              password for the private key
-                            type: string
-                          passwordKey:
-                            description: The key in the secret that contains the password
-                              for the keystore (only for JKS and PKCS12)
-                            type: string
-                          secretName:
-                            description: The name of the k8s secret that contains
-                              the keystore for Kafka TLS connection and its password
-                            type: string
-                          type:
-                            enum:
-                            - JKS
-                            - PEM
-                            - PKCS12
-                            type: string
-                        type: object
-                      trustStoreConfig:
-                        properties:
-                          fileKey:
-                            description: The key in the secret that contains the truststore
-                              file(either JKS, PEM or PKCS12 file)
-                            type: string
-                          passwordKey:
-                            description: The key in the secret that contains the password
-                              for the truststore (only for JKS and PKCS12)
-                            type: string
-                          secretName:
-                            description: The name of the k8s secret that contains
-                              the truststore for Kafka TLS connection and its password
-                            type: string
-                          type:
-                            enum:
-                            - JKS
-                            - PEM
-                            - PKCS12
-                            type: string
-                        type: object
-                    type: object
-                type: object
-              logTopic:
-                type: string
-              logTopicAgent:
-                description: LogTopicAgent enum type
-                enum:
-                - runtime
-                - sidecar
-                type: string
-              maxMessageRetry:
-                format: int32
-                type: integer
-              maxPendingAsyncRequests:
-                format: int32
-                type: integer
-              maxReplicas:
-                description: |-
-                  MaxReplicas indicates the maximum number of replicas and enables the HorizontalPodAutoscaler
-                  If provided, a default HPA with CPU at average of 80% will be used.
-                  For complex HPA strategies, please refer to Pod.HPAutoscaler.
-                format: int32
-                type: integer
-              minReplicas:
-                default: 1
-                format: int32
-                minimum: 0
-                type: integer
               name:
-                description: |-
-                  INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-                  Important: Run "make" to regenerate code after modifying this file
                 type: string
-              namespace:
-                type: string
-              output:
-                properties:
-                  customSchemaSinks:
-                    additionalProperties:
-                      type: string
-                    type: object
-                  producerConf:
-                    properties:
-                      batchBuilder:
-                        type: string
-                      compressionType:
-                        description: CompressionType enum type
-                        enum:
-                        - NONE
-                        - LZ4
-                        - ZLIB
-                        - ZSTD
-                        - SNAPPY
-                        type: string
-                      cryptoConfig:
-                        properties:
-                          consumerCryptoFailureAction:
-                            type: string
-                          cryptoKeyReaderClassName:
-                            type: string
-                          cryptoKeyReaderConfig:
-                            additionalProperties:
-                              type: string
-                            type: object
-                          cryptoSecrets:
-                            items:
-                              properties:
-                                asVolume:
-                                  type: string
-                                secretKey:
-                                  type: string
-                                secretName:
-                                  type: string
-                              required:
-                              - secretKey
-                              - secretName
-                              type: object
-                            type: array
-                          encryptionKeys:
-                            items:
-                              type: string
-                            type: array
-                          producerCryptoFailureAction:
-                            type: string
-                        type: object
-                      maxPendingMessages:
-                        format: int32
-                        type: integer
-                      maxPendingMessagesAcrossPartitions:
-                        format: int32
-                        type: integer
-                      useThreadLocalProducers:
-                        type: boolean
-                    type: object
-                  sinkSchemaType:
-                    type: string
-                  sinkSerdeClassName:
-                    type: string
-                  topic:
-                    type: string
-                  typeClassName:
-                    type: string
-                type: object
-              persistentVolumeClaimRetentionPolicy:
-                description: |-
-                  StatefulSetPersistentVolumeClaimRetentionPolicy describes the policy used for PVCs
-                  created from the StatefulSet VolumeClaimTemplates.
-                properties:
-                  whenDeleted:
-                    description: |-
-                      WhenDeleted specifies what happens to PVCs created from StatefulSet
-                      VolumeClaimTemplates when the StatefulSet is deleted. The default policy
-                      of `Retain` causes PVCs to not be affected by StatefulSet deletion. The
-                      `Delete` policy causes those PVCs to be deleted.
-                    type: string
-                  whenScaled:
-                    description: |-
-                      WhenScaled specifies what happens to PVCs created from StatefulSet
-                      VolumeClaimTemplates when the StatefulSet is scaled down. The default
-                      policy of `Retain` causes PVCs to not be affected by a scaledown. The
-                      `Delete` policy causes the associated PVCs for any excess pods above
-                      the replica count to be deleted.
-                    type: string
-                type: object
+              paused:
+                type: boolean
               pod:
                 properties:
                   affinity:
@@ -7989,29 +7337,10 @@ spec:
                         type: object
                     type: object
                 type: object
-              processingGuarantee:
-                description: ProcessGuarantee enum type
-                enum:
-                - atleast_once
-                - atmost_once
-                - effectively_once
-                - manual
-                type: string
-              pulsar:
+              registry:
                 properties:
-                  authConfig:
-                    description: To replace the AuthSecret
+                  auth:
                     properties:
-                      genericAuth:
-                        properties:
-                          clientAuthenticationParameters:
-                            type: string
-                          clientAuthenticationPlugin:
-                            type: string
-                        required:
-                        - clientAuthenticationParameters
-                        - clientAuthenticationPlugin
-                        type: object
                       oauth2Config:
                         properties:
                           audience:
@@ -8034,245 +7363,36 @@ spec:
                         - keySecretKey
                         - keySecretName
                         type: object
-                    type: object
-                  authSecret:
-                    description: |-
-                      The auth secret should contain the following fields
-                      clientAuthenticationPlugin
-                      clientAuthenticationParameters
-                    type: string
-                  cleanupAuthConfig:
-                    properties:
-                      genericAuth:
+                      token:
                         properties:
-                          clientAuthenticationParameters:
-                            type: string
-                          clientAuthenticationPlugin:
-                            type: string
+                          secretRef:
+                            description: SecretKeyRef references a key in a Secret
+                            properties:
+                              key:
+                                description: Key in the secret
+                                type: string
+                              name:
+                                description: Name of the secret
+                                type: string
+                            required:
+                            - key
+                            - name
+                            type: object
                         required:
-                        - clientAuthenticationParameters
-                        - clientAuthenticationPlugin
+                        - secretRef
                         type: object
-                      oauth2Config:
-                        properties:
-                          audience:
-                            type: string
-                          issuerUrl:
-                            type: string
-                          keySecretKey:
-                            description: the secret key of the OAuth2 private key
-                              file, such as `auth.json`
-                            type: string
-                          keySecretName:
-                            description: the secret name of the OAuth2 private key
-                              file
-                            type: string
-                          scope:
-                            type: string
-                        required:
-                        - audience
-                        - issuerUrl
-                        - keySecretKey
-                        - keySecretName
-                        type: object
-                    type: object
-                  pulsarConfig:
-                    description: |-
-                      The config map need to contain the following fields
-                      webServiceURL
-                      brokerServiceURL
-                    type: string
-                  tlsConfig:
-                    description: To replace the TLSSecret
-                    properties:
-                      allowInsecure:
-                        type: boolean
-                      certSecretKey:
-                        type: string
-                      certSecretName:
-                        type: string
-                      enabled:
-                        type: boolean
-                      hostnameVerification:
-                        type: boolean
-                    type: object
-                  tlsSecret:
-                    description: |-
-                      The TLS secret should contain the following fields
-                      use_tls
-                      tls_allow_insecure
-                      hostname_verification_enabled
-                      tls_trust_cert_path
-                    type: string
-                type: object
-              pulsarPackageService:
-                description: |-
-                  PulsarPackageService is used for package download when specified.
-                  If empty, the package download falls back to Messaging.Pulsar.
-                properties:
-                  authConfig:
-                    description: To replace the AuthSecret
-                    properties:
-                      genericAuth:
-                        properties:
-                          clientAuthenticationParameters:
-                            type: string
-                          clientAuthenticationPlugin:
-                            type: string
-                        required:
-                        - clientAuthenticationParameters
-                        - clientAuthenticationPlugin
-                        type: object
-                      oauth2Config:
-                        properties:
-                          audience:
-                            type: string
-                          issuerUrl:
-                            type: string
-                          keySecretKey:
-                            description: the secret key of the OAuth2 private key
-                              file, such as `auth.json`
-                            type: string
-                          keySecretName:
-                            description: the secret name of the OAuth2 private key
-                              file
-                            type: string
-                          scope:
-                            type: string
-                        required:
-                        - audience
-                        - issuerUrl
-                        - keySecretKey
-                        - keySecretName
-                        type: object
-                    type: object
-                  authSecret:
-                    description: |-
-                      The auth secret should contain the following fields
-                      clientAuthenticationPlugin
-                      clientAuthenticationParameters
-                    type: string
-                  cleanupAuthConfig:
-                    properties:
-                      genericAuth:
-                        properties:
-                          clientAuthenticationParameters:
-                            type: string
-                          clientAuthenticationPlugin:
-                            type: string
-                        required:
-                        - clientAuthenticationParameters
-                        - clientAuthenticationPlugin
-                        type: object
-                      oauth2Config:
-                        properties:
-                          audience:
-                            type: string
-                          issuerUrl:
-                            type: string
-                          keySecretKey:
-                            description: the secret key of the OAuth2 private key
-                              file, such as `auth.json`
-                            type: string
-                          keySecretName:
-                            description: the secret name of the OAuth2 private key
-                              file
-                            type: string
-                          scope:
-                            type: string
-                        required:
-                        - audience
-                        - issuerUrl
-                        - keySecretKey
-                        - keySecretName
-                        type: object
-                    type: object
-                  pulsarConfig:
-                    description: |-
-                      The config map need to contain the following fields
-                      webServiceURL
-                      brokerServiceURL
-                    type: string
-                  tlsConfig:
-                    description: To replace the TLSSecret
-                    properties:
-                      allowInsecure:
-                        type: boolean
-                      certSecretKey:
-                        type: string
-                      certSecretName:
-                        type: string
-                      enabled:
-                        type: boolean
-                      hostnameVerification:
-                        type: boolean
-                    type: object
-                  tlsSecret:
-                    description: |-
-                      The TLS secret should contain the following fields
-                      use_tls
-                      tls_allow_insecure
-                      hostname_verification_enabled
-                      tls_trust_cert_path
-                    type: string
-                type: object
-              python:
-                description: PythonRuntime contains the python runtime configs
-                properties:
-                  log:
-                    properties:
-                      format:
+                      type:
                         enum:
-                        - json
-                        - text
+                        - token
+                        - oauth2
                         type: string
-                      javaLog4JConfigFileType:
-                        enum:
-                        - yaml
-                        - xml
-                        - ini
-                        type: string
-                      level:
-                        description: LogLevel describes the level of the logging
-                        enum:
-                        - "off"
-                        - trace
-                        - debug
-                        - info
-                        - warn
-                        - error
-                        - fatal
-                        - all
-                        - panic
-                        type: string
-                      logConfig:
-                        properties:
-                          key:
-                            type: string
-                          name:
-                            type: string
-                        required:
-                        - key
-                        - name
-                        type: object
-                      rotatePolicy:
-                        description: TriggeringPolicy is using to determine if a rollover
-                          should occur.
-                        enum:
-                        - TimedPolicyWithDaily
-                        - TimedPolicyWithWeekly
-                        - TimedPolicyWithMonthly
-                        - SizedPolicyWith10MB
-                        - SizedPolicyWith50MB
-                        - SizedPolicyWith100MB
-                        type: string
+                    required:
+                    - type
                     type: object
-                  py:
-                    type: string
-                  pyLocation:
+                  baseUrl:
                     type: string
                 required:
-                - py
+                - baseUrl
                 type: object
               replicas:
                 format: int32
@@ -8337,12 +7457,6 @@ spec:
                       More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
                     type: object
                 type: object
-              retainKeyOrdering:
-                type: boolean
-              retainOrdering:
-                type: boolean
-              runtimeFlags:
-                type: string
               secretsMap:
                 additionalProperties:
                   properties:
@@ -8352,536 +7466,343 @@ spec:
                       type: string
                   type: object
                 type: object
-              showPreciseParallelism:
-                description: |-
-                  Whether show the precise parallelism, if true, the `Parallelism` will be equal to the `Replicas`,
-                  in such case, update the `Replicas` will cause all pods being recreated since the command of pod is updated.
-                  else, the `Parallelism` will be 1, default to false.
-                  It just affects the result of context.getNumInstances, there will be only 1 process and 1 thread in each pod in any cases.
-                type: boolean
-              sinkConfig:
-                description: SinkConnectorSpec describes configurable fields when
-                  a function overrides its sink implementation.
+              session:
                 properties:
-                  className:
-                    description: ClassName is the fully qualified sink implementation
-                      class.
+                  environmentId:
                     type: string
-                  configs:
-                    description: Configs contains connector specific options.
+                  metadata:
+                    additionalProperties:
+                      type: string
                     type: object
-                    x-kubernetes-preserve-unknown-fields: true
-                  sinkType:
-                    description: SinkType refers to the built-in sink identifier when
-                      using connectors packaged with Pulsar.
+                  titleTemplate:
                     type: string
-                  typeClassName:
-                    description: TypeClassName overrides the message type for the
-                      sink.
-                    type: string
+                  vaultIds:
+                    items:
+                      type: string
+                    type: array
                 type: object
-              skipToLatest:
-                type: boolean
-              sourceConfig:
-                description: SourceConnectorSpec describes configurable fields when
-                  a function overrides its source implementation.
+              sessionMode:
+                enum:
+                - SESSION_PER_EVENT
+                - SESSION_PER_TOPIC
+                - SESSION_PER_KEY
+                type: string
+              source:
+                description: AgentTriggerSource
                 properties:
-                  batchSourceConfig:
-                    description: Builtin holds the resolved name of a built-in source
-                      connector.
+                  kafkaConfigs:
                     properties:
-                      discoveryTriggererClassName:
-                        type: string
-                      discoveryTriggererConfig:
+                      consumerAdditionalConfig:
                         description: Config represents untyped YAML configuration.
                         type: object
                         x-kubernetes-preserve-unknown-fields: true
-                    required:
-                    - discoveryTriggererClassName
-                    type: object
-                  className:
-                    description: ClassName is the fully qualified source implementation
-                      class.
-                    type: string
-                  configs:
-                    description: Configs contains connector specific options.
-                    type: object
-                    x-kubernetes-preserve-unknown-fields: true
-                  sourceType:
-                    description: |-
-                      Archive points to a nar archive containing the connector. It can reference built-in connectors using the
-                      builtin:// scheme.
-                    type: string
-                  typeClassName:
-                    description: TypeClassName overrides the expected message type.
-                    type: string
-                type: object
-              statefulConfig:
-                properties:
-                  pulsar:
-                    properties:
-                      javaProvider:
-                        description: The state store config for Java runtime
-                        properties:
-                          className:
-                            description: |-
-                              The java class name of the state store provider implementation
-                              The class must implement `org.apache.pulsar.functions.instance.state.StateStoreProvider` interface
-                              If not set, `org.apache.pulsar.functions.instance.state.BKStateStoreProviderImpl` will be used
-                            type: string
-                          config:
-                            description: The configmap of the configuration for the
-                              state store provider
-                            type: object
-                        required:
-                        - className
+                      inputSchemaConfigs:
+                        additionalProperties:
+                          properties:
+                            subject:
+                              type: string
+                            type:
+                              type: string
+                            version:
+                              format: int32
+                              type: integer
+                          type: object
                         type: object
-                      serviceUrl:
-                        description: |-
-                          The service url points to the state store service
-                          By default, the state store service is bookkeeper table service
-                        type: string
-                    required:
-                    - serviceUrl
-                    type: object
-                type: object
-              subscriptionName:
-                type: string
-              subscriptionPosition:
-                description: SubscribePosition enum type
-                enum:
-                - latest
-                - earliest
-                type: string
-              tenant:
-                type: string
-              timeout:
-                format: int32
-                type: integer
-              volumeClaimTemplates:
-                items:
-                  description: PersistentVolumeClaim is a user's request for and claim
-                    to a persistent volume
-                  properties:
-                    apiVersion:
-                      description: |-
-                        APIVersion defines the versioned schema of this representation of an object.
-                        Servers should convert recognized schemas to the latest internal value, and
-                        may reject unrecognized values.
-                        More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-                      type: string
-                    kind:
-                      description: |-
-                        Kind is a string value representing the REST resource this object represents.
-                        Servers may infer this from the endpoint the client submits requests to.
-                        Cannot be updated.
-                        In CamelCase.
-                        More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-                      type: string
-                    metadata:
-                      description: |-
-                        Standard object's metadata.
-                        More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
-                      properties:
-                        annotations:
-                          additionalProperties:
-                            type: string
-                          type: object
-                        finalizers:
-                          items:
-                            type: string
-                          type: array
-                        labels:
-                          additionalProperties:
-                            type: string
-                          type: object
-                        name:
-                          type: string
-                        namespace:
-                          type: string
-                      type: object
-                    spec:
-                      description: |-
-                        spec defines the desired characteristics of a volume requested by a pod author.
-                        More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-                      properties:
-                        accessModes:
-                          description: |-
-                            accessModes contains the desired access modes the volume should have.
-                            More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-                          items:
-                            type: string
-                          type: array
-                          x-kubernetes-list-type: atomic
-                        dataSource:
-                          description: |-
-                            dataSource field can be used to specify either:
-                            * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
-                            * An existing PVC (PersistentVolumeClaim)
-                            If the provisioner or an external controller can support the specified data source,
-                            it will create a new volume based on the contents of the specified data source.
-                            When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
-                            and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
-                            If the namespace is specified, then dataSourceRef will not be copied to dataSource.
-                          properties:
-                            apiGroup:
-                              description: |-
-                                APIGroup is the group for the resource being referenced.
-                                If APIGroup is not specified, the specified Kind must be in the core API group.
-                                For any other third-party types, APIGroup is required.
-                              type: string
-                            kind:
-                              description: Kind is the type of resource being referenced
-                              type: string
-                            name:
-                              description: Name is the name of resource being referenced
-                              type: string
-                          required:
-                          - kind
-                          - name
-                          type: object
-                          x-kubernetes-map-type: atomic
-                        dataSourceRef:
-                          description: |-
-                            dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
-                            volume is desired. This may be any object from a non-empty API group (non
-                            core object) or a PersistentVolumeClaim object.
-                            When this field is specified, volume binding will only succeed if the type of
-                            the specified object matches some installed volume populator or dynamic
-                            provisioner.
-                            This field will replace the functionality of the dataSource field and as such
-                            if both fields are non-empty, they must have the same value. For backwards
-                            compatibility, when namespace isn't specified in dataSourceRef,
-                            both fields (dataSource and dataSourceRef) will be set to the same
-                            value automatically if one of them is empty and the other is non-empty.
-                            When namespace is specified in dataSourceRef,
-                            dataSource isn't set to the same value and must be empty.
-                            There are three important differences between dataSource and dataSourceRef:
-                            * While dataSource only allows two specific types of objects, dataSourceRef
-                              allows any non-core object, as well as PersistentVolumeClaim objects.
-                            * While dataSource ignores disallowed values (dropping them), dataSourceRef
-                              preserves all values, and generates an error if a disallowed value is
-                              specified.
-                            * While dataSource only allows local objects, dataSourceRef allows objects
-                              in any namespaces.
-                            (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
-                            (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-                          properties:
-                            apiGroup:
-                              description: |-
-                                APIGroup is the group for the resource being referenced.
-                                If APIGroup is not specified, the specified Kind must be in the core API group.
-                                For any other third-party types, APIGroup is required.
-                              type: string
-                            kind:
-                              description: Kind is the type of resource being referenced
-                              type: string
-                            name:
-                              description: Name is the name of resource being referenced
-                              type: string
-                            namespace:
-                              description: |-
-                                Namespace is the namespace of resource being referenced
-                                Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details.
-                                (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-                              type: string
-                          required:
-                          - kind
-                          - name
-                          type: object
-                        resources:
-                          description: |-
-                            resources represents the minimum resources the volume should have.
-                            If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
-                            that are lower than previous value but must still be higher than capacity recorded in the
-                            status field of the claim.
-                            More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
-                          properties:
-                            limits:
-                              additionalProperties:
-                                anyOf:
-                                - type: integer
-                                - type: string
-                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                x-kubernetes-int-or-string: true
-                              description: |-
-                                Limits describes the maximum amount of compute resources allowed.
-                                More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-                              type: object
-                            requests:
-                              additionalProperties:
-                                anyOf:
-                                - type: integer
-                                - type: string
-                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                x-kubernetes-int-or-string: true
-                              description: |-
-                                Requests describes the minimum amount of compute resources required.
-                                If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
-                                otherwise to an implementation-defined value. Requests cannot exceed Limits.
-                                More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-                              type: object
-                          type: object
-                        selector:
-                          description: selector is a label query over volumes to consider
-                            for binding.
-                          properties:
-                            matchExpressions:
-                              description: matchExpressions is a list of label selector
-                                requirements. The requirements are ANDed.
-                              items:
-                                description: |-
-                                  A label selector requirement is a selector that contains values, a key, and an operator that
-                                  relates the key and values.
-                                properties:
-                                  key:
-                                    description: key is the label key that the selector
-                                      applies to.
-                                    type: string
-                                  operator:
-                                    description: |-
-                                      operator represents a key's relationship to a set of values.
-                                      Valid operators are In, NotIn, Exists and DoesNotExist.
-                                    type: string
-                                  values:
-                                    description: |-
-                                      values is an array of string values. If the operator is In or NotIn,
-                                      the values array must be non-empty. If the operator is Exists or DoesNotExist,
-                                      the values array must be empty. This array is replaced during a strategic
-                                      merge patch.
-                                    items:
-                                      type: string
-                                    type: array
-                                    x-kubernetes-list-type: atomic
-                                required:
-                                - key
-                                - operator
-                                type: object
-                              type: array
-                              x-kubernetes-list-type: atomic
-                            matchLabels:
-                              additionalProperties:
-                                type: string
-                              description: |-
-                                matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-                                map is equivalent to an element of matchExpressions, whose key field is "key", the
-                                operator is "In", and the values array contains only "value". The requirements are ANDed.
-                              type: object
-                          type: object
-                          x-kubernetes-map-type: atomic
-                        storageClassName:
-                          description: |-
-                            storageClassName is the name of the StorageClass required by the claim.
-                            More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
-                          type: string
-                        volumeAttributesClassName:
-                          description: |-
-                            volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
-                            If specified, the CSI driver will create or update the volume with the attributes defined
-                            in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
-                            it can be changed after the claim is created. An empty string or nil value indicates that no
-                            VolumeAttributesClass will be applied to the claim. If the claim enters an Infeasible error state,
-                            this field can be reset to its previous value (including nil) to cancel the modification.
-                            If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
-                            set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
-                            exists.
-                            More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
-                          type: string
-                        volumeMode:
-                          description: |-
-                            volumeMode defines what type of volume is required by the claim.
-                            Value of Filesystem is implied when not included in claim spec.
-                          type: string
-                        volumeName:
-                          description: volumeName is the binding reference to the
-                            PersistentVolume backing this claim.
-                          type: string
-                      type: object
-                    status:
-                      description: |-
-                        status represents the current information/status of a persistent volume claim.
-                        Read-only.
-                        More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-                      properties:
-                        accessModes:
-                          description: |-
-                            accessModes contains the actual access modes the volume backing the PVC has.
-                            More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-                          items:
-                            type: string
-                          type: array
-                          x-kubernetes-list-type: atomic
-                        allocatedResourceStatuses:
-                          additionalProperties:
-                            description: |-
-                              When a controller receives persistentvolume claim update with ClaimResourceStatus for a resource
-                              that it does not recognizes, then it should ignore that update and let other controllers
-                              handle it.
-                            type: string
-                          description: "allocatedResourceStatuses stores status of
-                            resource being resized for the given PVC.\nKey names follow
-                            standard Kubernetes label syntax. Valid values are either:\n\t*
-                            Un-prefixed keys:\n\t\t- storage - the capacity of the
-                            volume.\n\t* Custom resources must use implementation-defined
-                            prefixed names such as \"example.com/my-custom-resource\"\nApart
-                            from above values - keys that are unprefixed or have kubernetes.io
-                            prefix are considered\nreserved and hence may not be used.\n\nClaimResourceStatus
-                            can be in any of following states:\n\t- ControllerResizeInProgress:\n\t\tState
-                            set when resize controller starts resizing the volume
-                            in control-plane.\n\t- ControllerResizeFailed:\n\t\tState
-                            set when resize has failed in resize controller with a
-                            terminal error.\n\t- NodeResizePending:\n\t\tState set
-                            when resize controller has finished resizing the volume
-                            but further resizing of\n\t\tvolume is needed on the node.\n\t-
-                            NodeResizeInProgress:\n\t\tState set when kubelet starts
-                            resizing the volume.\n\t- NodeResizeFailed:\n\t\tState
-                            set when resizing has failed in kubelet with a terminal
-                            error. Transient errors don't set\n\t\tNodeResizeFailed.\nFor
-                            example: if expanding a PVC for more capacity - this field
-                            can be one of the following states:\n\t- pvc.status.allocatedResourceStatus['storage']
-                            = \"ControllerResizeInProgress\"\n     - pvc.status.allocatedResourceStatus['storage']
-                            = \"ControllerResizeFailed\"\n     - pvc.status.allocatedResourceStatus['storage']
-                            = \"NodeResizePending\"\n     - pvc.status.allocatedResourceStatus['storage']
-                            = \"NodeResizeInProgress\"\n     - pvc.status.allocatedResourceStatus['storage']
-                            = \"NodeResizeFailed\"\nWhen this field is not set, it
-                            means that no resize operation is in progress for the
-                            given PVC.\n\nA controller that receives PVC update with
-                            previously unknown resourceName or ClaimResourceStatus\nshould
-                            ignore the update for the purpose it was designed. For
-                            example - a controller that\nonly is responsible for resizing
-                            capacity of the volume, should ignore PVC updates that
-                            change other valid\nresources associated with PVC.\n\nThis
-                            is an alpha field and requires enabling RecoverVolumeExpansionFailure
-                            feature."
-                          type: object
-                          x-kubernetes-map-type: granular
-                        allocatedResources:
-                          additionalProperties:
-                            anyOf:
-                            - type: integer
-                            - type: string
-                            pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                            x-kubernetes-int-or-string: true
-                          description: "allocatedResources tracks the resources allocated
-                            to a PVC including its capacity.\nKey names follow standard
-                            Kubernetes label syntax. Valid values are either:\n\t*
-                            Un-prefixed keys:\n\t\t- storage - the capacity of the
-                            volume.\n\t* Custom resources must use implementation-defined
-                            prefixed names such as \"example.com/my-custom-resource\"\nApart
-                            from above values - keys that are unprefixed or have kubernetes.io
-                            prefix are considered\nreserved and hence may not be used.\n\nCapacity
-                            reported here may be larger than the actual capacity when
-                            a volume expansion operation\nis requested.\nFor storage
-                            quota, the larger value from allocatedResources and PVC.spec.resources
-                            is used.\nIf allocatedResources is not set, PVC.spec.resources
-                            alone is used for quota calculation.\nIf a volume expansion
-                            capacity request is lowered, allocatedResources is only\nlowered
-                            if there are no expansion operations in progress and if
-                            the actual volume capacity\nis equal or lower than the
-                            requested capacity.\n\nA controller that receives PVC
-                            update with previously unknown resourceName\nshould ignore
-                            the update for the purpose it was designed. For example
-                            - a controller that\nonly is responsible for resizing
-                            capacity of the volume, should ignore PVC updates that
-                            change other valid\nresources associated with PVC.\n\nThis
-                            is an alpha field and requires enabling RecoverVolumeExpansionFailure
-                            feature."
-                          type: object
-                        capacity:
-                          additionalProperties:
-                            anyOf:
-                            - type: integer
-                            - type: string
-                            pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                            x-kubernetes-int-or-string: true
-                          description: capacity represents the actual resources of
-                            the underlying volume.
-                          type: object
-                        conditions:
-                          description: |-
-                            conditions is the current Condition of persistent volume claim. If underlying persistent volume is being
-                            resized then the Condition will be set to 'Resizing'.
-                          items:
-                            description: PersistentVolumeClaimCondition contains details
-                              about state of pvc
+                      kafka:
+                        properties:
+                          authConfig:
                             properties:
-                              lastProbeTime:
-                                description: lastProbeTime is the time we probed the
-                                  condition.
-                                format: date-time
-                                type: string
-                              lastTransitionTime:
-                                description: lastTransitionTime is the time the condition
-                                  transitioned from one status to another.
-                                format: date-time
-                                type: string
-                              message:
-                                description: message is the human-readable message
-                                  indicating details about last transition.
-                                type: string
-                              reason:
-                                description: |-
-                                  reason is a unique, this should be a short, machine understandable string that gives the reason
-                                  for condition's last transition. If it reports "Resizing" that means the underlying
-                                  persistent volume is being resized.
-                                type: string
-                              status:
-                                description: |-
-                                  Status is the status of the condition.
-                                  Can be True, False, Unknown.
-                                  More info: https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/persistent-volume-claim-v1/#:~:text=state%20of%20pvc-,conditions.status,-(string)%2C%20required
-                                type: string
-                              type:
-                                description: |-
-                                  Type is the type of the condition.
-                                  More info: https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/persistent-volume-claim-v1/#:~:text=set%20to%20%27ResizeStarted%27.-,PersistentVolumeClaimCondition,-contains%20details%20about
-                                type: string
-                            required:
-                            - status
-                            - type
+                              genericAuth:
+                                description: for backward compatibility
+                                properties:
+                                  clientAuthenticationParameters:
+                                    type: string
+                                  clientAuthenticationPlugin:
+                                    type: string
+                                required:
+                                - clientAuthenticationParameters
+                                - clientAuthenticationPlugin
+                                type: object
+                              oauth2Config:
+                                properties:
+                                  audience:
+                                    type: string
+                                  issuerUrl:
+                                    type: string
+                                  keySecretKey:
+                                    description: the secret key of the OAuth2 private
+                                      key file, such as `auth.json`
+                                    type: string
+                                  keySecretName:
+                                    description: the secret name of the OAuth2 private
+                                      key file
+                                    type: string
+                                  scope:
+                                    type: string
+                                required:
+                                - audience
+                                - issuerUrl
+                                - keySecretKey
+                                - keySecretName
+                                type: object
+                              plainAuthConfig:
+                                properties:
+                                  passwordKey:
+                                    type: string
+                                  secretName:
+                                    description: The name of the k8s secret that contains
+                                      the username and password for Kafka authentication
+                                    type: string
+                                  usernameKey:
+                                    type: string
+                                required:
+                                - secretName
+                                type: object
+                              scramAuthConfig:
+                                properties:
+                                  hashAlgorithm:
+                                    enum:
+                                    - SHA-256
+                                    - SHA-512
+                                    type: string
+                                  passwordKey:
+                                    type: string
+                                  secretName:
+                                    description: The name of the k8s secret that contains
+                                      the username and password for Kafka authentication
+                                    type: string
+                                  usernameKey:
+                                    type: string
+                                required:
+                                - secretName
+                                type: object
                             type: object
-                          type: array
-                          x-kubernetes-list-map-keys:
-                          - type
-                          x-kubernetes-list-type: map
-                        currentVolumeAttributesClassName:
-                          description: |-
-                            currentVolumeAttributesClassName is the current name of the VolumeAttributesClass the PVC is using.
-                            When unset, there is no VolumeAttributeClass applied to this PersistentVolumeClaim
+                          bootstrapServers:
+                            description: A list of host/port pairs to use for establishing
+                              the initial connection to the KafkaConnect cluster
+                            type: string
+                          tlsConfig:
+                            properties:
+                              enabled:
+                                type: boolean
+                              keyStoreConfig:
+                                properties:
+                                  fileKey:
+                                    description: The key in the secret that contains
+                                      the keystore file(either JKS, PEM or PKCS12
+                                      file)
+                                    type: string
+                                  keyPasswordKey:
+                                    description: The key in the secret that contains
+                                      the key password for the private key
+                                    type: string
+                                  passwordKey:
+                                    description: The key in the secret that contains
+                                      the password for the keystore (only for JKS
+                                      and PKCS12)
+                                    type: string
+                                  secretName:
+                                    description: The name of the k8s secret that contains
+                                      the keystore for Kafka TLS connection and its
+                                      password
+                                    type: string
+                                  type:
+                                    enum:
+                                    - JKS
+                                    - PEM
+                                    - PKCS12
+                                    type: string
+                                type: object
+                              trustStoreConfig:
+                                properties:
+                                  fileKey:
+                                    description: The key in the secret that contains
+                                      the truststore file(either JKS, PEM or PKCS12
+                                      file)
+                                    type: string
+                                  passwordKey:
+                                    description: The key in the secret that contains
+                                      the password for the truststore (only for JKS
+                                      and PKCS12)
+                                    type: string
+                                  secretName:
+                                    description: The name of the k8s secret that contains
+                                      the truststore for Kafka TLS connection and
+                                      its password
+                                    type: string
+                                  type:
+                                    enum:
+                                    - JKS
+                                    - PEM
+                                    - PKCS12
+                                    type: string
+                                type: object
+                            type: object
+                        type: object
+                      producerAdditionalConfig:
+                        description: Config represents untyped YAML configuration.
+                        type: object
+                        x-kubernetes-preserve-unknown-fields: true
+                      schemaType:
+                        default: string
+                        type: string
+                      subscriptionName:
+                        type: string
+                      topicPattern:
+                        type: string
+                      topics:
+                        items:
                           type: string
-                        modifyVolumeStatus:
-                          description: |-
-                            ModifyVolumeStatus represents the status object of ControllerModifyVolume operation.
-                            When this is unset, there is no ModifyVolume operation being attempted.
-                          properties:
-                            status:
-                              description: "status is the status of the ControllerModifyVolume
-                                operation. It can be in any of following states:\n
-                                - Pending\n   Pending indicates that the PersistentVolumeClaim
-                                cannot be modified due to unmet requirements, such
-                                as\n   the specified VolumeAttributesClass not existing.\n
-                                - InProgress\n   InProgress indicates that the volume
-                                is being modified.\n - Infeasible\n  Infeasible indicates
-                                that the request has been rejected as invalid by the
-                                CSI driver. To\n\t  resolve the error, a valid VolumeAttributesClass
-                                needs to be specified.\nNote: New statuses can be
-                                added in the future. Consumers should check for unknown
-                                statuses and fail appropriately."
-                              type: string
-                            targetVolumeAttributesClassName:
-                              description: targetVolumeAttributesClassName is the
-                                name of the VolumeAttributesClass the PVC currently
-                                being reconciled
-                              type: string
-                          required:
-                          - status
-                          type: object
-                        phase:
-                          description: phase represents the current phase of PersistentVolumeClaim.
+                        type: array
+                      typeClassDefinition:
+                        description: |-
+                          TypeClassDefinition contains the Python source code for the typeClassName class.
+                          The operator mounts it as models.py and prefixes typeClassName with models.
+                        type: string
+                      typeClassName:
+                        default: string
+                        type: string
+                    type: object
+                  pulsarConfigs:
+                    properties:
+                      pulsar:
+                        properties:
+                          authConfig:
+                            description: To replace the AuthSecret
+                            properties:
+                              genericAuth:
+                                properties:
+                                  clientAuthenticationParameters:
+                                    type: string
+                                  clientAuthenticationPlugin:
+                                    type: string
+                                required:
+                                - clientAuthenticationParameters
+                                - clientAuthenticationPlugin
+                                type: object
+                              oauth2Config:
+                                properties:
+                                  audience:
+                                    type: string
+                                  issuerUrl:
+                                    type: string
+                                  keySecretKey:
+                                    description: the secret key of the OAuth2 private
+                                      key file, such as `auth.json`
+                                    type: string
+                                  keySecretName:
+                                    description: the secret name of the OAuth2 private
+                                      key file
+                                    type: string
+                                  scope:
+                                    type: string
+                                required:
+                                - audience
+                                - issuerUrl
+                                - keySecretKey
+                                - keySecretName
+                                type: object
+                            type: object
+                          authSecret:
+                            description: |-
+                              The auth secret should contain the following fields
+                              clientAuthenticationPlugin
+                              clientAuthenticationParameters
+                            type: string
+                          cleanupAuthConfig:
+                            properties:
+                              genericAuth:
+                                properties:
+                                  clientAuthenticationParameters:
+                                    type: string
+                                  clientAuthenticationPlugin:
+                                    type: string
+                                required:
+                                - clientAuthenticationParameters
+                                - clientAuthenticationPlugin
+                                type: object
+                              oauth2Config:
+                                properties:
+                                  audience:
+                                    type: string
+                                  issuerUrl:
+                                    type: string
+                                  keySecretKey:
+                                    description: the secret key of the OAuth2 private
+                                      key file, such as `auth.json`
+                                    type: string
+                                  keySecretName:
+                                    description: the secret name of the OAuth2 private
+                                      key file
+                                    type: string
+                                  scope:
+                                    type: string
+                                required:
+                                - audience
+                                - issuerUrl
+                                - keySecretKey
+                                - keySecretName
+                                type: object
+                            type: object
+                          pulsarConfig:
+                            description: |-
+                              The config map need to contain the following fields
+                              webServiceURL
+                              brokerServiceURL
+                            type: string
+                          tlsConfig:
+                            description: To replace the TLSSecret
+                            properties:
+                              allowInsecure:
+                                type: boolean
+                              certSecretKey:
+                                type: string
+                              certSecretName:
+                                type: string
+                              enabled:
+                                type: boolean
+                              hostnameVerification:
+                                type: boolean
+                            type: object
+                          tlsSecret:
+                            description: |-
+                              The TLS secret should contain the following fields
+                              use_tls
+                              tls_allow_insecure
+                              hostname_verification_enabled
+                              tls_trust_cert_path
+                            type: string
+                        type: object
+                      schemaType:
+                        default: string
+                        type: string
+                      subscriptionName:
+                        type: string
+                      topicPattern:
+                        type: string
+                      topics:
+                        items:
                           type: string
-                      type: object
-                  type: object
-                type: array
+                        type: array
+                      typeClassDefinition:
+                        description: |-
+                          TypeClassDefinition contains the Python source code for the typeClassName class.
+                          The operator mounts it as models.py and prefixes typeClassName with models.
+                        type: string
+                      typeClassName:
+                        default: string
+                        type: string
+                    type: object
+                  type:
+                    enum:
+                    - pulsar
+                    - kafka
+                    type: string
+                required:
+                - type
+                type: object
+              stateStoreUrl:
+                type: string
               volumeMounts:
                 items:
                   description: VolumeMount describes a mounting of a Volume within
@@ -8945,49 +7866,14 @@ spec:
                   - name
                   type: object
                 type: array
-              windowConfig:
-                properties:
-                  actualWindowFunctionClassName:
-                    type: string
-                  lateDataTopic:
-                    type: string
-                  maxLagMs:
-                    format: int64
-                    type: integer
-                  processingGuarantees:
-                    description: WindowProcessGuarantee enum type
-                    enum:
-                    - ATLEAST_ONCE
-                    - ATMOST_ONCE
-                    type: string
-                  slidingIntervalCount:
-                    format: int32
-                    type: integer
-                  slidingIntervalDurationMs:
-                    format: int64
-                    type: integer
-                  timestampExtractorClassName:
-                    type: string
-                  watermarkEmitIntervalMs:
-                    format: int64
-                    type: integer
-                  windowLengthCount:
-                    format: int32
-                    type: integer
-                  windowLengthDurationMs:
-                    format: int64
-                    type: integer
-                required:
-                - actualWindowFunctionClassName
-                type: object
             required:
-            - kafka
+            - agentRef
+            - registry
+            - source
             type: object
           status:
-            description: KafkaConnectStatus defines the observed state of ApiKeys
             properties:
               conditions:
-                description: Conditions is an array of current observed conditions.
                 items:
                   description: Condition contains details for one aspect of the current
                     state of this API Resource.
@@ -9047,13 +7933,16 @@ spec:
                 - type
                 x-kubernetes-list-type: map
               observedGeneration:
-                description: ObservedGeneration is the most recent generation observed
-                  for this api keys service.
                 format: int64
+                type: integer
+              readyReplicas:
+                format: int32
+                type: integer
+              replicas:
+                format: int32
                 type: integer
             type: object
         type: object
-        x-kubernetes-preserve-unknown-fields: true
     served: true
     storage: true
     subresources:

@@ -21,6 +21,12 @@ rules:
 - apiGroups:
   - ""
   resources:
+  - pods/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - ""
+  resources:
   - namespaces
   - nodes
   verbs:
@@ -144,7 +150,15 @@ rules:
 - apiGroups:
   - k8s.streamnative.io
   resources:
+  - agentenvironments
+  - agentfiles
   - agentfunctions
+  - agentmemorystores
+  - agents
+  - agentsessions
+  - agentskills
+  - agenttriggers
+  - agentvaults
   - apikeys
   - connections
   - consoles
@@ -173,6 +187,7 @@ rules:
   - k8s.streamnative.io
   resources:
   - agentfunctions/finalizers
+  - agenttriggers/finalizers
   - apikeys/finalizers
   - connections/finalizers
   - consoles/finalizers
@@ -195,6 +210,7 @@ rules:
   - k8s.streamnative.io
   resources:
   - agentfunctions/status
+  - agenttriggers/status
   - apikeys/status
   - connections/status
   - consoles/status
@@ -228,6 +244,8 @@ rules:
   resources:
   - kafkanodepools
   verbs:
+  - create
+  - delete
   - get
   - list
   - patch
