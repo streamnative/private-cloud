@@ -28,10 +28,13 @@ spec:
             properties:
               agentRef:
                 properties:
-                  name:
+                  id:
                     type: string
+                  version:
+                    format: int32
+                    type: integer
                 required:
-                - name
+                - id
                 type: object
               image:
                 default: streamnative/orca-agent-trigger
@@ -3556,9 +3559,22 @@ spec:
                 - SESSION_PER_EVENT
                 - SESSION_PER_TOPIC
                 - SESSION_PER_KEY
+                - SHARED
                 type: string
               source:
                 properties:
+                  cronConfigs:
+                    properties:
+                      payload:
+                        type: string
+                      schedule:
+                        type: string
+                      timezone:
+                        type: string
+                    required:
+                    - payload
+                    - schedule
+                    type: object
                   kafkaConfigs:
                     properties:
                       consumerAdditionalConfig:
@@ -3803,6 +3819,7 @@ spec:
                     enum:
                     - pulsar
                     - kafka
+                    - cron
                     type: string
                 required:
                 - type

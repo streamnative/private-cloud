@@ -26,6 +26,14 @@ spec:
             type: object
           spec:
             properties:
+              args:
+                items:
+                  type: string
+                type: array
+              command:
+                items:
+                  type: string
+                type: array
               config:
                 properties:
                   authentication:
@@ -1735,7 +1743,31 @@ spec:
                       type: object
                     type: array
                 type: object
+              volumeMounts:
+                items:
+                  properties:
+                    mountPath:
+                      type: string
+                    mountPropagation:
+                      type: string
+                    name:
+                      type: string
+                    readOnly:
+                      type: boolean
+                    recursiveReadOnly:
+                      type: string
+                    subPath:
+                      type: string
+                    subPathExpr:
+                      type: string
+                  required:
+                  - mountPath
+                  - name
+                  type: object
+                type: array
               webServiceUrl:
+                type: string
+              workingDir:
                 type: string
             required:
             - webServiceUrl

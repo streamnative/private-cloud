@@ -342,11 +342,6 @@ spec:
                     properties:
                       managed:
                         type: boolean
-                      maxUnavailable:
-                        anyOf:
-                        - type: integer
-                        - type: string
-                        x-kubernetes-int-or-string: true
                       metadata:
                         properties:
                           annotations:
@@ -362,11 +357,6 @@ spec:
                           name:
                             type: string
                         type: object
-                      minAvailable:
-                        anyOf:
-                        - type: integer
-                        - type: string
-                        x-kubernetes-int-or-string: true
                       updatePolicy:
                         items:
                           type: string
@@ -3115,6 +3105,14 @@ spec:
                       schemaStorageUrl:
                         type: string
                       useOwnStorage:
+                        type: boolean
+                    type: object
+                  ursaModeForClassicEngineCluster:
+                    nullable: true
+                    properties:
+                      sbt:
+                        type: boolean
+                      sdt:
                         type: boolean
                     type: object
                   usePodIPAsAdvertisedAddress:
