@@ -2774,6 +2774,8 @@ spec:
                       writeBufferFlushSize:
                         type: string
                     type: object
+                  ursaStorageTopicDefaultEnabled:
+                    type: boolean
                   useStorageCatalog:
                     type: boolean
                 type: object

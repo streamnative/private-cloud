@@ -3466,6 +3466,14 @@ spec:
                       useOwnStorage:
                         type: boolean
                     type: object
+                  ursaModeForClassicEngineCluster:
+                    nullable: true
+                    properties:
+                      sbt:
+                        type: boolean
+                      sdt:
+                        type: boolean
+                    type: object
                   usePodIPAsAdvertisedAddress:
                     type: boolean
                   useStorageCatalog:

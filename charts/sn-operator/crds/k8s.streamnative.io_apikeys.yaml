@@ -69,6 +69,8 @@ spec:
                     type: boolean
                   server:
                     properties:
+                      allowCustomClaims:
+                        type: boolean
                       audience:
                         type: string
                       claimsToCopy:
