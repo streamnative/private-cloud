@@ -4,14 +4,14 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.5
-  name: kafkaconnects.k8s.streamnative.io
+  name: agenttriggers.k8s.streamnative.io
 spec:
   group: k8s.streamnative.io
   names:
-    kind: KafkaConnect
-    listKind: KafkaConnectList
-    plural: kafkaconnects
-    singular: kafkaconnect
+    kind: AgentTrigger
+    listKind: AgentTriggerList
+    plural: agenttriggers
+    singular: agenttrigger
   scope: Namespaced
   versions:
   - name: v1alpha1
@@ -26,540 +26,20 @@ spec:
             type: object
           spec:
             properties:
-              autoAck:
-                type: boolean
-              className:
-                type: string
-              cleanupImage:
-                type: string
-              cleanupSubscription:
-                type: boolean
-              clusterName:
-                type: string
-              connectWorkerConfig:
+              agentRef:
                 properties:
-                  additionalConfigs:
-                    type: object
-                    x-kubernetes-preserve-unknown-fields: true
-                  bootstrapServers:
-                    type: string
-                  clientDNSLookup:
-                    enum:
-                    - use_all_dns_ips
-                    - resolve_canonical_bootstrap_servers_only
-                    type: string
-                  clientId:
-                    type: string
-                  configProviders:
-                    type: string
-                  connectionsMaxIdleMs:
-                    format: int64
-                    type: integer
-                  connectorClientConfigOverridePolicy:
-                    type: string
-                  exactlyOnceSourceSupport:
-                    enum:
-                    - DISABLED
-                    - PREPARING
-                    - ENABLED
-                    type: string
-                  groupId:
-                    type: string
-                  headerConverter:
-                    type: string
-                  keyConverter:
-                    type: string
-                  metricsNumSample:
-                    type: integer
-                  metricsRecordingLevel:
-                    enum:
-                    - INFO
-                    - DEBUG
-                    type: string
-                  metricsReporter:
-                    type: string
-                  metricsSampleWindowMs:
-                    format: int64
-                    type: integer
-                  offsetCommitIntervalMs:
-                    format: int64
-                    type: integer
-                  offsetCommitTimeoutMs:
-                    format: int64
-                    type: integer
-                  offsetStoragePartitions:
-                    format: int32
-                    type: integer
-                  offsetStorageReplicationFactor:
-                    type: integer
-                  offsetStorageTopic:
-                    type: string
-                  pluginDiscovery:
-                    enum:
-                    - only_scan
-                    - hybrid_warn
-                    - hybrid_fail
-                    - service_load
-                    type: string
-                  pluginPath:
-                    type: string
-                  receiveBuffer:
-                    type: integer
-                  reconnectBackoffMaxMs:
-                    format: int64
-                    type: integer
-                  reconnectBackoffMs:
-                    format: int64
-                    type: integer
-                  requestTimeoutMs:
-                    format: int64
-                    type: integer
-                  retryBackoffMs:
-                    format: int64
-                    type: integer
-                  securityProtocol:
-                    enum:
-                    - PLAINTEXT
-                    - SSL
-                    - SASL_PLAIN
-                    - SASL_SSL
-                    type: string
-                  sendBuffer:
-                    type: integer
-                  socketConnectionSetupTimeoutMaxMs:
-                    format: int64
-                    type: integer
-                  socketConnectionSetupTimeoutMs:
-                    format: int64
-                    type: integer
-                  taskShutdownGracefulTimeoutMs:
-                    format: int64
-                    type: integer
-                  topicCreationEnable:
-                    type: boolean
-                  valueConverter:
-                    type: string
-                type: object
-              deadLetterTopic:
-                type: string
-              downloaderImage:
-                type: string
-              filebeatImage:
-                type: string
-              forwardSourceMessageProperty:
-                type: boolean
-              funcConfig:
-                type: object
-                x-kubernetes-preserve-unknown-fields: true
-              genericRuntime:
-                properties:
-                  functionFile:
-                    type: string
-                  functionFileLocation:
-                    type: string
-                  language:
+                  name:
                     type: string
                 required:
-                - functionFile
-                - language
-                type: object
-              golang:
-                properties:
-                  go:
-                    type: string
-                  goLocation:
-                    type: string
-                  log:
-                    properties:
-                      format:
-                        enum:
-                        - json
-                        - text
-                        type: string
-                      javaLog4JConfigFileType:
-                        enum:
-                        - yaml
-                        - xml
-                        - ini
-                        type: string
-                      level:
-                        enum:
-                        - "off"
-                        - trace
-                        - debug
-                        - info
-                        - warn
-                        - error
-                        - fatal
-                        - all
-                        - panic
-                        type: string
-                      logConfig:
-                        properties:
-                          key:
-                            type: string
-                          name:
-                            type: string
-                        required:
-                        - key
-                        - name
-                        type: object
-                      rotatePolicy:
-                        enum:
-                        - TimedPolicyWithDaily
-                        - TimedPolicyWithWeekly
-                        - TimedPolicyWithMonthly
-                        - SizedPolicyWith10MB
-                        - SizedPolicyWith50MB
-                        - SizedPolicyWith100MB
-                        type: string
-                    type: object
-                required:
-                - go
+                - name
                 type: object
               image:
+                default: streamnative/orca-agent-trigger
                 type: string
-              imageHasGet:
-                type: boolean
-              imageHasPulsarctl:
-                type: boolean
-              imagePullPolicy:
-                type: string
-              input:
-                properties:
-                  customSchemaSources:
-                    additionalProperties:
-                      type: string
-                    type: object
-                  customSerdeSources:
-                    additionalProperties:
-                      type: string
-                    type: object
-                  sourceSpecs:
-                    additionalProperties:
-                      properties:
-                        consumerProperties:
-                          additionalProperties:
-                            type: string
-                          type: object
-                        cryptoConfig:
-                          properties:
-                            consumerCryptoFailureAction:
-                              type: string
-                            cryptoKeyReaderClassName:
-                              type: string
-                            cryptoKeyReaderConfig:
-                              additionalProperties:
-                                type: string
-                              type: object
-                            cryptoSecrets:
-                              items:
-                                properties:
-                                  asVolume:
-                                    type: string
-                                  secretKey:
-                                    type: string
-                                  secretName:
-                                    type: string
-                                required:
-                                - secretKey
-                                - secretName
-                                type: object
-                              type: array
-                            encryptionKeys:
-                              items:
-                                type: string
-                              type: array
-                            producerCryptoFailureAction:
-                              type: string
-                          type: object
-                        isRegexPattern:
-                          type: boolean
-                        receiverQueueSize:
-                          format: int32
-                          type: integer
-                        schemaProperties:
-                          additionalProperties:
-                            type: string
-                          type: object
-                        schemaType:
-                          type: string
-                        serdeClassname:
-                          type: string
-                      type: object
-                    type: object
-                  topicPattern:
-                    type: string
-                  topics:
-                    items:
-                      type: string
-                    type: array
-                  typeClassName:
-                    type: string
-                type: object
-              java:
-                properties:
-                  entryClass:
-                    type: string
-                  extraDependenciesDir:
-                    type: string
-                  instancePath:
-                    type: string
-                  jar:
-                    type: string
-                  jarLocation:
-                    type: string
-                  javaOpts:
-                    items:
-                      type: string
-                    type: array
-                  log:
-                    properties:
-                      format:
-                        enum:
-                        - json
-                        - text
-                        type: string
-                      javaLog4JConfigFileType:
-                        enum:
-                        - yaml
-                        - xml
-                        - ini
-                        type: string
-                      level:
-                        enum:
-                        - "off"
-                        - trace
-                        - debug
-                        - info
-                        - warn
-                        - error
-                        - fatal
-                        - all
-                        - panic
-                        type: string
-                      logConfig:
-                        properties:
-                          key:
-                            type: string
-                          name:
-                            type: string
-                        required:
-                        - key
-                        - name
-                        type: object
-                      rotatePolicy:
-                        enum:
-                        - TimedPolicyWithDaily
-                        - TimedPolicyWithWeekly
-                        - TimedPolicyWithMonthly
-                        - SizedPolicyWith10MB
-                        - SizedPolicyWith50MB
-                        - SizedPolicyWith100MB
-                        type: string
-                    type: object
-                required:
-                - jar
-                type: object
-              kafka:
-                properties:
-                  authConfig:
-                    properties:
-                      genericAuth:
-                        properties:
-                          clientAuthenticationParameters:
-                            type: string
-                          clientAuthenticationPlugin:
-                            type: string
-                        required:
-                        - clientAuthenticationParameters
-                        - clientAuthenticationPlugin
-                        type: object
-                      oauth2Config:
-                        properties:
-                          audience:
-                            type: string
-                          issuerUrl:
-                            type: string
-                          keySecretKey:
-                            type: string
-                          keySecretName:
-                            type: string
-                          scope:
-                            type: string
-                        required:
-                        - audience
-                        - issuerUrl
-                        - keySecretKey
-                        - keySecretName
-                        type: object
-                      plainAuthConfig:
-                        properties:
-                          passwordKey:
-                            type: string
-                          secretName:
-                            type: string
-                          usernameKey:
-                            type: string
-                        required:
-                        - secretName
-                        type: object
-                      scramAuthConfig:
-                        properties:
-                          hashAlgorithm:
-                            enum:
-                            - SHA-256
-                            - SHA-512
-                            type: string
-                          passwordKey:
-                            type: string
-                          secretName:
-                            type: string
-                          usernameKey:
-                            type: string
-                        required:
-                        - secretName
-                        type: object
-                    type: object
-                  bootstrapServers:
-                    type: string
-                  tlsConfig:
-                    properties:
-                      enabled:
-                        type: boolean
-                      keyStoreConfig:
-                        properties:
-                          fileKey:
-                            type: string
-                          keyPasswordKey:
-                            type: string
-                          passwordKey:
-                            type: string
-                          secretName:
-                            type: string
-                          type:
-                            enum:
-                            - JKS
-                            - PEM
-                            - PKCS12
-                            type: string
-                        type: object
-                      trustStoreConfig:
-                        properties:
-                          fileKey:
-                            type: string
-                          passwordKey:
-                            type: string
-                          secretName:
-                            type: string
-                          type:
-                            enum:
-                            - JKS
-                            - PEM
-                            - PKCS12
-                            type: string
-                        type: object
-                    type: object
-                type: object
-              logTopic:
-                type: string
-              logTopicAgent:
-                enum:
-                - runtime
-                - sidecar
-                type: string
-              maxMessageRetry:
-                format: int32
-                type: integer
-              maxPendingAsyncRequests:
-                format: int32
-                type: integer
-              maxReplicas:
-                format: int32
-                type: integer
-              minReplicas:
-                default: 1
-                format: int32
-                minimum: 0
-                type: integer
               name:
                 type: string
-              namespace:
-                type: string
-              output:
-                properties:
-                  customSchemaSinks:
-                    additionalProperties:
-                      type: string
-                    type: object
-                  producerConf:
-                    properties:
-                      batchBuilder:
-                        type: string
-                      compressionType:
-                        enum:
-                        - NONE
-                        - LZ4
-                        - ZLIB
-                        - ZSTD
-                        - SNAPPY
-                        type: string
-                      cryptoConfig:
-                        properties:
-                          consumerCryptoFailureAction:
-                            type: string
-                          cryptoKeyReaderClassName:
-                            type: string
-                          cryptoKeyReaderConfig:
-                            additionalProperties:
-                              type: string
-                            type: object
-                          cryptoSecrets:
-                            items:
-                              properties:
-                                asVolume:
-                                  type: string
-                                secretKey:
-                                  type: string
-                                secretName:
-                                  type: string
-                              required:
-                              - secretKey
-                              - secretName
-                              type: object
-                            type: array
-                          encryptionKeys:
-                            items:
-                              type: string
-                            type: array
-                          producerCryptoFailureAction:
-                            type: string
-                        type: object
-                      maxPendingMessages:
-                        format: int32
-                        type: integer
-                      maxPendingMessagesAcrossPartitions:
-                        format: int32
-                        type: integer
-                      useThreadLocalProducers:
-                        type: boolean
-                    type: object
-                  sinkSchemaType:
-                    type: string
-                  sinkSerdeClassName:
-                    type: string
-                  topic:
-                    type: string
-                  typeClassName:
-                    type: string
-                type: object
-              persistentVolumeClaimRetentionPolicy:
-                properties:
-                  whenDeleted:
-                    type: string
-                  whenScaled:
-                    type: string
-                type: object
+              paused:
+                type: boolean
               pod:
                 properties:
                   affinity:
@@ -3960,27 +3440,10 @@ spec:
                         type: object
                     type: object
                 type: object
-              processingGuarantee:
-                enum:
-                - atleast_once
-                - atmost_once
-                - effectively_once
-                - manual
-                type: string
-              pulsar:
+              registry:
                 properties:
-                  authConfig:
+                  auth:
                     properties:
-                      genericAuth:
-                        properties:
-                          clientAuthenticationParameters:
-                            type: string
-                          clientAuthenticationPlugin:
-                            type: string
-                        required:
-                        - clientAuthenticationParameters
-                        - clientAuthenticationPlugin
-                        type: object
                       oauth2Config:
                         properties:
                           audience:
@@ -3999,195 +3462,33 @@ spec:
                         - keySecretKey
                         - keySecretName
                         type: object
-                    type: object
-                  authSecret:
-                    type: string
-                  cleanupAuthConfig:
-                    properties:
-                      genericAuth:
+                      token:
                         properties:
-                          clientAuthenticationParameters:
-                            type: string
-                          clientAuthenticationPlugin:
-                            type: string
+                          secretRef:
+                            properties:
+                              key:
+                                type: string
+                              name:
+                                type: string
+                            required:
+                            - key
+                            - name
+                            type: object
                         required:
-                        - clientAuthenticationParameters
-                        - clientAuthenticationPlugin
+                        - secretRef
                         type: object
-                      oauth2Config:
-                        properties:
-                          audience:
-                            type: string
-                          issuerUrl:
-                            type: string
-                          keySecretKey:
-                            type: string
-                          keySecretName:
-                            type: string
-                          scope:
-                            type: string
-                        required:
-                        - audience
-                        - issuerUrl
-                        - keySecretKey
-                        - keySecretName
-                        type: object
-                    type: object
-                  pulsarConfig:
-                    type: string
-                  tlsConfig:
-                    properties:
-                      allowInsecure:
-                        type: boolean
-                      certSecretKey:
-                        type: string
-                      certSecretName:
-                        type: string
-                      enabled:
-                        type: boolean
-                      hostnameVerification:
-                        type: boolean
-                    type: object
-                  tlsSecret:
-                    type: string
-                type: object
-              pulsarPackageService:
-                properties:
-                  authConfig:
-                    properties:
-                      genericAuth:
-                        properties:
-                          clientAuthenticationParameters:
-                            type: string
-                          clientAuthenticationPlugin:
-                            type: string
-                        required:
-                        - clientAuthenticationParameters
-                        - clientAuthenticationPlugin
-                        type: object
-                      oauth2Config:
-                        properties:
-                          audience:
-                            type: string
-                          issuerUrl:
-                            type: string
-                          keySecretKey:
-                            type: string
-                          keySecretName:
-                            type: string
-                          scope:
-                            type: string
-                        required:
-                        - audience
-                        - issuerUrl
-                        - keySecretKey
-                        - keySecretName
-                        type: object
-                    type: object
-                  authSecret:
-                    type: string
-                  cleanupAuthConfig:
-                    properties:
-                      genericAuth:
-                        properties:
-                          clientAuthenticationParameters:
-                            type: string
-                          clientAuthenticationPlugin:
-                            type: string
-                        required:
-                        - clientAuthenticationParameters
-                        - clientAuthenticationPlugin
-                        type: object
-                      oauth2Config:
-                        properties:
-                          audience:
-                            type: string
-                          issuerUrl:
-                            type: string
-                          keySecretKey:
-                            type: string
-                          keySecretName:
-                            type: string
-                          scope:
-                            type: string
-                        required:
-                        - audience
-                        - issuerUrl
-                        - keySecretKey
-                        - keySecretName
-                        type: object
-                    type: object
-                  pulsarConfig:
-                    type: string
-                  tlsConfig:
-                    properties:
-                      allowInsecure:
-                        type: boolean
-                      certSecretKey:
-                        type: string
-                      certSecretName:
-                        type: string
-                      enabled:
-                        type: boolean
-                      hostnameVerification:
-                        type: boolean
-                    type: object
-                  tlsSecret:
-                    type: string
-                type: object
-              python:
-                properties:
-                  log:
-                    properties:
-                      format:
+                      type:
                         enum:
-                        - json
-                        - text
+                        - token
+                        - oauth2
                         type: string
-                      javaLog4JConfigFileType:
-                        enum:
-                        - yaml
-                        - xml
-                        - ini
-                        type: string
-                      level:
-                        enum:
-                        - "off"
-                        - trace
-                        - debug
-                        - info
-                        - warn
-                        - error
-                        - fatal
-                        - all
-                        - panic
-                        type: string
-                      logConfig:
-                        properties:
-                          key:
-                            type: string
-                          name:
-                            type: string
-                        required:
-                        - key
-                        - name
-                        type: object
-                      rotatePolicy:
-                        enum:
-                        - TimedPolicyWithDaily
-                        - TimedPolicyWithWeekly
-                        - TimedPolicyWithMonthly
-                        - SizedPolicyWith10MB
-                        - SizedPolicyWith50MB
-                        - SizedPolicyWith100MB
-                        type: string
+                    required:
+                    - type
                     type: object
-                  py:
-                    type: string
-                  pyLocation:
+                  baseUrl:
                     type: string
                 required:
-                - py
+                - baseUrl
                 type: object
               replicas:
                 format: int32
@@ -4226,12 +3527,6 @@ spec:
                       x-kubernetes-int-or-string: true
                     type: object
                 type: object
-              retainKeyOrdering:
-                type: boolean
-              retainOrdering:
-                type: boolean
-              runtimeFlags:
-                type: string
               secretsMap:
                 additionalProperties:
                   properties:
@@ -4241,258 +3536,279 @@ spec:
                       type: string
                   type: object
                 type: object
-              showPreciseParallelism:
-                type: boolean
-              sinkConfig:
+              session:
                 properties:
-                  className:
+                  environmentId:
                     type: string
-                  configs:
+                  metadata:
+                    additionalProperties:
+                      type: string
                     type: object
-                    x-kubernetes-preserve-unknown-fields: true
-                  sinkType:
+                  titleTemplate:
                     type: string
-                  typeClassName:
-                    type: string
+                  vaultIds:
+                    items:
+                      type: string
+                    type: array
                 type: object
-              skipToLatest:
-                type: boolean
-              sourceConfig:
+              sessionMode:
+                enum:
+                - SESSION_PER_EVENT
+                - SESSION_PER_TOPIC
+                - SESSION_PER_KEY
+                type: string
+              source:
                 properties:
-                  batchSourceConfig:
+                  kafkaConfigs:
                     properties:
-                      discoveryTriggererClassName:
-                        type: string
-                      discoveryTriggererConfig:
+                      consumerAdditionalConfig:
                         type: object
                         x-kubernetes-preserve-unknown-fields: true
-                    required:
-                    - discoveryTriggererClassName
-                    type: object
-                  className:
-                    type: string
-                  configs:
-                    type: object
-                    x-kubernetes-preserve-unknown-fields: true
-                  sourceType:
-                    type: string
-                  typeClassName:
-                    type: string
-                type: object
-              statefulConfig:
-                properties:
-                  pulsar:
-                    properties:
-                      javaProvider:
-                        properties:
-                          className:
-                            type: string
-                          config:
-                            type: object
-                        required:
-                        - className
+                      inputSchemaConfigs:
+                        additionalProperties:
+                          properties:
+                            subject:
+                              type: string
+                            type:
+                              type: string
+                            version:
+                              format: int32
+                              type: integer
+                          type: object
                         type: object
-                      serviceUrl:
-                        type: string
-                    required:
-                    - serviceUrl
-                    type: object
-                type: object
-              subscriptionName:
-                type: string
-              subscriptionPosition:
-                enum:
-                - latest
-                - earliest
-                type: string
-              tenant:
-                type: string
-              timeout:
-                format: int32
-                type: integer
-              volumeClaimTemplates:
-                items:
-                  properties:
-                    apiVersion:
-                      type: string
-                    kind:
-                      type: string
-                    metadata:
-                      properties:
-                        annotations:
-                          additionalProperties:
-                            type: string
-                          type: object
-                        finalizers:
-                          items:
-                            type: string
-                          type: array
-                        labels:
-                          additionalProperties:
-                            type: string
-                          type: object
-                        name:
-                          type: string
-                        namespace:
-                          type: string
-                      type: object
-                    spec:
-                      properties:
-                        accessModes:
-                          items:
-                            type: string
-                          type: array
-                          x-kubernetes-list-type: atomic
-                        dataSource:
-                          properties:
-                            apiGroup:
-                              type: string
-                            kind:
-                              type: string
-                            name:
-                              type: string
-                          required:
-                          - kind
-                          - name
-                          type: object
-                          x-kubernetes-map-type: atomic
-                        dataSourceRef:
-                          properties:
-                            apiGroup:
-                              type: string
-                            kind:
-                              type: string
-                            name:
-                              type: string
-                            namespace:
-                              type: string
-                          required:
-                          - kind
-                          - name
-                          type: object
-                        resources:
-                          properties:
-                            limits:
-                              additionalProperties:
-                                anyOf:
-                                - type: integer
-                                - type: string
-                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                x-kubernetes-int-or-string: true
-                              type: object
-                            requests:
-                              additionalProperties:
-                                anyOf:
-                                - type: integer
-                                - type: string
-                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                x-kubernetes-int-or-string: true
-                              type: object
-                          type: object
-                        selector:
-                          properties:
-                            matchExpressions:
-                              items:
-                                properties:
-                                  key:
-                                    type: string
-                                  operator:
-                                    type: string
-                                  values:
-                                    items:
-                                      type: string
-                                    type: array
-                                    x-kubernetes-list-type: atomic
-                                required:
-                                - key
-                                - operator
-                                type: object
-                              type: array
-                              x-kubernetes-list-type: atomic
-                            matchLabels:
-                              additionalProperties:
-                                type: string
-                              type: object
-                          type: object
-                          x-kubernetes-map-type: atomic
-                        storageClassName:
-                          type: string
-                        volumeAttributesClassName:
-                          type: string
-                        volumeMode:
-                          type: string
-                        volumeName:
-                          type: string
-                      type: object
-                    status:
-                      properties:
-                        accessModes:
-                          items:
-                            type: string
-                          type: array
-                          x-kubernetes-list-type: atomic
-                        allocatedResourceStatuses:
-                          additionalProperties:
-                            type: string
-                          type: object
-                          x-kubernetes-map-type: granular
-                        allocatedResources:
-                          additionalProperties:
-                            anyOf:
-                            - type: integer
-                            - type: string
-                            pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                            x-kubernetes-int-or-string: true
-                          type: object
-                        capacity:
-                          additionalProperties:
-                            anyOf:
-                            - type: integer
-                            - type: string
-                            pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                            x-kubernetes-int-or-string: true
-                          type: object
-                        conditions:
-                          items:
+                      kafka:
+                        properties:
+                          authConfig:
                             properties:
-                              lastProbeTime:
-                                format: date-time
-                                type: string
-                              lastTransitionTime:
-                                format: date-time
-                                type: string
-                              message:
-                                type: string
-                              reason:
-                                type: string
-                              status:
-                                type: string
-                              type:
-                                type: string
-                            required:
-                            - status
-                            - type
+                              genericAuth:
+                                properties:
+                                  clientAuthenticationParameters:
+                                    type: string
+                                  clientAuthenticationPlugin:
+                                    type: string
+                                required:
+                                - clientAuthenticationParameters
+                                - clientAuthenticationPlugin
+                                type: object
+                              oauth2Config:
+                                properties:
+                                  audience:
+                                    type: string
+                                  issuerUrl:
+                                    type: string
+                                  keySecretKey:
+                                    type: string
+                                  keySecretName:
+                                    type: string
+                                  scope:
+                                    type: string
+                                required:
+                                - audience
+                                - issuerUrl
+                                - keySecretKey
+                                - keySecretName
+                                type: object
+                              plainAuthConfig:
+                                properties:
+                                  passwordKey:
+                                    type: string
+                                  secretName:
+                                    type: string
+                                  usernameKey:
+                                    type: string
+                                required:
+                                - secretName
+                                type: object
+                              scramAuthConfig:
+                                properties:
+                                  hashAlgorithm:
+                                    enum:
+                                    - SHA-256
+                                    - SHA-512
+                                    type: string
+                                  passwordKey:
+                                    type: string
+                                  secretName:
+                                    type: string
+                                  usernameKey:
+                                    type: string
+                                required:
+                                - secretName
+                                type: object
                             type: object
-                          type: array
-                          x-kubernetes-list-map-keys:
-                          - type
-                          x-kubernetes-list-type: map
-                        currentVolumeAttributesClassName:
+                          bootstrapServers:
+                            type: string
+                          tlsConfig:
+                            properties:
+                              enabled:
+                                type: boolean
+                              keyStoreConfig:
+                                properties:
+                                  fileKey:
+                                    type: string
+                                  keyPasswordKey:
+                                    type: string
+                                  passwordKey:
+                                    type: string
+                                  secretName:
+                                    type: string
+                                  type:
+                                    enum:
+                                    - JKS
+                                    - PEM
+                                    - PKCS12
+                                    type: string
+                                type: object
+                              trustStoreConfig:
+                                properties:
+                                  fileKey:
+                                    type: string
+                                  passwordKey:
+                                    type: string
+                                  secretName:
+                                    type: string
+                                  type:
+                                    enum:
+                                    - JKS
+                                    - PEM
+                                    - PKCS12
+                                    type: string
+                                type: object
+                            type: object
+                        type: object
+                      producerAdditionalConfig:
+                        type: object
+                        x-kubernetes-preserve-unknown-fields: true
+                      schemaType:
+                        default: string
+                        type: string
+                      subscriptionName:
+                        type: string
+                      topicPattern:
+                        type: string
+                      topics:
+                        items:
                           type: string
-                        modifyVolumeStatus:
-                          properties:
-                            status:
-                              type: string
-                            targetVolumeAttributesClassName:
-                              type: string
-                          required:
-                          - status
-                          type: object
-                        phase:
+                        type: array
+                      typeClassDefinition:
+                        type: string
+                      typeClassName:
+                        default: string
+                        type: string
+                    type: object
+                  pulsarConfigs:
+                    properties:
+                      pulsar:
+                        properties:
+                          authConfig:
+                            properties:
+                              genericAuth:
+                                properties:
+                                  clientAuthenticationParameters:
+                                    type: string
+                                  clientAuthenticationPlugin:
+                                    type: string
+                                required:
+                                - clientAuthenticationParameters
+                                - clientAuthenticationPlugin
+                                type: object
+                              oauth2Config:
+                                properties:
+                                  audience:
+                                    type: string
+                                  issuerUrl:
+                                    type: string
+                                  keySecretKey:
+                                    type: string
+                                  keySecretName:
+                                    type: string
+                                  scope:
+                                    type: string
+                                required:
+                                - audience
+                                - issuerUrl
+                                - keySecretKey
+                                - keySecretName
+                                type: object
+                            type: object
+                          authSecret:
+                            type: string
+                          cleanupAuthConfig:
+                            properties:
+                              genericAuth:
+                                properties:
+                                  clientAuthenticationParameters:
+                                    type: string
+                                  clientAuthenticationPlugin:
+                                    type: string
+                                required:
+                                - clientAuthenticationParameters
+                                - clientAuthenticationPlugin
+                                type: object
+                              oauth2Config:
+                                properties:
+                                  audience:
+                                    type: string
+                                  issuerUrl:
+                                    type: string
+                                  keySecretKey:
+                                    type: string
+                                  keySecretName:
+                                    type: string
+                                  scope:
+                                    type: string
+                                required:
+                                - audience
+                                - issuerUrl
+                                - keySecretKey
+                                - keySecretName
+                                type: object
+                            type: object
+                          pulsarConfig:
+                            type: string
+                          tlsConfig:
+                            properties:
+                              allowInsecure:
+                                type: boolean
+                              certSecretKey:
+                                type: string
+                              certSecretName:
+                                type: string
+                              enabled:
+                                type: boolean
+                              hostnameVerification:
+                                type: boolean
+                            type: object
+                          tlsSecret:
+                            type: string
+                        type: object
+                      schemaType:
+                        default: string
+                        type: string
+                      subscriptionName:
+                        type: string
+                      topicPattern:
+                        type: string
+                      topics:
+                        items:
                           type: string
-                      type: object
-                  type: object
-                type: array
+                        type: array
+                      typeClassDefinition:
+                        type: string
+                      typeClassName:
+                        default: string
+                        type: string
+                    type: object
+                  type:
+                    enum:
+                    - pulsar
+                    - kafka
+                    type: string
+                required:
+                - type
+                type: object
+              stateStoreUrl:
+                type: string
               volumeMounts:
                 items:
                   properties:
@@ -4515,42 +3831,10 @@ spec:
                   - name
                   type: object
                 type: array
-              windowConfig:
-                properties:
-                  actualWindowFunctionClassName:
-                    type: string
-                  lateDataTopic:
-                    type: string
-                  maxLagMs:
-                    format: int64
-                    type: integer
-                  processingGuarantees:
-                    enum:
-                    - ATLEAST_ONCE
-                    - ATMOST_ONCE
-                    type: string
-                  slidingIntervalCount:
-                    format: int32
-                    type: integer
-                  slidingIntervalDurationMs:
-                    format: int64
-                    type: integer
-                  timestampExtractorClassName:
-                    type: string
-                  watermarkEmitIntervalMs:
-                    format: int64
-                    type: integer
-                  windowLengthCount:
-                    format: int32
-                    type: integer
-                  windowLengthDurationMs:
-                    format: int64
-                    type: integer
-                required:
-                - actualWindowFunctionClassName
-                type: object
             required:
-            - kafka
+            - agentRef
+            - registry
+            - source
             type: object
           status:
             properties:
@@ -4596,9 +3880,14 @@ spec:
               observedGeneration:
                 format: int64
                 type: integer
+              readyReplicas:
+                format: int32
+                type: integer
+              replicas:
+                format: int32
+                type: integer
             type: object
         type: object
-        x-kubernetes-preserve-unknown-fields: true
     served: true
     storage: true
     subresources:

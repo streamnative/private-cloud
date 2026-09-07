@@ -146,6 +146,11 @@ spec:
                     properties:
                       managed:
                         type: boolean
+                      maxUnavailable:
+                        anyOf:
+                        - type: integer
+                        - type: string
+                        x-kubernetes-int-or-string: true
                       metadata:
                         properties:
                           annotations:
@@ -161,6 +166,11 @@ spec:
                           name:
                             type: string
                         type: object
+                      minAvailable:
+                        anyOf:
+                        - type: integer
+                        - type: string
+                        x-kubernetes-int-or-string: true
                       updatePolicy:
                         items:
                           type: string
@@ -753,6 +763,21 @@ spec:
               config:
                 nullable: true
                 properties:
+                  agentProviders:
+                    additionalProperties:
+                      properties:
+                        apiKey:
+                          type: string
+                        apiUrl:
+                          type: string
+                        apiVersion:
+                          type: string
+                        betaVersion:
+                          type: string
+                        type:
+                          type: string
+                      type: object
+                    type: object
                   authentication:
                     properties:
                       apiKey:
@@ -893,6 +918,8 @@ spec:
                         type: boolean
                       functionRunnerImages:
                         properties:
+                          agentTrigger:
+                            type: string
                           genericBase:
                             type: string
                           genericNode:
