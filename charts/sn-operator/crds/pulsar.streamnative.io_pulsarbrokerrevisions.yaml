@@ -342,6 +342,11 @@ spec:
                     properties:
                       managed:
                         type: boolean
+                      maxUnavailable:
+                        anyOf:
+                        - type: integer
+                        - type: string
+                        x-kubernetes-int-or-string: true
                       metadata:
                         properties:
                           annotations:
@@ -357,6 +362,11 @@ spec:
                           name:
                             type: string
                         type: object
+                      minAvailable:
+                        anyOf:
+                        - type: integer
+                        - type: string
+                        x-kubernetes-int-or-string: true
                       updatePolicy:
                         items:
                           type: string
