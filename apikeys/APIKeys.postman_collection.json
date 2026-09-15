@@ -1,0 +1,199 @@
+{
+	"info": {
+		"_postman_id": "2d96fac2-4eaa-4508-bfc0-c4bf2e09adce",
+		"name": "APIKeys",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11878109",
+		"_collection_link": "https://fpaycx.postman.co/workspace/SN~f695694f-237c-4f17-b833-692ddf7c68dd/collection/11878109-2d96fac2-4eaa-4508-bfc0-c4bf2e09adce?action=share&source=collection_link&creator=11878109"
+	},
+	"item": [
+		{
+			"name": "http://localhost:8080/admin/v2/tenants",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/admin/v2/tenants",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"v2",
+						"tenants"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8081/v1/tokens",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/v1/tokens",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"v1",
+						"tokens"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8081/v1/revocation-list",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/v1/revocation-list",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"v1",
+						"revocation-list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:8081/v1/tokens",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\": \"test1\"}"
+				},
+				"url": {
+					"raw": "http://localhost:8081/v1/tokens",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"v1",
+						"tokens"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8081/v1/tokens",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\": \"test1\",\"exp\":1719590340}"
+				},
+				"url": {
+					"raw": "http://localhost:8081/v1/tokens",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"v1",
+						"tokens"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8081/v1/tokens/{{tokenid}}",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8081/v1/tokens/revoke/{{tokenid}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"v1",
+						"tokens",
+						"revoke",
+						"{{tokenid}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjcwMDdkZGY5LWJlYWMtNGU3NC04ZTMyLWYwMzQ1M2ZlYTNlMCIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJ1cm46c246cHVsc2FyOnB1bHNhcjpwcml2YXRlLWNsb3VkIiwiaWF0IjoxNjkyMTg3MDgzLCJpc3MiOiJodHRwOi8vcHJpdmF0ZS1jbG91ZC1hcGlrZXlzLnB1bHNhci5zdmMuY2x1c3Rlci5sb2NhbDo4MDgxLyIsImp0aSI6ImFwaWtleXMtOGZmOWNmMTg2MmI0NDJlNTlkMzkzOTU4ZjFmZTRhZjgiLCJyZXZvY2FibGUiOiJmYWxzZSIsInN1YiI6ImFkbWluIn0.Emcp9c_7hczMkCl0f_kErBhLoZtzOyuqxlyGVasdeDDv4KGJBNlGtE-Y6TLAQEJF6wqfkdDisuoLxYrS9HZYKxSRUMEV8kdClEiDa4N_OWC25nUPD0K4fCSTIm_7qiuwSELHObqPEhrAaZb9y7rWcIib59g1zyBKItTDiGYSSDM7ZKkHqxogcSpBokiG46c5OoSYtZMAyaieE4WJWhVfUfbFJHTPr1LgVhsMslZMJH0fpoJJeevgnMzoo2U147AjgplO6zCNDr0q9sZuqgUv3I9TB7X6ZsxUH_1J73_jU3bG3hD4Jp3uUxbDk5tLwBXH8bdDH9nazB0I-l59ZslQYQ",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "tokenid",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
