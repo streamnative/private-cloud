@@ -42,6 +42,9 @@ serviceAccount:
   # -- Specifies whether a service account should be created
   # if set to false, pre-create service account and specify the sa name, so the chart will bind the role/clusterrole to the sa.
   create: true
+  # -- Controls whether Kubernetes automatically mounts API credentials into pods using this service account.
+  # The operator pod explicitly enables its required token mount in the deployment template.
+  automountServiceAccountToken: false
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
