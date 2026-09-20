@@ -43,7 +43,8 @@ serviceAccount:
   # if set to false, pre-create service account and specify the sa name, so the chart will bind the role/clusterrole to the sa.
   create: true
   # -- Controls whether Kubernetes automatically mounts API credentials into pods using this service account.
-  # The operator pod explicitly enables its required token mount in the deployment template.
+  # The operator requires Kubernetes API credentials. When set to false, configure
+  # volumeMounts and volumes below to project the service account credentials manually.
   automountServiceAccountToken: true
   # Annotations to add to the service account
   annotations: {}
@@ -72,6 +73,35 @@ securityContext: {}
   # readOnlyRootFilesystem: true
   # runAsNonRoot: true
   # runAsUser: 1000
+
+# -- Additional volume mounts for the operator container.
+# When serviceAccount.automountServiceAccountToken is false, the following example
+# mounts the credentials required by the operator at the standard in-cluster path.
+volumeMounts: []
+  # - name: kube-api-access
+  #   mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+  #   readOnly: true
+
+# -- Additional volumes for the operator pod.
+volumes: []
+  # - name: kube-api-access
+  #   projected:
+  #     defaultMode: 420
+  #     sources:
+  #       - serviceAccountToken:
+  #           expirationSeconds: 3607
+  #           path: token
+  #       - configMap:
+  #           name: kube-root-ca.crt
+  #           items:
+  #             - key: ca.crt
+  #               path: ca.crt
+  #       - downwardAPI:
+  #           items:
+  #             - path: namespace
+  #               fieldRef:
+  #                 apiVersion: v1
+  #                 fieldPath: metadata.namespace
 
 # -- Add resource limits and requests
 resources: {}
