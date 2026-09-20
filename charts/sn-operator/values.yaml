@@ -44,7 +44,7 @@ serviceAccount:
   create: true
   # -- Controls whether Kubernetes automatically mounts API credentials into pods using this service account.
   # The operator pod explicitly enables its required token mount in the deployment template.
-  automountServiceAccountToken: false
+  automountServiceAccountToken: true
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
