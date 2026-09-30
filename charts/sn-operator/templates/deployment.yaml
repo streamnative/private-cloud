@@ -34,7 +34,8 @@ spec:
       containers:
       - args:
         - --health-probe-bind-address=:8081
-        - --metrics-bind-address=127.0.0.1:8080
+        - --metrics-bind-address={{ .Values.metrics.bindAddress }}:{{ .Values.metrics.port }}
+        - --metrics-secure={{ .Values.metrics.secure }}
         - --leader-elect
         {{- if .Values.watchNamespaces }}
         - --watch-namespace={{ .Values.watchNamespaces }}
@@ -64,6 +65,10 @@ spec:
           {{- toYaml .Values.securityContext | nindent 10 }}
         image: "{{ .Values.image.manager.registry }}/{{ .Values.image.manager.repository }}:{{ .Values.image.manager.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - name: metrics
+          containerPort: {{ .Values.metrics.port }}
+          protocol: TCP
         livenessProbe:
           httpGet:
             path: /healthz

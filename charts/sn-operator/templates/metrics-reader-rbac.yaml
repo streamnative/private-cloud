@@ -1,0 +1,30 @@
+{{- if and .Values.metrics.secure .Values.metrics.reader.enabled }}
+{{- $name := printf "%s-metrics-reader" (include "sn-operator.fullname" .) | trunc 63 | trimSuffix "-" }}
+{{- $serviceAccountName := required "metrics.reader.serviceAccountName is required when metrics.reader.enabled is true" .Values.metrics.reader.serviceAccountName }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ $name }}
+  labels:
+    {{- include "sn-operator.labels" . | nindent 4 }}
+rules:
+- nonResourceURLs:
+  - /metrics
+  verbs:
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ $name }}
+  labels:
+    {{- include "sn-operator.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ $name }}
+subjects:
+- kind: ServiceAccount
+  name: {{ $serviceAccountName }}
+  namespace: {{ default (include "sn-operator.namespace" .) .Values.metrics.reader.serviceAccountNamespace }}
+{{- end }}

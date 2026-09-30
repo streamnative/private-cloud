@@ -18,6 +18,41 @@ image:
 
 env: []
 
+# -- Metrics listener and scrape configuration.
+metrics:
+  # -- Address the manager listens on. Use 0.0.0.0 so the metrics Service can reach it.
+  bindAddress: 0.0.0.0
+  # -- Metrics container and Service port.
+  port: 8080
+  # -- Serve metrics over HTTPS with Kubernetes bearer token authentication.
+  # Set to false to serve unauthenticated HTTP metrics.
+  secure: true
+  service:
+    # -- Annotations for metrics discovery by a scraper without ServiceMonitor support.
+    annotations: {}
+  authDelegator:
+    # -- Allow the operator to validate bearer tokens and authorize metrics requests.
+    enabled: true
+  serviceMonitor:
+    # -- Create a ServiceMonitor when the Prometheus Operator CRD is installed.
+    enabled: false
+    # -- Labels used by the Prometheus serviceMonitorSelector.
+    additionalLabels: {}
+    interval: 30s
+    scrapeTimeout: 10s
+    # -- Override the scrape scheme. Empty selects https or http from metrics.secure.
+    scheme: ""
+    # -- TLS settings for HTTPS metrics, if needed.
+    tlsConfig: {}
+    # -- Authorization settings for secured metrics, if needed.
+    authorization: {}
+  reader:
+    # -- Grant an existing scraper ServiceAccount GET access to /metrics.
+    enabled: false
+    serviceAccountName: ""
+    # -- Defaults to the operator namespace when empty.
+    serviceAccountNamespace: ""
+
 # -- Container name for the sn-operator manager container.
 containerName: manager
 
