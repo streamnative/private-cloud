@@ -520,6 +520,7 @@
         }
       ],
       "title": "Active reconcile workers",
+      "description": "Number of controller workers currently processing reconciliations.",
       "type": "timeseries"
     },
     {
@@ -962,6 +963,7 @@
         }
       ],
       "title": "Goroutines",
+      "description": "Number of goroutines currently running in each operator process.",
       "type": "timeseries"
     },
     {
@@ -1062,6 +1064,7 @@
         }
       ],
       "title": "Resident memory",
+      "description": "Resident memory used by each operator process, in bytes.",
       "type": "timeseries"
     },
     {
@@ -1161,6 +1164,7 @@
         }
       ],
       "title": "Longest running queue worker",
+      "description": "Elapsed processing time of the longest running worker in each controller work queue, in seconds.",
       "type": "timeseries"
     },
     {
