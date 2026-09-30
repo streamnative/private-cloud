@@ -21,6 +21,9 @@ Follow our [Quick Start](https://docs.streamnative.io/private/private-cloud-quic
 
 ### Operator metrics
 
+See [the metrics reference](METRICS.md) for the metrics exposed by the
+operator and examples of how to interpret them.
+
 The manager exposes `/metrics` on `0.0.0.0:8080` by default. With
 `metrics.secure: true`, the v0.20.14 image serves HTTPS and requires an
 authorized Kubernetes ServiceAccount bearer token. The chart creates
