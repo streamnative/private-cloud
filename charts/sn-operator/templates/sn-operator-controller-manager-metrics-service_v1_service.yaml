@@ -1,16 +1,21 @@
 apiVersion: v1
 kind: Service
 metadata:
-  creationTimestamp: null
+  namespace: {{ include "sn-operator.namespace" . }}
   labels:
-    app: sn-operator
+    {{- include "sn-operator.labels" . | nindent 4 }}
     control-plane: controller-manager
   name: sn-operator-controller-manager-metrics-service
+  {{- with .Values.metrics.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   ports:
-  - name: https
-    port: 8443
+  - name: metrics
+    port: {{ .Values.metrics.port }}
     protocol: TCP
-    targetPort: https
+    targetPort: metrics
   selector:
+    {{- include "sn-operator.selectorLabels" . | nindent 4 }}
     control-plane: controller-manager

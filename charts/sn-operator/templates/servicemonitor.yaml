@@ -1,0 +1,36 @@
+{{- if .Values.metrics.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "sn-operator.fullname" . }}-metrics
+  namespace: {{ include "sn-operator.namespace" . }}
+  labels:
+    {{- include "sn-operator.labels" . | nindent 4 }}
+    {{- with .Values.metrics.serviceMonitor.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  namespaceSelector:
+    matchNames:
+    - {{ include "sn-operator.namespace" . }}
+  selector:
+    matchLabels:
+      {{- include "sn-operator.selectorLabels" . | nindent 6 }}
+      control-plane: controller-manager
+  endpoints:
+  - port: metrics
+    path: /metrics
+    interval: {{ .Values.metrics.serviceMonitor.interval }}
+    scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}
+    scheme: {{ default (ternary "https" "http" .Values.metrics.secure) .Values.metrics.serviceMonitor.scheme }}
+    {{- if .Values.metrics.secure }}
+    {{- with .Values.metrics.serviceMonitor.tlsConfig }}
+    tlsConfig:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.metrics.serviceMonitor.authorization }}
+    authorization:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- end }}
+{{- end }}
