@@ -1122,32 +1122,7 @@
           },
           "unit": "s"
         },
-        "overrides": [
-          {
-            "__systemRef": "hideSeriesFrom",
-            "matcher": {
-              "id": "byNames",
-              "options": {
-                "mode": "exclude",
-                "names": [
-                  "{__name__=\"workqueue_longest_running_processor_seconds\", cluster=\"sncloud-test-api\", container=\"controller\", endpoint=\"http-metrics\", instance=\"10.60.1.168:8080\", job=\"sn-system/cloud-manager\", mon_poolmember=\"sncloud-test-control-plane-us-west1\", name=\"catalog-controller\", namespace=\"sn-system\", pod=\"cloud-manager-0\", prometheus=\"sn-system/sncloud-test-uo-monitoring\"}"
-                ],
-                "prefix": "All except:",
-                "readOnly": true
-              }
-            },
-            "properties": [
-              {
-                "id": "custom.hideFrom",
-                "value": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": true
-                }
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 8,
