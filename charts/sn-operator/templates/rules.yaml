@@ -21,9 +21,17 @@ rules:
 - apiGroups:
   - ""
   resources:
+  - events
+  verbs:
+  - create
+  - patch
+- apiGroups:
+  - ""
+  resources:
   - pods/finalizers
   verbs:
   - update
+{{- if not .Values.watchNamespaces }}
 - apiGroups:
   - ""
   resources:
@@ -33,6 +41,7 @@ rules:
   - get
   - list
   - watch
+{{- end }}
 - apiGroups:
   - apps
   resources:
@@ -206,6 +215,7 @@ rules:
   - pulsarcoordinators/finalizers
   - snschemaregistries/finalizers
   - sqlcatalogs/finalizers
+  - sqlgateways/finalizers
   - sqlworkspaces/finalizers
   - storagecatalogs/finalizers
   - unilinks/finalizers
@@ -399,6 +409,7 @@ rules:
   - patch
   - update
   - watch
+{{- if not .Values.watchNamespaces }}
 - apiGroups:
   - storage.k8s.io
   resources:
@@ -411,6 +422,7 @@ rules:
   - patch
   - update
   - watch
+{{- end }}
 - apiGroups:
   - zookeeper.streamnative.io
   resources:
