@@ -3856,6 +3856,41 @@ spec:
                         default: strict
                         type: string
                     type: object
+                  resilience:
+                    properties:
+                      outlierDetection:
+                        properties:
+                          baseEjectionTime:
+                            type: string
+                          consecutiveGatewayErrors:
+                            format: int32
+                            minimum: 1
+                            type: integer
+                          disabled:
+                            type: boolean
+                          interval:
+                            type: string
+                          maxEjectionPercent:
+                            format: int32
+                            maximum: 100
+                            minimum: 0
+                            type: integer
+                        type: object
+                      retries:
+                        properties:
+                          attempts:
+                            format: int32
+                            minimum: 0
+                            type: integer
+                          disabled:
+                            default: true
+                            type: boolean
+                          perTryTimeout:
+                            type: string
+                          retryOn:
+                            type: string
+                        type: object
+                    type: object
                   revision:
                     default: default
                     type: string
@@ -3893,6 +3928,52 @@ spec:
               metadataServiceUri:
                 nullable: true
                 type: string
+              metadataStoreConfig:
+                nullable: true
+                properties:
+                  oxia:
+                    properties:
+                      authParams:
+                        type: string
+                      authPluginClassName:
+                        type: string
+                      custom:
+                        additionalProperties:
+                          type: string
+                        type: object
+                      enableTls:
+                        type: boolean
+                      namespace:
+                        type: string
+                      serviceAddress:
+                        type: string
+                    required:
+                    - namespace
+                    - serviceAddress
+                    type: object
+                  zk:
+                    properties:
+                      certSecretName:
+                        type: string
+                      clusterIndex:
+                        format: int32
+                        type: integer
+                      domain:
+                        type: string
+                      serverPort:
+                        format: int32
+                        type: integer
+                      tlsMode:
+                        enum:
+                        - istio
+                        - native
+                        type: string
+                    required:
+                    - clusterIndex
+                    - domain
+                    - serverPort
+                    type: object
+                type: object
               pod:
                 properties:
                   affinity:

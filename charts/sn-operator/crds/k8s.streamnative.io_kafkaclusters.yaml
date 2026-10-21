@@ -187,6 +187,21 @@ spec:
                 x-kubernetes-list-type: map
               config:
                 properties:
+                  authorization:
+                    properties:
+                      authorizerClass:
+                        type: string
+                      superUsers:
+                        items:
+                          type: string
+                        type: array
+                      supportsAdminApi:
+                        type: boolean
+                      type:
+                        type: string
+                    required:
+                    - type
+                    type: object
                   broker:
                     properties:
                       annotations:

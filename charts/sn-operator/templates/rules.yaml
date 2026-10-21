@@ -173,6 +173,8 @@ rules:
   - pfsqlclusters
   - pulsarcoordinators
   - snschemaregistries
+  - sqlgateways
+  - sqlworkspaces
   - storagecatalogs
   - unilinks
   - unilinkschemas
@@ -202,9 +204,12 @@ rules:
   - pfsqlclusters/finalizers
   - pulsarcoordinators/finalizers
   - snschemaregistries/finalizers
+  - sqlcatalogs/finalizers
+  - sqlworkspaces/finalizers
   - storagecatalogs/finalizers
   - unilinks/finalizers
   - unilinkschemas/finalizers
+  - virtualkafkaclusters/finalizers
   verbs:
   - update
 - apiGroups:
@@ -225,9 +230,13 @@ rules:
   - pfsqlclusters/status
   - pulsarcoordinators/status
   - snschemaregistries/status
+  - sqlcatalogs/status
+  - sqlgateways/status
+  - sqlworkspaces/status
   - storagecatalogs/status
   - unilinks/status
   - unilinkschemas/status
+  - virtualkafkaclusters/status
   verbs:
   - get
   - patch
@@ -239,6 +248,17 @@ rules:
   verbs:
   - get
   - list
+  - watch
+- apiGroups:
+  - k8s.streamnative.io
+  resources:
+  - sqlcatalogs
+  - virtualkafkaclusters
+  verbs:
+  - get
+  - list
+  - patch
+  - update
   - watch
 - apiGroups:
   - kafka.strimzi.io
@@ -358,6 +378,18 @@ rules:
   resources:
   - rolebindings
   - roles
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - risingwave.risingwavelabs.com
+  resources:
+  - risingwaves
   verbs:
   - create
   - delete
