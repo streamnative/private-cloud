@@ -52,6 +52,8 @@ spec:
                     istioGateway:
                       properties:
                         clusterAddress:
+                          maxLength: 253
+                          pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$
                           type: string
                         selector:
                           additionalProperties:
@@ -60,6 +62,8 @@ spec:
                         tls:
                           properties:
                             certSecretName:
+                              maxLength: 253
+                              pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$
                               type: string
                             mode:
                               enum:
@@ -608,6 +612,51 @@ spec:
                 type: object
               bkMetadataServiceUri:
                 type: string
+              bkMetadataStoreConfig:
+                properties:
+                  oxia:
+                    properties:
+                      authParams:
+                        type: string
+                      authPluginClassName:
+                        type: string
+                      custom:
+                        additionalProperties:
+                          type: string
+                        type: object
+                      enableTls:
+                        type: boolean
+                      namespace:
+                        type: string
+                      serviceAddress:
+                        type: string
+                    required:
+                    - namespace
+                    - serviceAddress
+                    type: object
+                  zk:
+                    properties:
+                      certSecretName:
+                        type: string
+                      clusterIndex:
+                        format: int32
+                        type: integer
+                      domain:
+                        type: string
+                      serverPort:
+                        format: int32
+                        type: integer
+                      tlsMode:
+                        enum:
+                        - istio
+                        - native
+                        type: string
+                    required:
+                    - clusterIndex
+                    - domain
+                    - serverPort
+                    type: object
+                type: object
               config:
                 nullable: true
                 properties:
@@ -693,6 +742,12 @@ spec:
                             type: string
                         type: object
                       mtls:
+                        nullable: true
+                        properties:
+                          enabled:
+                            type: boolean
+                        type: object
+                      oidc:
                         nullable: true
                         properties:
                           enabled:
@@ -3452,9 +3507,37 @@ spec:
                     properties:
                       enabled:
                         type: boolean
+                      pulsarTieredStorage:
+                        nullable: true
+                        properties:
+                          bucket:
+                            minLength: 1
+                            type: string
+                          bucketPrefix:
+                            minLength: 1
+                            type: string
+                          driver:
+                            enum:
+                            - aws-s3
+                            - google-cloud-storage
+                            - azureblob
+                            type: string
+                          region:
+                            type: string
+                        required:
+                        - bucket
+                        - bucketPrefix
+                        - driver
+                        type: object
                       tsMetadataStoreUrl:
                         type: string
                       tsStorageMetadataStoreUrl:
+                        type: string
+                      type:
+                        default: ursa-lakehouse
+                        enum:
+                        - ursa-lakehouse
+                        - pulsar-tiered-storage-v2
                         type: string
                     type: object
                   oxiaBasedSystemTopic:
@@ -3494,6 +3577,8 @@ spec:
                               istioGateway:
                                 properties:
                                   clusterAddress:
+                                    maxLength: 253
+                                    pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$
                                     type: string
                                   selector:
                                     additionalProperties:
@@ -3502,6 +3587,8 @@ spec:
                                   tls:
                                     properties:
                                       certSecretName:
+                                        maxLength: 253
+                                        pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$
                                         type: string
                                       mode:
                                         enum:
@@ -3699,6 +3786,11 @@ spec:
                       serverPort:
                         format: int32
                         type: integer
+                      tlsMode:
+                        enum:
+                        - istio
+                        - native
+                        type: string
                     required:
                     - clusterIndex
                     - domain
@@ -3934,6 +4026,41 @@ spec:
                         default: strict
                         type: string
                     type: object
+                  resilience:
+                    properties:
+                      outlierDetection:
+                        properties:
+                          baseEjectionTime:
+                            type: string
+                          consecutiveGatewayErrors:
+                            format: int32
+                            minimum: 1
+                            type: integer
+                          disabled:
+                            type: boolean
+                          interval:
+                            type: string
+                          maxEjectionPercent:
+                            format: int32
+                            maximum: 100
+                            minimum: 0
+                            type: integer
+                        type: object
+                      retries:
+                        properties:
+                          attempts:
+                            format: int32
+                            minimum: 0
+                            type: integer
+                          disabled:
+                            default: true
+                            type: boolean
+                          perTryTimeout:
+                            type: string
+                          retryOn:
+                            type: string
+                        type: object
+                    type: object
                   revision:
                     default: default
                     type: string
@@ -3997,6 +4124,11 @@ spec:
                       serverPort:
                         format: int32
                         type: integer
+                      tlsMode:
+                        enum:
+                        - istio
+                        - native
+                        type: string
                     required:
                     - clusterIndex
                     - domain

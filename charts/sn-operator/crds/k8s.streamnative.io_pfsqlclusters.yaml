@@ -228,6 +228,41 @@ spec:
                         default: strict
                         type: string
                     type: object
+                  resilience:
+                    properties:
+                      outlierDetection:
+                        properties:
+                          baseEjectionTime:
+                            type: string
+                          consecutiveGatewayErrors:
+                            format: int32
+                            minimum: 1
+                            type: integer
+                          disabled:
+                            type: boolean
+                          interval:
+                            type: string
+                          maxEjectionPercent:
+                            format: int32
+                            maximum: 100
+                            minimum: 0
+                            type: integer
+                        type: object
+                      retries:
+                        properties:
+                          attempts:
+                            format: int32
+                            minimum: 0
+                            type: integer
+                          disabled:
+                            default: true
+                            type: boolean
+                          perTryTimeout:
+                            type: string
+                          retryOn:
+                            type: string
+                        type: object
+                    type: object
                   revision:
                     default: default
                     type: string
@@ -315,6 +350,13 @@ spec:
                 properties:
                   auth:
                     properties:
+                      jwt:
+                        properties:
+                          token:
+                            type: string
+                          tokenSecretName:
+                            type: string
+                        type: object
                       oauth2:
                         properties:
                           audience:

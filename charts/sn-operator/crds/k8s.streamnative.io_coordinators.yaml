@@ -431,6 +431,16 @@ spec:
                       webServiceURL:
                         type: string
                     type: object
+                  tlsTrustCertsSecret:
+                    properties:
+                      key:
+                        default: ca.crt
+                        type: string
+                      secretName:
+                        type: string
+                    required:
+                    - secretName
+                    type: object
                   topicsLoad:
                     nullable: true
                     properties:

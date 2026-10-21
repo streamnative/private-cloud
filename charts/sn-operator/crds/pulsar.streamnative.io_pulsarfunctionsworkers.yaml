@@ -858,6 +858,12 @@ spec:
                           enabled:
                             type: boolean
                         type: object
+                      oidc:
+                        nullable: true
+                        properties:
+                          enabled:
+                            type: boolean
+                        type: object
                     type: object
                   authorization:
                     properties:
@@ -905,6 +911,12 @@ spec:
                       type: string
                     nullable: true
                     type: object
+                  enableAgents:
+                    default: true
+                    type: boolean
+                  enableCompute:
+                    default: true
+                    type: boolean
                   function:
                     properties:
                       custom:
@@ -1027,6 +1039,18 @@ spec:
                         type: boolean
                       offsetStorageTopic:
                         type: string
+                    type: object
+                  managedAgentCredit:
+                    properties:
+                      key:
+                        minLength: 1
+                        type: string
+                      name:
+                        minLength: 1
+                        type: string
+                    required:
+                    - key
+                    - name
                     type: object
                   mode:
                     enum:
@@ -1238,6 +1262,41 @@ spec:
                       mode:
                         default: strict
                         type: string
+                    type: object
+                  resilience:
+                    properties:
+                      outlierDetection:
+                        properties:
+                          baseEjectionTime:
+                            type: string
+                          consecutiveGatewayErrors:
+                            format: int32
+                            minimum: 1
+                            type: integer
+                          disabled:
+                            type: boolean
+                          interval:
+                            type: string
+                          maxEjectionPercent:
+                            format: int32
+                            maximum: 100
+                            minimum: 0
+                            type: integer
+                        type: object
+                      retries:
+                        properties:
+                          attempts:
+                            format: int32
+                            minimum: 0
+                            type: integer
+                          disabled:
+                            default: true
+                            type: boolean
+                          perTryTimeout:
+                            type: string
+                          retryOn:
+                            type: string
+                        type: object
                     type: object
                   revision:
                     default: default

@@ -100,6 +100,45 @@ spec:
                     type: object
                   bootstrapServers:
                     type: string
+                  schemaRegistry:
+                    properties:
+                      authConfig:
+                        properties:
+                          basicAuthConfig:
+                            properties:
+                              passwordKey:
+                                default: password
+                                type: string
+                              secretName:
+                                type: string
+                              usernameKey:
+                                default: username
+                                type: string
+                            required:
+                            - secretName
+                            type: object
+                          oauth2Config:
+                            properties:
+                              audience:
+                                type: string
+                              issuerUrl:
+                                type: string
+                              keySecretKey:
+                                type: string
+                              keySecretName:
+                                type: string
+                              scope:
+                                type: string
+                            required:
+                            - audience
+                            - issuerUrl
+                            - keySecretKey
+                            - keySecretName
+                            type: object
+                        type: object
+                      url:
+                        type: string
+                    type: object
                   tls:
                     properties:
                       enabled:
