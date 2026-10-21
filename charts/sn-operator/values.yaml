@@ -70,13 +70,7 @@ fullnameOverride: ""
 ## Namespaces to watch resources, comma separated
 # -- Namespaces that the controller watches to reconcile pulsar objects.
 # If it's empty, the controller watches for pulsar objects across all namespaces.
-# If specified, Roles and RoleBindings grant access within the watched namespaces
-# and the operator namespace. A separate ClusterRole and ClusterRoleBinding grant
-# read-only access to Nodes, Namespaces, and StorageClasses.
-# When using Istio, include its namespace so both RBAC and the controller cache
-# cover cross-namespace resources, e.g. "tenant-a,tenant-b,istio-system".
-# If env overrides ISTIO_NAMESPACE, include that namespace too; v0.21 SQLGateway
-# still reads the ingress Service in istio-system.
+# If specified, the deployment is "namespaced" and role/role-binding will be created instead of clusterrole/clusterrolebinding.
 watchNamespaces: ""
 
 serviceAccount:
