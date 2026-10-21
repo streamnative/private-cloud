@@ -130,6 +130,7 @@ rules:
   resources:
   - authorizationpolicies
   - peerauthentications
+  - requestauthentications
   verbs:
   - create
   - delete
