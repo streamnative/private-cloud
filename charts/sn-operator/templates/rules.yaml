@@ -21,6 +21,13 @@ rules:
 - apiGroups:
   - ""
   resources:
+  - events
+  verbs:
+  - create
+  - patch
+- apiGroups:
+  - ""
+  resources:
   - pods/finalizers
   verbs:
   - update
@@ -130,6 +137,7 @@ rules:
   resources:
   - authorizationpolicies
   - peerauthentications
+  - requestauthentications
   verbs:
   - create
   - delete
@@ -205,6 +213,7 @@ rules:
   - pulsarcoordinators/finalizers
   - snschemaregistries/finalizers
   - sqlcatalogs/finalizers
+  - sqlgateways/finalizers
   - sqlworkspaces/finalizers
   - storagecatalogs/finalizers
   - unilinks/finalizers
